@@ -1,0 +1,7 @@
+##################
+#Ignore Python Byte Code
+*.pyc
+
+local_settings.py
+debug.log
+.idea
