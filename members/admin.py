@@ -1,5 +1,4 @@
-from Sacco.models import Member, Group, NextOfKin
-from django.contrib.auth.models import User
+from members.models import Member, Group, NextOfKin
 
 __author__ = 'mark'
 from django.contrib import admin

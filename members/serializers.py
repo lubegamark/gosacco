@@ -1,10 +1,10 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers, viewsets
-from Sacco.models import Member, Group, NextOfKin
+
+from members.models import Member, Group, NextOfKin
 
 
 class UserSerializer(serializers.ModelSerializer):
-
 
     class Meta:
         model = User
@@ -19,13 +19,20 @@ class MemberSerializer(serializers.ModelSerializer):
         depth = 0
 
 
-
 class GroupSerializer(serializers.ModelSerializer):
+    members = serializers.StringRelatedField(many=True)
+    leader = MemberSerializer()
 
     class Meta:
         model = Group
 
 
+class GroupMemberSerializer(serializers.ModelSerializer):
+    members = MemberSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Group
+        # fields = ()
 
 class NextOfKinSerializer(serializers.ModelSerializer):
 

@@ -37,7 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Sacco',
+    'members',
     'rest_framework',
     'rest_framework_swagger',
 )
@@ -52,9 +52,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'Sacco.urls'
+ROOT_URLCONF = 'members.urls'
 
-WSGI_APPLICATION = 'Sacco.wsgi.application'
+WSGI_APPLICATION = 'gosacco.wsgi.application'
 
 
 # Database
@@ -91,7 +91,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
-"""
+
 SWAGGER_SETTINGS = {
     'exclude_namespaces': [],
     'api_version': '0.1',
@@ -108,20 +108,12 @@ SWAGGER_SETTINGS = {
     'is_superuser': False,
     'permission_denied_handler': None,
     'info': {
-        'contact': 'apiteam@wordnik.com',
-        'description': 'This is a sample server Petstore server. '
-                       'You can find out more about Swagger at '
-                       '<a href="http://swagger.wordnik.com">'
-                       'http://swagger.wordnik.com</a> '
-                       'or on irc.freenode.net, #swagger. '
-                       'For this sample, you can use the api key '
-                       '"special-key" to test '
-                       'the authorization filters',
-        'license': 'Apache 2.0',
-        'licenseUrl': 'http://www.apache.org/licenses/LICENSE-2.0.html',
-        'termsOfServiceUrl': 'http://helloreverb.com/terms/',
-        'title': 'Swagger Sample App',
+        'contact': 'mark@lubegamark.com',
+        'description': 'This is the API for GoSacco. ',
+        # 'license': 'Apache 2.0',
+        #'licenseUrl': 'http://www.apache.org/licenses/LICENSE-2.0.html',
+        #'termsOfServiceUrl': 'http://helloreverb.com/terms/',
+        'title': 'GoSacco API',
     },
     'doc_expansion': 'none',
 }
-"""
