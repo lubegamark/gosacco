@@ -1,6 +1,6 @@
 # Create your models here.
 from django.db.models import Model, FloatField, ForeignKey, DateField, BigIntegerField, IntegerField, ManyToManyField, \
-    BooleanField, CharField
+    CharField
 
 from members.models import Member
 
@@ -17,7 +17,13 @@ class LoanType(Model):
     name = CharField(max_length=50)
     interest = FloatField(max_length=50)
     interest_period = CharField(max_length=50, choices=INTEREST_PERIOD_CHOICES, default=YEAR)
-    processing_period = CharField(max_length=50)
+    processing_period = IntegerField()
+    minimum_amount = IntegerField()
+    maximum_amount = IntegerField()
+    minimum_membership_period = IntegerField()
+    minimum_share = IntegerField()
+    minimum_savings = IntegerField()
+
 
     def __unicode__(self):
         return self.name
@@ -25,9 +31,12 @@ class LoanType(Model):
 
 class SecurityArticle(Model):
     name = CharField(max_length=100)
-    type = CharField(max_length=50)
+    type = CharField(max_length=50)  # eg. (Land, car, house)
+    identification_type = CharField(max_length=100)  #eg Land title, car logbook
     identification = CharField(max_length=100)
-    attached_to_loan = BooleanField(default=False)
+    attached_to_loan = IntegerField('Loan', null=True)
+    owner = ForeignKey(Member)
+    description = CharField(max_length=250)
 
     def __unicode__(self):
         return self.name
@@ -67,16 +76,3 @@ class Loan(Model):
     security_details = CharField(max_length=50)
     security = ForeignKey(SecurityArticle, blank=True, null=True)
     guarantors = ManyToManyField(Member, related_name='Guarantors')
-
-
-"""
-class Guarantor(Model):
-    name = CharField(max_length=50)
-    address = CharField(max_length=100)
-    phone_number = CharField(max_length=50)
-    occupation = CharField(max_length=50)
-    loan_application = ForeignKey(LoanApplication)
-
-    def __unicode__(self):
-        return self.name
-"""

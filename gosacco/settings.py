@@ -37,10 +37,12 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'members',
-    'loans',
     'rest_framework',
     'rest_framework_swagger',
+    'members',
+    'loans',
+    'savings',
+    'shares',
 )
 
 MIDDLEWARE_CLASSES = (
