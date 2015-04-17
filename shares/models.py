@@ -1,28 +1,25 @@
 from django.db import models
 
 # Create your models here.
-from django.db.models import ForeignKey, IntegerField, DateField, CharField, ManyToManyField
+from django.db.models import ForeignKey, IntegerField, DateField, CharField
 from members.models import Member
 
 
 class Share(models.Model):
-    member = ManyToManyField(Member)
+    member = ForeignKey(Member)
     amount = IntegerField()
+    number_of_shares = IntegerField()
     date = DateField()
     type = ForeignKey('ShareType')
 
+    def __unicode__(self):
+        return self.member.user.username
+
 
 class ShareType(models.Model):
-    YEAR = 'year'
-    MONTH = 'month'
-    WEEK = 'week'
-    DAY = 'day'
-    INTERVAL_CHOICES = (
-        (YEAR, 'per anum'),
-        (MONTH, 'per month'),
-        (WEEK, 'per week'),
-        (DAY, 'per day'),
-    )
-    share_class = CharField()
+    share_class = CharField(max_length=50)
     minimum_amount = IntegerField()
     maximum_amount = IntegerField()
+
+    def __unicode__(self):
+        return self.share_class

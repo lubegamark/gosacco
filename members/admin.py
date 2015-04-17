@@ -31,25 +31,3 @@ admin.site.register(Group, GroupAdmin)
 class NextOfKinAdmin(admin.ModelAdmin):
     pass
 admin.site.register(NextOfKin, NextOfKinAdmin)
-
-"""
-class LoanTypeAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(LoanType, LoanTypeAdmin)
-
-
-class LoanApplicationAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(LoanApplication, LoanApplicationAdmin)
-
-
-class SecurityArticleAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(SecurityArticle, SecurityArticleAdmin)
-
-
-class GuarantorAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(Guarantor, GuarantorAdmin)
-
-"""

@@ -5,6 +5,7 @@ from django.db import models, migrations
 
 
 class Migration(migrations.Migration):
+
     dependencies = [
         ('members', '__first__'),
     ]
@@ -16,8 +17,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('approval_date', models.DateField()),
                 ('amount', models.BigIntegerField()),
-                ('payment_period', models.IntegerField(max_length=11)),
-                ('security_details', models.CharField(max_length=50)),
+                ('payment_period', models.IntegerField()),
+                ('security_details', models.TextField()),
             ],
             options={
             },
@@ -31,10 +32,10 @@ class Migration(migrations.Migration):
                 ('application_date', models.DateField()),
                 ('amount', models.BigIntegerField()),
                 ('payment_period', models.IntegerField(max_length=11)),
-                ('status', models.CharField(default=b'pending', max_length=20,
+                ('status', models.CharField(default=b'pending', max_length=25,
                                             choices=[(b'pending', b'Pending'), (b'approved', b'Approved'),
                                                      (b'rejected', b'Rejected')])),
-                ('security_details', models.CharField(max_length=50)),
+                ('security_details', models.TextField()),
                 ('guarantors', models.ManyToManyField(related_name='Proposed Guarantors', to='members.Member')),
                 ('member', models.ForeignKey(to='members.Member')),
             ],
@@ -46,12 +47,17 @@ class Migration(migrations.Migration):
             name='LoanType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=50)),
-                ('interest', models.FloatField(max_length=50)),
+                ('name', models.CharField(max_length=255)),
+                ('interest', models.FloatField()),
                 ('interest_period', models.CharField(default=b'year', max_length=50,
                                                      choices=[(b'year', b'per anum'), (b'month', b'per month'),
                                                               (b'day', b'per day')])),
-                ('processing_period', models.CharField(max_length=50)),
+                ('processing_period', models.IntegerField()),
+                ('minimum_amount', models.BigIntegerField()),
+                ('maximum_amount', models.BigIntegerField()),
+                ('minimum_membership_period', models.IntegerField()),
+                ('minimum_share', models.IntegerField()),
+                ('minimum_savings', models.BigIntegerField()),
             ],
             options={
             },
@@ -62,9 +68,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=100)),
-                ('type', models.CharField(max_length=50)),
+                ('type', models.CharField(max_length=100)),
+                ('identification_type', models.CharField(max_length=100)),
                 ('identification', models.CharField(max_length=100)),
-                ('attached_to_loan', models.BooleanField(default=False)),
+                ('attached_to_loan', models.IntegerField(verbose_name=b'Loan')),
+                ('description', models.TextField()),
+                ('owner', models.ForeignKey(to='members.Member')),
             ],
             options={
             },
