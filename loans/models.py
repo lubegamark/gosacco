@@ -20,7 +20,7 @@ class LoanType(Model):
     processing_period = IntegerField()
     minimum_amount = BigIntegerField()
     maximum_amount = BigIntegerField()
-    minimum_membership_period = IntegerField()  # months
+    minimum_membership_period = IntegerField() #months
     minimum_share = IntegerField()
     minimum_savings = BigIntegerField()
 

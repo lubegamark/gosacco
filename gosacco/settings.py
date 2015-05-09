@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_swagger',
+    'gosacco',
     'members',
     'loans',
     'savings',
@@ -55,7 +56,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'members.urls'
+ROOT_URLCONF = 'gosacco.urls'
 
 WSGI_APPLICATION = 'gosacco.wsgi.application'
 

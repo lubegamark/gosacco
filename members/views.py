@@ -13,11 +13,17 @@ class MemberList(APIView):
     """
 
     def get(self, request, format=None):
+        """
+        List all members
+        """
         members = Member.objects.all()
         serializer = MemberSerializer(members, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
+        """
+        Add a new member
+        """
         serializer = MemberSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -31,11 +37,17 @@ class GroupList(APIView):
     """
 
     def get(self, request, format=None):
+        """
+        List groups.
+        """
         groups = Group.objects.all()
         serializer = GroupSerializer(groups, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
+        """
+        Create a new group.
+        """
         serializer = GroupSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -48,19 +60,25 @@ class MemberDetail(APIView):
     Retrieve, update or delete a Member.
     """
 
-    def get_object(self, pk):
+    def get_member(self, pk):
         try:
             return Member.objects.get(pk=pk)
         except Member.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
-        member = self.get_object(pk)
+        """
+        Retrieve a Member.
+        """
+        member = self.get_member(pk)
         serializer = MemberSerializer(member)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
-        member = self.get_object(pk)
+        """
+        Edit a Member.
+        """
+        member = self.get_member(pk)
         serializer = MemberSerializer(member, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -68,7 +86,10 @@ class MemberDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
-        member = self.get_object(pk)
+        """
+        Delete a Member.
+        """
+        member = self.get_member(pk)
         member.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -78,19 +99,25 @@ class GroupDetail(APIView):
     Retrieve, update or delete a Group.
     """
 
-    def get_object(self, pk):
+    def get_group(self, pk):
         try:
             return Group.objects.get(pk=pk)
         except Group.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
-        group = self.get_object(pk)
+        """
+        Retrieve a Group.
+        """
+        group = self.get_group(pk)
         serializer = GroupSerializer(group)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
-        group = self.get_object(pk)
+        """
+        Edit a Group Member.
+        """
+        group = self.get_group(pk)
         serializer = GroupSerializer(group, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -98,7 +125,10 @@ class GroupDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
-        group = self.get_object(pk)
+        """
+        Remove a Group Member.
+        """
+        group = self.get_group(pk)
         group.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -108,19 +138,25 @@ class GroupMember(APIView):
     Retrieve, update or delete a Group Member.
     """
 
-    def get_object(self, pk):
+    def get_groupmember(self, pk):
         try:
             return Group.objects.get(pk=pk)
         except Group.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
-        groupmember = self.get_object(pk)
+        """
+        Retrieve a Group Member.
+        """
+        groupmember = self.get_groupmember(pk)
         serializer = GroupMemberSerializer(groupmember)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
-        groupmember = self.get_object(pk)
+        """
+        Edit a Group Member.
+        """
+        groupmember = self.get_groupmember(pk)
         serializer = GroupMemberSerializer(groupmember, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -128,7 +164,10 @@ class GroupMember(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
-        groupmember = self.get_object(pk)
+        """
+        Delete a Group Member.
+        """
+        groupmember = self.get_groupmember(pk)
         groupmember.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
