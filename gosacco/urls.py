@@ -5,8 +5,9 @@ apipatterns = patterns('',
                        # Examples:
                        # url(r'^$', 'members.views.home', name='home'),
                        # url(r'^blog/', include('blog.urls')),
-                       url(r'^/', include('members.urls')),
-                       #url(r'^/', include('members.urls')),
+                       url(r'^/members/', include('members.member_urls')),
+                       url(r'^/groups/', include('members.group_urls')),
+                       url(r'^/shares/', include('shares.urls')),
                        )
 
 urlpatterns = patterns('',
