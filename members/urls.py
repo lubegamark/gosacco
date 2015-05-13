@@ -13,6 +13,7 @@ urlpatterns = patterns('',
                        url(r'^groups/$', views.GroupList.as_view()),
                        url(r'^groups/(?P<pk>[0-9]+)/$', views.GroupDetail.as_view()),
                        url(r'^groups/(?P<pk>[0-9]+)/members$', views.GroupMember.as_view()),
+
                        #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
                        )
 

@@ -24,6 +24,9 @@ class Shares(models.Model):
     number_of_shares = IntegerField()
     date = DateField()
 
+    class Meta:
+        unique_together = ("member", "share_type")
+
     def __unicode__(self):
         return self.member.user.username
 
@@ -51,13 +54,18 @@ class SharePurchase(models.Model):
     """
     @classmethod
     def issue_shares(cls, member, shares, share_type):
-        share_price = share_type.share_price
-        purchase = SharePurchase(member=member, number_of_shares=shares, current_share_price=share_price,
-                                 share_type=share_type, date=timezone.now())
-        purchase.save()
-        member_shares = Shares.objects.get(member=member, share_type=share_type)
-        member_shares.number_of_shares += shares
-        member_shares.save()
+        try:
+            share_price = share_type.share_price
+            purchase = SharePurchase(member=member, number_of_shares=shares, current_share_price=share_price,
+                                     share_type=share_type, date=timezone.now())
+            purchase.save()
+            member_shares = Shares.objects.get(member=member, share_type=share_type)
+            member_shares.number_of_shares += shares
+            member_shares.save()
+        except:
+            return False
+
+        return True
 
 
 class ShareTransfer(models.Model):
