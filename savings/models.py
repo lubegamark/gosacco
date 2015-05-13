@@ -1,18 +1,10 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 # Create your models here.
 from django.db.models import ForeignKey, IntegerField, DateField, CharField, BooleanField
+from django.utils import timezone
 from members.models import Member
-
-
-class Saving(models.Model):
-    member = ForeignKey(Member)
-    amount = IntegerField()
-    date = DateField()
-    type = ForeignKey('SavingsType')
-
-    def __unicode__(self):
-        return self.member.user.username
 
 
 class SavingsType(models.Model):
@@ -34,3 +26,61 @@ class SavingsType(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class Savings(models.Model):
+    member = ForeignKey(Member)
+    amount = IntegerField()
+    date = DateField()
+    savings_type = ForeignKey(SavingsType)
+
+    def __unicode__(self):
+        return self.member.user.username
+
+    @classmethod
+    def get_members_savings(cls, member, current_savings_type=None):
+        if current_savings_type is None:
+            savings = Savings.objects.filter(member=member)
+        else:
+            savings = Savings.objects.filter(savings_type=current_savings_type, member=member)
+        return savings
+
+    @classmethod
+    def withdraw_savings(cls, member, savings_type, amount):
+
+        try:
+            savings = Savings.objects.get(member=member, savings_type=savings_type)
+        except ObjectDoesNotExist:
+            print member.user.username + " does not have any " + savings_type.name+" savings"
+            return
+        savings_withdrawal = SavingsWithdrawal(amount=amount, member=member, savings_type=savings_type, date=timezone.now())
+        savings_withdrawal.save()
+        savings.save()
+
+
+class SavingsWithdrawal(models.Model):
+    amount = IntegerField()
+    date = DateField()
+    member = ForeignKey(Member)
+    savings_type = ForeignKey(SavingsType)
+
+
+class SavingsPurchase(models.Model):
+    amount = IntegerField()
+    date = DateField()
+    member = ForeignKey(Member)
+    savings_type = ForeignKey(SavingsType)
+
+    @classmethod
+    def make_savings(cls, member, savings_type, amount, date):
+        try:
+            savings = Savings.objects.get(member=member, savings_type=savings_type)
+            savings.amount += amount
+
+        except ObjectDoesNotExist:
+            savings = Savings(member=member, savings_type=savings_type, amount=amount, date=date)
+
+        finally:
+            purchase = SavingsPurchase(member=member, savings_type=savings_type, amount=amount, date=date)
+            purchase.save()
+            savings.save()

@@ -30,8 +30,8 @@ class Shares(models.Model):
     """
     Get a members shares
     """
-    @staticmethod
-    def get_members_shares(member, current_share_type=None):
+    @classmethod
+    def get_members_shares(cls, member, current_share_type=None):
         if current_share_type is None:
             shares = Shares.objects.filter(member=member)
         else:
@@ -49,8 +49,8 @@ class SharePurchase(models.Model):
     """
     Issue new stock to member
     """
-    @staticmethod
-    def issue_shares(member, shares, share_type):
+    @classmethod
+    def issue_shares(cls, member, shares, share_type):
         share_price = share_type.share_price
         purchase = SharePurchase(member=member, number_of_shares=shares, current_share_price=share_price,
                                  share_type=share_type, date=timezone.now())
@@ -75,8 +75,8 @@ class ShareTransfer(models.Model):
     Transfer shares from one member to another
 
     """
-    @staticmethod
-    def transfer_shares(seller, buyer, number_of_shares, share_type):
+    @classmethod
+    def transfer_shares(cls, seller, buyer, number_of_shares, share_type):
         try:
             seller_shares = Shares.objects.get(member=seller, share_type=share_type)
         except ObjectDoesNotExist as e:
@@ -102,6 +102,3 @@ class ShareTransfer(models.Model):
             transfer.save()
             buyer_shares.save()
             seller_shares.save()
-
-
-

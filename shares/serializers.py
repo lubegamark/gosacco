@@ -2,13 +2,13 @@ from django.contrib.auth.models import User
 from rest_framework import serializers, viewsets
 
 from members.models import Member, Group, NextOfKin
-from shares.models import ShareType, Share
+from shares.models import ShareType, Shares
 
 
 class ShareSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Share
+        model = Shares
 
 
 class ShareTypeSerializer(serializers.ModelSerializer):

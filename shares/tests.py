@@ -1,9 +1,8 @@
 # Create your tests here.
-import os
 from django.contrib.auth.models import User
 from django.test import TestCase
-from members.models import Member
 
+from members.models import Member
 from shares.models import Shares, ShareType, SharePurchase, ShareTransfer
 
 
