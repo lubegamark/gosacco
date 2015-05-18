@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = (
     #'django_admin_bootstrapped',
+    'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -68,8 +69,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'gosacco',                      # Or path to database file if using sqlite3.
-        'USER': 'gosacco',                      # Not used with sqlite3.
-        'PASSWORD': ']q>MyT+S+J.Z7a~U,k=b{5_G_C4g/D+z0Kk',                  # Not used with sqlite3.
+        'USER': 'root',                      # Not used with sqlite3.
+        'PASSWORD': 'leona',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -92,8 +93,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-STATIC_URL = '/static/'
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.request",
+)
 
+GRAPPELLI_ADMIN_TITLE = "Gosacco"
+STATIC_ROOT = os.path.join(BASE_DIR, 'static').replace('\\', '/')
+STATIC_URL = '/static/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media').replace('\\', '/')
 MEDIA_URL = '/media/'
 
 SWAGGER_SETTINGS = {
