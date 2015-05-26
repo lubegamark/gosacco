@@ -18,11 +18,25 @@ class SavingsType(models.Model):
         (WEEK, 'per week'),
         (DAY, 'per day'),
     )
+
+    FIXED = 'fixed'
+    CONTRACT = 'contract'
+    CURRENT = 'current'
+    TARGET = 'target'
+
+    CATEGORY_CHOICES = (
+        (FIXED, 'fixed'),
+        (CONTRACT, 'contract'),
+        (CURRENT, 'current'),
+        (TARGET, 'target'),
+    )
     name = CharField(max_length=100)
+    category = CharField(max_length=50, choices=CATEGORY_CHOICES, default=FIXED)
     compulsory = BooleanField(default=True)
     interval = CharField(max_length=50, choices=INTERVAL_CHOICES, default=MONTH)
     minimum_amount = IntegerField()
     maximum_amount = IntegerField()
+    interest = IntegerField()
 
     def __unicode__(self):
         return self.name
