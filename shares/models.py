@@ -1,11 +1,10 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import models
+from django.db import models, Error
 
 # Create your models here.
-from django.db.models import ForeignKey, IntegerField, DateField, CharField, BigIntegerField
+from django.db.models import ForeignKey, IntegerField, DateField, CharField, BigIntegerField, Q
 from django.utils import timezone
-from django.utils.datetime_safe import date
-from members.models import Member
+from members.models import Member, Group
 
 
 class ShareType(models.Model):
@@ -30,11 +29,43 @@ class Shares(models.Model):
     def __unicode__(self):
         return self.member.user.username
 
-    """
-    Get a members shares
-    """
+    @classmethod
+    def get_shares(cls, members=None, current_share_type=None):
+        """
+        Get a shares for all or some members
+        """
+        if current_share_type is None:
+            if members is None:
+                shares = cls.objects.all()
+            elif isinstance(members, Member):
+                shares = cls.objects.filter(member=members)
+            elif isinstance(members, Group):
+                #TODO Refactor these two statements inot one query
+                group_members = Member.objects.filter(group__pk=members.pk)
+                shares = cls.objects.filter(member__in=group_members)
+            elif isinstance(members, list):
+                shares = cls.objects.filter(member__in=members)
+        elif isinstance(current_share_type, ShareType):
+            if members is None:
+                shares = cls.objects.filter(share_type=current_share_type)
+            elif isinstance(members, Member):
+                shares = cls.objects.filter(member=members, share_type=current_share_type)
+            elif isinstance(members, Group):
+                #TODO Refactor these two statements inot one query
+                group_members = Member.objects.filter(group__pk=members.pk)
+                shares = cls.objects.filter(member__in=group_members, share_type=current_share_type)
+            elif isinstance(members, list):
+                shares = cls.objects.filter(member__in=members, share_type=current_share_type)
+        else:
+            shares = []
+
+        return shares
+
     @classmethod
     def get_members_shares(cls, member, current_share_type=None):
+        """
+        Get a members shares
+        """
         if current_share_type is None:
             shares = Shares.objects.filter(member=member)
         else:
@@ -49,6 +80,10 @@ class SharePurchase(models.Model):
     date = DateField()
     share_type = ForeignKey(ShareType)
 
+    def __unicode__(self):
+        return str(self.number_of_shares)+" "+"class "+self.share_type.share_class+" shares bought by "+self.member.user.username#+" at "+self.date
+
+
     """
     Issue new stock to member
     """
@@ -56,35 +91,72 @@ class SharePurchase(models.Model):
     def issue_shares(cls, member, shares, share_type):
         try:
             share_price = share_type.share_price
-            purchase = SharePurchase(member=member, number_of_shares=shares, current_share_price=share_price,
+            purchase = cls(member=member, number_of_shares=shares, current_share_price=share_price,
                                      share_type=share_type, date=timezone.now())
             purchase.save()
-            member_shares = Shares.objects.get(member=member, share_type=share_type)
-            member_shares.number_of_shares += shares
-            member_shares.save()
-        except:
+            try:
+                member_shares = Shares.objects.get(member=member, share_type=share_type)
+                member_shares.number_of_shares += shares
+                member_shares.save()
+            except ObjectDoesNotExist:
+                member_shares = Shares(member=member, number_of_shares=shares, share_type=share_type,
+                                                   date=timezone.now())
+                member_shares.save()
+        except Error as e:
+            #print e
             return False
 
         return True
 
+    @classmethod
+    def get_share_purchases(cls, members=None, current_share_type=None):
+        """
+        Get a shares for all or some members
+        """
+        if current_share_type is None:
+            if members is None:
+                shares_purchases = cls.objects.all()
+            elif isinstance(members, Member):
+                shares_purchases = cls.objects.filter(member=members)
+            elif isinstance(members, Group):
+                #TODO Refactor these two statements inot one query
+                group_members = Member.objects.filter(group__pk=members.pk)
+                shares_purchases = cls.objects.filter(member__in=group_members)
+            elif isinstance(members, list):
+                shares_purchases = cls.objects.filter(member__in=members)
+        elif isinstance(current_share_type, ShareType):
+            if members is None:
+                shares_purchases = cls.objects.filter(share_type=current_share_type)
+            elif isinstance(members, Member):
+                shares_purchases = cls.objects.filter(member=members, share_type=current_share_type)
+            elif isinstance(members, Group):
+                #TODO Refactor these two statements inot one query
+                group_members = Member.objects.filter(group__pk=members.pk)
+                shares_purchases = cls.objects.filter(member__in=group_members, share_type=current_share_type)
+            elif isinstance(members, list):
+                shares_purchases = cls.objects.filter(member__in=members, share_type=current_share_type)
+        else:
+            shares_purchases = []
+
+        return shares_purchases
+
 
 class ShareTransfer(models.Model):
-    giving_member = ForeignKey(Member, related_name="Sender")
-    receiving_member = ForeignKey(Member, related_name="Recepient")
-    # amount = IntegerField()
+    seller = ForeignKey(Member, related_name="Sender")
+    buyer = ForeignKey(Member, related_name="Recepient")
+    share_type = ForeignKey(ShareType)
     number_of_shares = IntegerField()
     date = DateField()
-    share_type = ForeignKey(ShareType)
 
     def __unicode__(self):
-        return str(self.number_of_shares)+" "+"class "+self.share_type.share_class+" shares from "+self.giving_member.user.username+" to "+self.receiving_member.user.username
+        return str(self.number_of_shares)+" "+"class "+self.share_type.share_class+" shares from "+self.seller.user.username+" to "+self.buyer.user.username
 
-    """
-    Transfer shares from one member to another
-
-    """
     @classmethod
     def transfer_shares(cls, seller, buyer, number_of_shares, share_type):
+        """
+        Transfer shares from one member to another
+
+        """
         try:
             seller_shares = Shares.objects.get(member=seller, share_type=share_type)
         except ObjectDoesNotExist as e:
@@ -101,7 +173,7 @@ class ShareTransfer(models.Model):
             print "You do not have enough shares"
             return
         else:
-            transfer = ShareTransfer(giving_member=seller, receiving_member=buyer, number_of_shares=number_of_shares,
+            transfer = ShareTransfer(seller=seller, buyer=buyer, number_of_shares=number_of_shares,
                                      share_type=share_type, date=timezone.now())
 
             buyer_shares.number_of_shares += number_of_shares
@@ -110,3 +182,65 @@ class ShareTransfer(models.Model):
             transfer.save()
             buyer_shares.save()
             seller_shares.save()
+
+    @classmethod
+    def get_share_transfers(cls, members=None, seller=None, buyer=None, current_share_type=None):
+        """
+        Get a shares for all or some members
+        """
+        if current_share_type is None:
+            if members is None and seller is None and buyer is None:
+                shares_transfer = cls.objects.all()
+            elif members is not None and isinstance(members, Member):
+                """
+                Get all transfers where a Member is involved as buyer or seller
+                """
+                shares_transfer = cls.objects.filter(Q(buyer=members) | Q(seller=members))
+
+            elif isinstance(seller, Member) and buyer is not None:
+                shares_transfer = cls.objects.filter(seller=seller)
+
+            elif isinstance(buyer, Member) and seller is None:
+                shares_transfer = cls.objects.filter(buyer=buyer)
+
+            elif isinstance(buyer, Member) and isinstance(seller, Member):
+                shares_transfer = cls.objects.filter(buyer=buyer, seller=seller)
+
+            elif isinstance(members, Group):
+                #TODO Refactor these two statements inot one query
+                group_members = Member.objects.filter(group__pk=members.pk)
+                shares_transfer = cls.objects.filter(Q(seller__in=group_members) | Q(buyer__in=group_members))
+
+            elif isinstance(members, list):
+                shares_transfer = cls.objects.filter(Q(seller__in=members) | Q(buyer__in=members))
+
+        elif isinstance(current_share_type, ShareType):
+            if members is None and seller is None and buyer is None:
+                shares_transfer = cls.objects.filter(share_type=current_share_type)
+            elif members is not None and isinstance(members, Member):
+                """
+                Get all transfers where a Member is involved as buyer or seller
+                """
+                shares_transfer = cls.objects.filter(Q(buyer=members) | Q(seller=members), share_type=current_share_type)
+
+            elif isinstance(seller, Member) and buyer is not None:
+                shares_transfer = cls.objects.filter(seller=seller, share_type=current_share_type, )
+
+            elif isinstance(buyer, Member) and seller is None:
+                shares_transfer = cls.objects.filter(buyer=buyer, share_type=current_share_type, )
+
+            elif isinstance(buyer, Member) and isinstance(seller, Member):
+                shares_transfer = cls.objects.filter(buyer=buyer, seller=seller, share_type=current_share_type, )
+
+            elif isinstance(members, Group):
+                #TODO Refactor these two statements inot one query
+                group_members = Member.objects.filter(group__pk=members.pk)
+                shares_transfer = cls.objects.filter(Q(seller__in=group_members) | Q(buyer__in=group_members),
+                                                     share_type=current_share_type, )
+
+            elif isinstance(members, list):
+                shares_transfer = cls.objects.filter(Q(seller__in=members) | Q(buyer__in=members), share_type=current_share_type )
+        else:
+            shares_transfer = []
+
+        return shares_transfer
