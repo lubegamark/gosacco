@@ -417,5 +417,7 @@ class SharesModelsTestCase(TestCase):
         group_members = [self.member1, self.member3]
         transferred_list = ShareTransfer.objects.filter(Q(buyer__in=group_members) | Q(seller__in=group_members), share_type=self.shareType2)
         transferred_share = ShareTransfer.get_share_transfers(members=group_members, current_share_type=self.shareType2)
+        print transferred_list
+        print transferred_share
         self.assertItemsEqual(transferred_share, transferred_list)
 

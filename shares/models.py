@@ -16,6 +16,11 @@ class ShareType(models.Model):
     def __unicode__(self):
         return self.share_class
 
+    @classmethod
+    def get_share_types(cls):
+        share_types = cls.object.objects.all()
+        return share_types
+
 
 class Shares(models.Model):
     member = ForeignKey(Member)
@@ -91,9 +96,9 @@ class SharePurchase(models.Model):
     def issue_shares(cls, member, shares, share_type):
         try:
             share_price = share_type.share_price
-            purchase = cls(member=member, number_of_shares=shares, current_share_price=share_price,
+            transfer = cls(member=member, number_of_shares=shares, current_share_price=share_price,
                                      share_type=share_type, date=timezone.now())
-            purchase.save()
+            transfer.save()
             try:
                 member_shares = Shares.objects.get(member=member, share_type=share_type)
                 member_shares.number_of_shares += shares
@@ -146,6 +151,7 @@ class ShareTransfer(models.Model):
     buyer = ForeignKey(Member, related_name="Recepient")
     share_type = ForeignKey(ShareType)
     number_of_shares = IntegerField()
+    current_share_price = IntegerField()
     date = DateField()
 
     def __unicode__(self):
@@ -174,7 +180,7 @@ class ShareTransfer(models.Model):
             return
         else:
             transfer = ShareTransfer(seller=seller, buyer=buyer, number_of_shares=number_of_shares,
-                                     share_type=share_type, date=timezone.now())
+                                     share_type=share_type, date=timezone.now(), current_share_price=share_type.share_price)
 
             buyer_shares.number_of_shares += number_of_shares
             seller_shares.number_of_shares -= number_of_shares
