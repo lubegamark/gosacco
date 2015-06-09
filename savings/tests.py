@@ -15,12 +15,14 @@ class SavingsModelsTestCase(TestCase):
                                                       interval=SavingsType.MONTH,
                                                       minimum_amount=20000,
                                                       maximum_amount=100000,
+                                                      interest=1,
                                                       )
         self.savingType2 = SavingsType.objects.create(name="New Office",
                                                       compulsory=False,
                                                       interval=SavingsType.MONTH,
                                                       minimum_amount=1000,
                                                       maximum_amount=0,
+                                                      interest=0,
                                                       )
         self.member1 = Member.objects.create(user=self.user1,
                                              phone_number="445465",

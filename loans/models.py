@@ -3,6 +3,8 @@ from django.db.models import Model, FloatField, ForeignKey, DateField, BigIntege
     CharField, TextField
 
 from members.models import Member
+from savings.models import SavingsType
+from shares.models import Shares, ShareType
 
 
 class LoanType(Model):
@@ -24,9 +26,55 @@ class LoanType(Model):
     minimum_share = IntegerField()
     minimum_savings = BigIntegerField()
 
-
     def __unicode__(self):
         return self.name
+
+
+class Security(Model):
+    SHARES = 'shares'
+    SAVINGS = 'savings'
+    ITEM = 'item'
+    SECURITY_CHOICES = (
+        (SHARES, 1),
+        (SAVINGS, 2),
+        (ITEM, 3),
+    )
+    security_type = IntegerField(choices=SECURITY_CHOICES)
+    attached_to_loan = IntegerField()
+
+    def __unicode__(self):
+        return 'fish'  #self.get_security_model(self.security_type)
+
+    def get_security_model(self, security_type):
+        if security_type is self.SHARES:
+            security_model = SecurityShares
+        elif security_type is self.SAVINGS:
+            security_model = SecuritySavings
+        else:
+            security_model = SecurityArticle
+
+        return security_model
+
+
+class SecurityShares(Security):
+    number_of_shares = IntegerField()
+    share_type = ForeignKey(ShareType)
+    value_of_shares = BigIntegerField()
+    guarantor = ForeignKey(Member)
+    security = ForeignKey(Security, related_name='Shares Security')
+
+    def __unicode__(self):
+        return 'Shares'
+
+
+class SecuritySavings(Security):
+    savings_type = ForeignKey(SavingsType)
+    savings_amount = BigIntegerField()
+    guarantor = ForeignKey(Member)
+    security = ForeignKey(Security, related_name='Savings Security')
+
+    def __unicode__(self):
+        return 'Savings'
 
 
 class SecurityArticle(Model):
@@ -37,6 +85,7 @@ class SecurityArticle(Model):
     attached_to_loan = IntegerField('Loan')
     owner = ForeignKey(Member)
     description = TextField()
+    security = ForeignKey(Security, related_name='Item Security')
 
     def __unicode__(self):
         return self.name
@@ -59,7 +108,7 @@ class LoanApplication(Model):
     type = ForeignKey(LoanType)
     status = CharField(max_length=25, choices=STATUS_CHOICES, default=PENDING)
     security_details = TextField()
-    security = ForeignKey(SecurityArticle, null=True, blank=True)
+    security = ManyToManyField(Security, null=True, blank=True)
     guarantors = ManyToManyField(Member, related_name='Proposed Guarantors')
 
     def __unicode__(self):
@@ -74,7 +123,7 @@ class Loan(Model):
     payment_period = IntegerField()
     type = ForeignKey(LoanType)
     security_details = TextField()
-    security = ForeignKey(SecurityArticle, blank=True, null=True)
+    security = ManyToManyField(Security, blank=True, null=True)
     guarantors = ManyToManyField(Member, related_name='Guarantors')
 
     def __unicode__(self):
