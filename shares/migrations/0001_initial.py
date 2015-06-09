@@ -41,9 +41,10 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('number_of_shares', models.IntegerField()),
+                ('current_share_price', models.IntegerField()),
                 ('date', models.DateField()),
-                ('giving_member', models.ForeignKey(related_name='Sender', to='members.Member')),
-                ('receiving_member', models.ForeignKey(related_name='Recepient', to='members.Member')),
+                ('buyer', models.ForeignKey(related_name='Recepient', to='members.Member')),
+                ('seller', models.ForeignKey(related_name='Sender', to='members.Member')),
             ],
             options={
             },
@@ -73,6 +74,10 @@ class Migration(migrations.Migration):
             name='share_type',
             field=models.ForeignKey(to='shares.ShareType'),
             preserve_default=True,
+        ),
+        migrations.AlterUniqueTogether(
+            name='shares',
+            unique_together=set([('member', 'share_type')]),
         ),
         migrations.AddField(
             model_name='sharepurchase',
