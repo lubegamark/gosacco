@@ -1,0 +1,627 @@
+
+    <h1 class="ng-scope">New Member Registration</h1>
+    <style type="text/css" class="ng-scope">
+        .formCon input[type="text"], input[type="password"], textArea, select {
+            background: none repeat scroll 0 0 #FFFFFF;
+            border: 1px solid #C2CFD8;
+            border-radius: 2px;
+            box-shadow: -1px 1px 2px #D5DBE0 inset;
+            padding: 6px 3px;
+            width: 175px !important;
+        }
+
+        .formCon select{background: none repeat scroll 0 0 #FFFFFF;
+            border: 1px solid #C2CFD8;
+            border-radius: 2px;
+            box-shadow: -1px 1px 2px #D5DBE0 inset;
+            padding: 6px 3px;
+            width: 78% !important;}
+
+        .formCon input[type="text"] {
+            background: none repeat scroll 0 0 #FFFFFF;
+            border: 1px solid #C2CFD8;
+            border-radius: 2px;
+            box-shadow: -1px 1px 2px #D5DBE0 inset;
+            padding: 6px 3px;
+            width: 175px !important;
+        }
+
+    </style>
+
+    <div class="captionWrapper ng-scope">
+
+     
+       
+       
+            
+        <ul ng-init="tab = 1">
+            <li ng-class="{active:tab===1}"><a href ng-click="tab = 1"><h2 class="cur">Member Details</h2></a></li>
+            <li ng-class="{active:tab===2}"><a href ng-click="tab = 2"><h2>Next of Kin Details</h2></a></li>
+
+        </ul>
+    </div>
+
+  <div ng-show="tab === 1">
+    <form enctype="multipart/form-data" id="Member-form" action="#" method="post" class="ng-pristine ng-valid ng-scope">
+        <p class="note">Fields with <span class="required">*</span> are required.</p>
+
+        <div class="formCon">
+            <div class="formConInner">
+                <h3>Personal Details</h3>
+                <section>
+
+          
+    </section>      
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tbody><tr>
+                        <td valign="bottom" width="33%"><label for="Member_first_name" class="required">First Name <span class="required">*</span></label></td>
+                        <td>&nbsp;</td>
+                        <td valign="bottom" width="33%"><label for="Member_middle_name">Middle Name</label></td>
+                        <td>&nbsp;</td>
+                        <td valign="bottom" width="33%"><label for="Member_last_name" class="required">Last Name <span class="required">*</span></label></td>
+                    </tr>
+                    <tr>
+                        <td valign="top"><input size="30" maxlength="255" name="Member[first_name]" id="Member_first_name" ng-model="Member_first_name" type="text" required>                </td>
+                        <td>&nbsp;</td>
+                        <td valign="top"><input size="10" maxlength="255" name="Member[middle_name]" id="Member_middle_name" ng-model="Member_middle_name" type="text" >                </td>
+                        <td>&nbsp;</td>
+                        <td valign="top"><input size="25" maxlength="255" name="Member[last_name]" id="Member_last_name" ng-model="Member_last_name" type="text" required>                </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td valign="bottom"><label for="Member-nationality">Nationality</label></td>
+                        <td>&nbsp;</td>
+                        <td valign="bottom"><label for="Member_date_of_birth" class="required">Date Of Birth <span class="required">*</span></label></td>
+                        <td>&nbsp;</td>
+                        <td valign="bottom"><label for="Member_gender" class="required">Gender <span class="required">*</span></label></td>
+                    </tr>
+                    <tr>
+                        <td valign="top">
+
+                            <select style="width:140px;" name="Member[nationality_id]" id="Member-nationality" ng-model="Member-nationality" required>
+                                <option value="">Select Nationality</option>
+                                <option value="1">Afghan</option>
+                                <option value="2">Albanian</option>
+                                <option value="3">Algerian</option>
+                                <option value="4">American</option>
+                                <option value="5">Andorran</option>
+                                <option value="6">Angolan</option>
+                                <option value="7">Antiguans</option>
+                                <option value="8">Argentinean</option>
+                                <option value="9">Armenian</option>
+                                <option value="10">Australian</option>
+                                <option value="11">Austrian</option>
+                                <option value="12">Azerbaijani</option>
+                                <option value="13">Bahamian</option>
+                                <option value="14">Bahraini</option>
+                                <option value="15">Bangladeshi</option>
+                                <option value="16">Barbadian</option>
+                                <option value="17">Barbudans</option>
+                                <option value="18">Batswana</option>
+                                <option value="19">Belarusian</option>
+                                <option value="20">Belgian</option>
+                                <option value="21">Belizean</option>
+                                <option value="22">Beninese</option>
+                                <option value="23">Bhutanese</option>
+                                <option value="24">Bolivian</option>
+                                <option value="25">Bosnian</option>
+                                <option value="26">Brazilian</option>
+                                <option value="27">British</option>
+                                <option value="28">Bruneian</option>
+                                <option value="29">Bulgarian</option>
+                                <option value="30">Burkinabe</option>
+                                <option value="31">Burmese</option>
+                                <option value="32">Burundian</option>
+                                <option value="33">Cambodian</option>
+                                <option value="34">Cameroonian</option>
+                                <option value="35">Canadian</option>
+                                <option value="36">Cape Verdean</option>
+                                <option value="37">Central African</option>
+                                <option value="38">Chadian</option>
+                                <option value="39">Chilean</option>
+                                <option value="40">Chinese</option>
+                                <option value="41">Colombian</option>
+                                <option value="42">Comoran</option>
+                                <option value="43">Congolese</option>
+                                <option value="44">Costa Rican</option>
+                                <option value="45">Croatian</option>
+                                <option value="46">Cuban</option>
+                                <option value="47">Cypriot</option>
+                                <option value="48">Czech</option>
+                                <option value="49">Danish</option>
+                                <option value="50">Djibouti</option>
+                                <option value="51">Dominican</option>
+                                <option value="52">Dutch</option>
+                                <option value="53">East Timorese</option>
+                                <option value="54">Ecuadorean</option>
+                                <option value="55">Egyptian</option>
+                                <option value="56">Emirian</option>
+                                <option value="57">Equatorial Guinean</option>
+                                <option value="58">Eritrean</option>
+                                <option value="59">Estonian</option>
+                                <option value="60">Ethiopian</option>
+                                <option value="61">Fijian</option>
+                                <option value="62">Filipino</option>
+                                <option value="63">Finnish</option>
+                                <option value="64">French</option>
+                                <option value="65">Gabonese</option>
+                                <option value="66">Gambian</option>
+                                <option value="67">Georgian</option>
+                                <option value="68">German</option>
+                                <option value="69">Ghanaian</option>
+                                <option value="70">Greek</option>
+                                <option value="71">Grenadian</option>
+                                <option value="72">Guatemalan</option>
+                                <option value="73">Guinea-Bissauan</option>
+                                <option value="74">Guinean</option>
+                                <option value="75">Guyanese</option>
+                                <option value="76">Haitian</option>
+                                <option value="77">Herzegovinian</option>
+                                <option value="78">Honduran</option>
+                                <option value="79">Hungarian</option>
+                                <option value="80">I-Kiribati</option>
+                                <option value="81">Icelander</option>
+                                <option value="82">Indian</option>
+                                <option value="83">Indonesian</option>
+                                <option value="84">Iranian</option>
+                                <option value="85">Iraqi</option>
+                                <option value="86">Irish</option>
+                                <option value="87">Israeli</option>
+                                <option value="88">Italian</option>
+                                <option value="89">Ivorian</option>
+                                <option value="90">Jamaican</option>
+                                <option value="91">Japanese</option>
+                                <option value="92">Jordanian</option>
+                                <option value="93">Kazakhstani</option>
+                                <option value="94">Kenyan</option>
+                                <option value="95">Kittian and Nevisian</option>
+                                <option value="96">Kuwaiti</option>
+                                <option value="97">Kyrgyz</option>
+                                <option value="98">Laotian</option>
+                                <option value="99">Latvian</option>
+                                <option value="100">Lebanese</option>
+                                <option value="101">Liberian</option>
+                                <option value="102">Libyan</option>
+                                <option value="103">Liechtensteiner</option>
+                                <option value="104">Lithuanian</option>
+                                <option value="105">Luxembourger</option>
+                                <option value="106">Macedonian</option>
+                                <option value="107">Malagasy</option>
+                                <option value="108">Malawian</option>
+                                <option value="109">Malaysian</option>
+                                <option value="110">Maldivan</option>
+                                <option value="111">Malian</option>
+                                <option value="112">Maltese</option>
+                                <option value="113">Marshallese</option>
+                                <option value="114">Mauritanian</option>
+                                <option value="115">Mauritian</option>
+                                <option value="116">Mexican</option>
+                                <option value="117">Micronesian</option>
+                                <option value="118">Moldovan</option>
+                                <option value="119">Monacan</option>
+                                <option value="120">Mongolian</option>
+                                <option value="121">Moroccan</option>
+                                <option value="122">Mosotho</option>
+                                <option value="123">Motswana</option>
+                                <option value="124">Mozambican</option>
+                                <option value="125">Namibian</option>
+                                <option value="126">Nauruan</option>
+                                <option value="127">Nepalese</option>
+                                <option value="128">New Zealander</option>
+                                <option value="129">Nicaraguan</option>
+                                <option value="130">Nigerian</option>
+                                <option value="131">Nigerien</option>
+                                <option value="132">North Korean</option>
+                                <option value="133">Northern Irish</option>
+                                <option value="134">Norwegian</option>
+                                <option value="135">Omani</option>
+                                <option value="136">Pakistani</option>
+                                <option value="137">Palauan</option>
+                                <option value="138">Panamanian</option>
+                                <option value="139">Papua New Guinean</option>
+                                <option value="140">Paraguayan</option>
+                                <option value="141">Peruvian</option>
+                                <option value="142">Polish</option>
+                                <option value="143">Portuguese</option>
+                                <option value="144">Qatari</option>
+                                <option value="145">Romanian</option>
+                                <option value="146">Russian</option>
+                                <option value="147">Rwandan</option>
+                                <option value="148">Saint Lucian</option>
+                                <option value="149">Salvadoran</option>
+                                <option value="150">Samoan</option>
+                                <option value="151">San Marinese</option>
+                                <option value="152">Sao Tomean</option>
+                                <option value="153">Saudi</option>
+                                <option value="154">Scottish</option>
+                                <option value="155">Senegalese</option>
+                                <option value="156">Serbian</option>
+                                <option value="157">Seychellois</option>
+                                <option value="158">Sierra Leonean</option>
+                                <option value="159">Singaporean</option>
+                                <option value="160">Slovakian</option>
+                                <option value="161">Slovenian</option>
+                                <option value="162">Solomon Islander</option>
+                                <option value="163">Somali</option>
+                                <option value="164">South African</option>
+                                <option value="165">South Korean</option>
+                                <option value="166">Spanish</option>
+                                <option value="167">Sri Lankan</option>
+                                <option value="168">Sudanese</option>
+                                <option value="169">Surinamer</option>
+                                <option value="170">Swazi</option>
+                                <option value="171">Swedish</option>
+                                <option value="172">Swiss</option>
+                                <option value="173">Syrian</option>
+                                <option value="174">Taiwanese</option>
+                                <option value="175">Tajik</option>
+                                <option value="176">Tanzanian</option>
+                                <option value="177">Thai</option>
+                                <option value="178">Togolese</option>
+                                <option value="179">Tongan</option>
+                                <option value="180">Trinidadian or Tobagonian</option>
+                                <option value="181">Tunisian</option>
+                                <option value="182">Turkish</option>
+                                <option value="183">Tuvaluan</option>
+                                <option value="184">Ugandan</option>
+                                <option value="185">Ukrainian</option>
+                                <option value="186">Uruguayan</option>
+                                <option value="187">Uzbekistani</option>
+                                <option value="188">Venezuelan</option>
+                                <option value="189">Vietnamese</option>
+                                <option value="190">Welsh</option>
+                                <option value="191">Yemenite</option>
+                                <option value="192">Zambian</option>
+                                <option value="193">Zimbabwean</option>
+                            </select>
+
+
+                        </td>
+                        <td>&nbsp;</td>
+                        <td style="padding-left:2px;" valign="top">
+                            <input style="width:92px;"  id="Member_date_of_birth" ng-model="Member_date_of_birth" name="Member[date_of_birth]" type="text" class="hasDatepicker" required>                                            </td>
+                        <td>&nbsp;</td>
+                        <td valign="top">
+                            <select name="Member[gender]" id="Member_gender" ng-model="Member_gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>                                            </td>
+                    </tr>
+
+                    </tbody></table>
+            </div>
+        </div>
+
+        <div class="formCon">
+            <div class="formConInner">
+                <h3>Contact Details</h3>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tbody>
+                    <tr>
+                        <td valign="bottom"><label for="Member_village" class="required">Village <span class="required">*</span></label></td>
+                        <td>&nbsp;</td>
+                        <td valign="bottom"><label for="Member_city" class="required">City<span class="required">*</span></label></td>
+                        <td>&nbsp;</td>
+                        <td valign="bottom"><label for="Member_country" class="required">Country <span class="required">*</span></label></td>
+                    </tr>
+                    <tr>
+                        <td valign="top">
+                            <input size="25" maxlength="255" name="Member[village]" id="Member_village" ng-model="Member_village" type="text" required>                                            </td>
+                        <td>&nbsp;</td>
+                        <td valign="top">
+                            <input size="15" maxlength="255" name="Member[city]" id="Member_city" ng-model="Member_city" type="text" required>                                            </td>
+                        <td>&nbsp;</td>
+                        <td valign="top">
+                            <select style="width:140px;" name="Member[country]" id="Member_country" ng-model="Member_country" required>
+                                <option value="">Select Country</option>
+                                <option value="1">Afghanistan</option>
+                                <option value="2">Albania</option>
+                                <option value="3">Algeria</option>
+                                <option value="4">Andorra</option>
+                                <option value="5">Angola</option>
+                                <option value="6">Antigua &amp; Deps</option>
+                                <option value="7">Argentina</option>
+                                <option value="8">Armenia</option>
+                                <option value="9">Australia</option>
+                                <option value="10">Austria</option>
+                                <option value="11">Azerbaijan</option>
+                                <option value="12">Bahamas</option>
+                                <option value="13">Bahrain</option>
+                                <option value="14">Bangladesh</option>
+                                <option value="15">Barbados</option>
+                                <option value="16">Belarus</option>
+                                <option value="17">Belgium</option>
+                                <option value="18">Belize</option>
+                                <option value="19">Benin</option>
+                                <option value="20">Bhutan</option>
+                                <option value="21">Bolivia</option>
+                                <option value="22">Bosnia Herzegovina</option>
+                                <option value="23">Botswana</option>
+                                <option value="24">Brazil</option>
+                                <option value="25">Brunei</option>
+                                <option value="26">Bulgaria</option>
+                                <option value="27">Burkina</option>
+                                <option value="28">Burundi</option>
+                                <option value="29">Cambodia</option>
+                                <option value="30">Cameroon</option>
+                                <option value="31">Canada</option>
+                                <option value="32">Cape Verde</option>
+                                <option value="33">Central African Rep</option>
+                                <option value="34">Chad</option>
+                                <option value="35">Chile</option>
+                                <option value="36">China</option>
+                                <option value="37">Colombia</option>
+                                <option value="38">Comoros</option>
+                                <option value="39">Congo</option>
+                                <option value="40">Congo {Democratic Rep}</option>
+                                <option value="41">Costa Rica</option>
+                                <option value="42">Croatia</option>
+                                <option value="43">Cuba</option>
+                                <option value="44">Cyprus</option>
+                                <option value="45">Czech Republic</option>
+                                <option value="46">Denmark</option>
+                                <option value="47">Djibouti</option>
+                                <option value="48">Dominica</option>
+                                <option value="49">Dominican Republic</option>
+                                <option value="50">East Timor</option>
+                                <option value="51">Ecuador</option>
+                                <option value="52">Egypt</option>
+                                <option value="53">El Salvador</option>
+                                <option value="54">Equatorial Guinea</option>
+                                <option value="55">Eritrea</option>
+                                <option value="56">Estonia</option>
+                                <option value="57">Ethiopia</option>
+                                <option value="58">Fiji</option>
+                                <option value="59">Finland</option>
+                                <option value="60">France</option>
+                                <option value="61">Gabon</option>
+                                <option value="62">Gambia</option>
+                                <option value="63">Georgia</option>
+                                <option value="64">Germany</option>
+                                <option value="65">Ghana</option>
+                                <option value="66">Greece</option>
+                                <option value="67">Grenada</option>
+                                <option value="68">Guatemala</option>
+                                <option value="69">Guinea</option>
+                                <option value="70">Guinea-Bissau</option>
+                                <option value="71">Guyana</option>
+                                <option value="72">Haiti</option>
+                                <option value="73">Honduras</option>
+                                <option value="74">Hungary</option>
+                                <option value="75">Iceland</option>
+                                <option value="76">India</option>
+                                <option value="77">Indonesia</option>
+                                <option value="78">Iran</option>
+                                <option value="79">Iraq</option>
+                                <option value="80">Ireland {Republic}</option>
+                                <option value="81">Israel</option>
+                                <option value="82">Italy</option>
+                                <option value="83">Ivory Coast</option>
+                                <option value="84">Jamaica</option>
+                                <option value="85">Japan</option>
+                                <option value="86">Jordan</option>
+                                <option value="87">Kazakhstan</option>
+                                <option value="88">Kenya</option>
+                                <option value="89">Kiribati</option>
+                                <option value="90">Korea North</option>
+                                <option value="91">Korea South</option>
+                                <option value="92">Kosovo</option>
+                                <option value="93">Kuwait</option>
+                                <option value="94">Kyrgyzstan</option>
+                                <option value="95">Laos</option>
+                                <option value="96">Latvia</option>
+                                <option value="97">Lebanon</option>
+                                <option value="98">Lesotho</option>
+                                <option value="99">Liberia</option>
+                                <option value="100">Libya</option>
+                                <option value="101">Liechtenstein</option>
+                                <option value="102">Lithuania</option>
+                                <option value="103">Luxembourg</option>
+                                <option value="104">Macedonia</option>
+                                <option value="105">Madagascar</option>
+                                <option value="106">Malawi</option>
+                                <option value="107">Malaysia</option>
+                                <option value="108">Maldives</option>
+                                <option value="109">Mali</option>
+                                <option value="110">Malta</option>
+                                <option value="111">Montenegro</option>
+                                <option value="112">Marshall Islands</option>
+                                <option value="113">Mauritania</option>
+                                <option value="114">Mauritius</option>
+                                <option value="115">Mexico</option>
+                                <option value="116">Micronesia</option>
+                                <option value="117">Moldova</option>
+                                <option value="118">Monaco</option>
+                                <option value="119">Mongolia</option>
+                                <option value="120">Morocco</option>
+                                <option value="121">Mozambique</option>
+                                <option value="122">Myanmar, {Burma}</option>
+                                <option value="123">Namibia</option>
+                                <option value="124">Nauru</option>
+                                <option value="125">Nepal</option>
+                                <option value="126">Netherlands</option>
+                                <option value="127">New Zealand</option>
+                                <option value="128">Nicaragua</option>
+                                <option value="129">Niger</option>
+                                <option value="130">Nigeria</option>
+                                <option value="131">Norway</option>
+                                <option value="132">Oman</option>
+                                <option value="133">Pakistan</option>
+                                <option value="134">Palau</option>
+                                <option value="135">Panama</option>
+                                <option value="136">Papua New Guinea</option>
+                                <option value="137">Paraguay</option>
+                                <option value="138">Peru</option>
+                                <option value="139">Philippines</option>
+                                <option value="140">Poland</option>
+                                <option value="141">Portugal</option>
+                                <option value="142">Qatar</option>
+                                <option value="143">Romania</option>
+                                <option value="144">Russian Federation</option>
+                                <option value="145">Rwanda</option>
+                                <option value="146">St Kitts &amp; Nevis</option>
+                                <option value="147">St Lucia</option>
+                                <option value="148">Saint Vincent &amp; the Grenadines</option>
+                                <option value="149">Samoa</option>
+                                <option value="150">San Marino</option>
+                                <option value="151">Sao Tome &amp; Principe</option>
+                                <option value="152">Saudi Arabia</option>
+                                <option value="153">Senegal</option>
+                                <option value="154">Serbia</option>
+                                <option value="155">Seychelles</option>
+                                <option value="156">Sierra Leone</option>
+                                <option value="157">Singapore</option>
+                                <option value="158">Slovakia</option>
+                                <option value="159">Slovenia</option>
+                                <option value="160">Solomon Islands</option>
+                                <option value="161">Somalia</option>
+                                <option value="162">South Africa</option>
+                                <option value="163">Spain</option>
+                                <option value="164">Sri Lanka</option>
+                                <option value="165">Sudan</option>
+                                <option value="166">Suriname</option>
+                                <option value="167">Swaziland</option>
+                                <option value="168">Sweden</option>
+                                <option value="169">Switzerland</option>
+                                <option value="170">Syria</option>
+                                <option value="171">Taiwan</option>
+                                <option value="172">Tajikistan</option>
+                                <option value="173">Tanzania</option>
+                                <option value="174">Thailand</option>
+                                <option value="175">Togo</option>
+                                <option value="176">Tonga</option>
+                                <option value="177">Trinidad &amp; Tobago</option>
+                                <option value="178">Tunisia</option>
+                                <option value="179">Turkey</option>
+                                <option value="180">Turkmenistan</option>
+                                <option value="181">Tuvalu</option>
+                                <option value="182">Uganda</option>
+                                <option value="183">Ukraine</option>
+                                <option value="184">United Arab Emirates</option>
+                                <option value="185">United Kingdom</option>
+                                <option value="186">United States</option>
+                                <option value="187">Uruguay</option>
+                                <option value="188">Uzbekistan</option>
+                                <option value="189">Vanuatu</option>
+                                <option value="190">Vatican City</option>
+                                <option value="191">Venezuea</option>
+                                <option value="192">Vietnam</option>
+                                <option value="193">Yemen</option>
+                                <option value="194">Zambia</option>
+                                <option value="195">Zimbabwe</option>
+                            </select>                                            </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td valign="bottom"><label for="Member_phone1" class="required">Phone Number <span class="required">*</span></label></td>
+                        <td>&nbsp;</td>
+                        <td valign="bottom"><label for="Member_phone2">Phone 2</label></td>
+                        <td>&nbsp;</td>
+                        <td valign="bottom"><label for="Member_email" class="required">Email <span class="required">*</span></label></td>
+                    </tr>
+                    <tr>
+                        <td valign="top">
+                            <input size="15" maxlength="255" name="Member[phone1]" id="Member_phone1"  ng-model="Member_phone1" type="text" required>                                            </td>
+                        <td>&nbsp;</td>
+                        <td valign="top">
+                            <input size="15" maxlength="255" name="Member[phone2]" id="Member_phone2" ng-model="Member_phone2" type="text">                                            </td>
+                        <td>&nbsp;</td>
+                        <td valign="top">
+                            <input size="25" maxlength="255" name="Member[email]" id="Member_email" ng-model="Member_email" type="text">                                            </td>
+                    </tr>
+                    </tbody></table>
+            </div>
+        </div>
+
+        <div class="formCon" style=" background:#EDF1D1 url(../../../css/images/green-bg.png); border:0px #c4da9b solid; color:#393; ">
+            <div class="formConInner" style="padding:10px 10px;">
+                <!--<h3>Image Details</h3>-->
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tbody><tr>
+                        <td>
+                            <label for="Member_<strong style=&quot;color:#000&quot;>Upload Photo</strong>"><strong style="color:#000"> Upload  Photo</strong></label>                    </td>
+
+
+                        <td>
+                            <input id="ytMember_photo_data" type="hidden" value="" name="Member[photo_data]"><input name="Member[photo_data]" id="Member_photo_data" ng-model="Member_photo_data" type="file">                         <center> Choose The File Size Is Maximum 200 Kb(png,gif,jpeg,jpg)</center>
+                        </td>
+
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    </tbody></table>
+
+                
+        </div><!-- form -->
+        <div class="clear"></div>
+        </div>
+        <div style="padding:0px 0 0 0px; text-align:left">
+            <input class="formbut" type="submit" name="yt0" value="Next of Kin Details">    </div>
+    </form>
+    </div>
+         <div ng-show="tab === 2">
+             <form enctype="multipart/form-data" id="NextOfKin" action="#" method="post">
+             <p class="note">Fields with <span class="required">*</span> are required.</p>
+                   <div class="formCon">
+                 <div class="formConInner">
+                     <h3>Kin Details</h3>
+                     <section>
+
+
+                     </section>
+                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                         <tbody><tr>
+                             <td valign="bottom" width="33%"><label for="Member_kin_number" class="required">Memember Number <span class="required">*</span></label></td>
+                           
+                             <td valign="bottom" width="33%"><label for="Member_kin_reletionship">Relationship</label></td>
+                               <td>&nbsp;</td>
+                             <td>&nbsp;</td>
+                             <td>&nbsp;</td>
+
+                         </tr>
+                         <tr>
+                             <td valign="top"><input size="30" maxlength="255" name="Member[kin_number]" id="Member_kin_number" ng-model="Member_kin_number" type="text" required>                </td>
+                           
+                             <td valign="top"><input size="10" maxlength="255" name="Member[kin_reletionship]" id="Member_kin_reletionship" ng-model="Member_kin_reletionship" type="text" >                </td>
+                               <td>&nbsp;</td>
+                             <td>&nbsp;</td>
+                                       <td>&nbsp;</td>
+                         </tr>
+                         <tr>
+                             <td>&nbsp;</td>
+                             <td>&nbsp;</td>
+                             <td>&nbsp;</td>
+                             <td>&nbsp;</td>
+                             <td>&nbsp;</td>
+                         </tr>
+                         <tr>
+                             <td valign="bottom" col-span="5"><label for="Member-kin_comment">Comment</label></td>
+                          
+                         <tr>
+                       
+                             <td  valign="top" colspan="5">
+                                 <textarea style="width: 58% !important;  height: 200px;"   id="Member-kin_comment" ng-model="Member-kin_comment" name="Member[kin_comment]" type="text">  </textarea>                                          
+                             </td>
+                             
+
+                         </tr>
+
+                         </tbody></table>
+                 </div>
+             </div>
+
+
+
+
+             <div style="padding:0px 0 0 0px; text-align:left">
+                 <input class="formbut" type="submit" name="yt0" value="Next of Kin Details">    </div>
+         </form></div>

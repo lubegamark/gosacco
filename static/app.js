@@ -14,6 +14,18 @@ angular.module('gosaccoApp',['ngResource', 'ngRoute'])
       	templateUrl:'views/members.html',
       	controller:'MemberCtrl'
       })
+      .when('/createMembers',{
+      	templateUrl:'partials/members/createMember.html'
+      })
+      .when('/memberlogcategory',{
+      	templateUrl:'partials/members/includes/memberlogCategory.html'
+      })
+      .when('/membergroups',{
+      	templateUrl:'partials/members/includes/memberGroups.html'
+      })
+      .when('/nextofkinlist',{
+      	templateUrl:'partials/members/includes/nextofkinlist.html'
+      })
       .when('/savings',{
       	templateUrl:'views/savings.html',
       	controller:'SavingCtrl'
