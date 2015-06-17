@@ -47,6 +47,7 @@ class NextOfKin(Model):
     permanent_village = CharField(max_length=100)
     pernament_subcounty = CharField(max_length=100)
     permanent_district = CharField(max_length=100)
+    signature = ImageField()
 
     def __unicode__(self):
         return self.member.user.username
