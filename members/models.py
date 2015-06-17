@@ -45,7 +45,7 @@ class NextOfKin(Model):
     current_subcounty = CharField(max_length=100)
     current_district = CharField(max_length=100)
     permanent_village = CharField(max_length=100)
-    pernament_subcounty = CharField(max_length=100)
+    permanent_subcounty = CharField(max_length=100)
     permanent_district = CharField(max_length=100)
     signature = ImageField()
 
