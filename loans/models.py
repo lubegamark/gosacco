@@ -1,6 +1,8 @@
 # Create your models here.
 from django.db.models import Model, FloatField, ForeignKey, DateField, BigIntegerField, IntegerField, ManyToManyField, \
     CharField, TextField
+from polymorphic import PolymorphicModel
+import members
 
 from members.models import Member
 from savings.models import SavingsType
@@ -26,66 +28,69 @@ class LoanType(Model):
     minimum_share = IntegerField()
     minimum_savings = BigIntegerField()
 
+    @classmethod
+    def get_loan_types(cls, member):
+        loan_types = cls.objects.filter(member=member)
+        return loan_types
+
     def __unicode__(self):
         return self.name
 
 
-class Security(Model):
+class Security(PolymorphicModel):
     SHARES = 'shares'
     SAVINGS = 'savings'
     ITEM = 'item'
     SECURITY_CHOICES = (
-        (SHARES, 1),
-        (SAVINGS, 2),
-        (ITEM, 3),
+        (SHARES, SHARES),
+        (SAVINGS, SAVINGS),
+        (ITEM, ITEM),
     )
-    security_type = IntegerField(choices=SECURITY_CHOICES)
+    #security_type = CharField(choices=SECURITY_CHOICES, max_length=50)
+    #security_item =
+    #member = ForeignKey(Member)
     attached_to_loan = IntegerField()
 
-    def __unicode__(self):
-        return 'fish'  #self.get_security_model(self.security_type)
+    @classmethod
+    def get_members_securities(cls, member):
+        loans = cls.objects.filter(member=member)
+        return loans
 
-    def get_security_model(self, security_type):
-        if security_type is self.SHARES:
-            security_model = SecurityShares
-        elif security_type is self.SAVINGS:
-            security_model = SecuritySavings
-        else:
-            security_model = SecurityArticle
-
-        return security_model
 
 
 class SecurityShares(Security):
     number_of_shares = IntegerField()
     share_type = ForeignKey(ShareType)
     value_of_shares = BigIntegerField()
-    guarantor = ForeignKey(Member)
-    security = ForeignKey(Security, related_name='Shares Security')
+    guarantor = ForeignKey(Member, related_name="Guarantor")
+    member = ForeignKey(Member)
+    #security = ForeignKey(Security, related_name='Shares Security')
 
     def __unicode__(self):
-        return 'Shares'
+        return str(self.number_of_shares)+" "+str(self.share_type)+" shares"
 
 
 class SecuritySavings(Security):
     savings_type = ForeignKey(SavingsType)
     savings_amount = BigIntegerField()
-    guarantor = ForeignKey(Member)
-    security = ForeignKey(Security, related_name='Savings Security')
+    member = ForeignKey(Member)
+    #guarantor = ForeignKey(Member, related_name="Guarantor")
+    #security = ForeignKey(Security, related_name='Savings Security')
 
     def __unicode__(self):
-        return 'Savings'
+        return str(self.savings_amount)+" "+str(self.savings_type)+" savings"
 
 
-class SecurityArticle(Model):
+class SecurityArticle(Security):
     name = CharField(max_length=100)
     type = CharField(max_length=100)  # eg. (Land, car, house)
-    identification_type = CharField(max_length=100)  #eg Land title, car logbook
+    identification_type = CharField(max_length=100)  # eg Land title, car logbook
     identification = CharField(max_length=100)
-    attached_to_loan = IntegerField('Loan')
-    owner = ForeignKey(Member)
+    #attached_to_loan = IntegerField('Loan')
+    #owner = ForeignKey(Member)
+    member = ForeignKey(Member)
     description = TextField()
-    security = ForeignKey(Security, related_name='Item Security')
+    #security = ForeignKey(Security, related_name='Item Security')
 
     def __unicode__(self):
         return self.name
@@ -111,8 +116,30 @@ class LoanApplication(Model):
     security = ManyToManyField(Security, null=True, blank=True)
     guarantors = ManyToManyField(Member, related_name='Proposed Guarantors')
 
+    def approve_loan_application(self):
+        pass
+
+    def reject_loan_application(self):
+        pass
+
+    def give_feedback_on_loan_application(self):
+        pass
+
+    @classmethod
+    def get_members_loan_applications(cls, member, loan_type=None):
+        if loan_type is None:
+            loans = cls.objects.filter(member=member)
+        else:
+            loans = cls.objects.filter(member=member, loan_type=loan_type)
+
+        return loans
+
     def __unicode__(self):
         return self.member.user.username
+
+    @classmethod
+    def view_loan_applications(cls, member=None, ):
+        pass
 
 
 class Loan(Model):
@@ -121,10 +148,19 @@ class Loan(Model):
     approval_date = DateField()
     amount = BigIntegerField()
     payment_period = IntegerField()
-    type = ForeignKey(LoanType)
+    loan_type = ForeignKey(LoanType)
     security_details = TextField()
     security = ManyToManyField(Security, blank=True, null=True)
     guarantors = ManyToManyField(Member, related_name='Guarantors')
 
+    @classmethod
+    def get_members_loans(cls, member, loan_type=None):
+        if loan_type is None:
+            loans = cls.objects.filter(member=member)
+        else:
+            loans = cls.objects.filter(member=member, loan_type=loan_type)
+
+        return loans
+
     def __unicode__(self):
-        return self.member.user.username
+        return self.member.user.username+" "

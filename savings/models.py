@@ -55,9 +55,9 @@ class Savings(models.Model):
     @classmethod
     def get_members_savings(cls, member, current_savings_type=None):
         if current_savings_type is None:
-            savings = Savings.objects.filter(member=member)
+            savings = cls.objects.filter(member=member)
         else:
-            savings = Savings.objects.filter(savings_type=current_savings_type, member=member)
+            savings = cls.objects.filter(savings_type=current_savings_type, member=member)
         return savings
     
     @classmethod
@@ -104,7 +104,7 @@ class SavingsWithdrawal(models.Model):
         except ObjectDoesNotExist:
             print member.user.username + " does not have any " + savings_type.name+" savings"
             return
-        savings_withdrawal = SavingsWithdrawal(amount=amount, member=member, savings_type=savings_type, date=timezone.now())
+        savings_withdrawal = cls(amount=amount, member=member, savings_type=savings_type, date=timezone.now())
         savings.amount -=amount
         savings_withdrawal.save()
         savings.save()
@@ -155,7 +155,7 @@ class SavingsPurchase(models.Model):
             savings = Savings(member=member, savings_type=savings_type, amount=amount, date=date)
 
         finally:
-            purchase = SavingsPurchase(member=member, savings_type=savings_type, amount=amount, date=date)
+            purchase = cls(member=member, savings_type=savings_type, amount=amount, date=date)
             purchase.save()
             savings.save()
 
