@@ -7,9 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('shares', '0002_auto_20150513_2319'),
         ('members', '__first__'),
-        ('savings', '0004_auto_20150526_1810'),
     ]
 
     operations = [
@@ -36,8 +34,6 @@ class Migration(migrations.Migration):
                 ('payment_period', models.IntegerField(max_length=11)),
                 ('status', models.CharField(default=b'pending', max_length=25, choices=[(b'pending', b'Pending'), (b'approved', b'Approved'), (b'rejected', b'Rejected')])),
                 ('security_details', models.TextField()),
-                ('guarantors', models.ManyToManyField(related_name='Proposed Guarantors', to='members.Member')),
-                ('member', models.ForeignKey(to='members.Member')),
             ],
             options={
             },
@@ -66,7 +62,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('security_type', models.IntegerField(choices=[(b'shares', 1), (b'savings', 2), (b'item', 3)])),
-                ('attached_to_loan', models.IntegerField(verbose_name=b'Loan')),
+                ('attached_to_loan', models.IntegerField()),
             ],
             options={
             },
@@ -82,7 +78,6 @@ class Migration(migrations.Migration):
                 ('identification', models.CharField(max_length=100)),
                 ('attached_to_loan', models.IntegerField(verbose_name=b'Loan')),
                 ('description', models.TextField()),
-                ('owner', models.ForeignKey(to='members.Member')),
             ],
             options={
             },
@@ -93,8 +88,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('security_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='loans.Security')),
                 ('savings_amount', models.BigIntegerField()),
-                ('guarantor', models.ForeignKey(to='members.Member')),
-                ('savings_type', models.ForeignKey(to='savings.SavingsType')),
             ],
             options={
             },
@@ -108,64 +101,9 @@ class Migration(migrations.Migration):
                 ('value_of_shares', models.BigIntegerField()),
                 ('guarantor', models.ForeignKey(to='members.Member')),
                 ('security', models.ForeignKey(related_name='Shares Security', to='loans.Security')),
-                ('share_type', models.ForeignKey(to='shares.ShareType')),
             ],
             options={
             },
             bases=('loans.security',),
-        ),
-        migrations.AddField(
-            model_name='securitysavings',
-            name='security',
-            field=models.ForeignKey(related_name='Savings Security', to='loans.Security'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='securityarticle',
-            name='security',
-            field=models.ForeignKey(related_name='Item Security', to='loans.Security'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='loanapplication',
-            name='security',
-            field=models.ManyToManyField(to='loans.Security', null=True, blank=True),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='loanapplication',
-            name='type',
-            field=models.ForeignKey(to='loans.LoanType'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='loan',
-            name='application',
-            field=models.ForeignKey(to='loans.LoanApplication'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='loan',
-            name='guarantors',
-            field=models.ManyToManyField(related_name='Guarantors', to='members.Member'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='loan',
-            name='member',
-            field=models.ForeignKey(to='members.Member'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='loan',
-            name='security',
-            field=models.ManyToManyField(to='loans.Security', null=True, blank=True),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='loan',
-            name='type',
-            field=models.ForeignKey(to='loans.LoanType'),
-            preserve_default=True,
         ),
     ]
