@@ -1,0 +1,45 @@
+
+    <h1 class="ng-scope">Loan Form</h1>
+    <style type="text/css" class="ng-scope">
+        .formCon input[type="text"], input[type="password"], textArea, select {
+            background: none repeat scroll 0 0 #FFFFFF;
+            border: 1px solid #C2CFD8;
+            border-radius: 2px;
+            box-shadow: -1px 1px 2px #D5DBE0 inset;
+            padding: 6px 3px;
+            width: 175px !important;
+        }
+
+        .formCon select{background: none repeat scroll 0 0 #FFFFFF;
+            border: 1px solid #C2CFD8;
+            border-radius: 2px;
+            box-shadow: -1px 1px 2px #D5DBE0 inset;
+            padding: 6px 3px;
+            width: 78% !important;}
+
+        .formCon input[type="text"] {
+            background: none repeat scroll 0 0 #FFFFFF;
+            border: 1px solid #C2CFD8;
+            border-radius: 2px;
+            box-shadow: -1px 1px 2px #D5DBE0 inset;
+            padding: 6px 3px;
+            width: 175px !important;
+        }
+
+    </style>
+ <div class="formCon ">
+            <div class="formConInner">
+                <form class="form" method="post" ng-submit="vm.addLoanform()" >
+        <formly-form model="vm.loanform" fields="vm.loanformFields" form="vm.loanformForm">
+        <button class="btn btn-primary" type="submit" ng-disabled="vm.loanformForm.$invalid">Approve</button>
+        </formly-form>        
+      </form>
+                       
+            </div>
+        </div>
+
+        
+
+
+
+            

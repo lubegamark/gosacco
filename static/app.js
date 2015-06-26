@@ -43,7 +43,34 @@ angular.module('gosaccoApp',['ngResource', 'ngRoute','formly','formlyBootstrap']
       })
       .when('/loans',{
       	templateUrl:'views/loans/loans.html',
-      	controller:'LoanCtrl'
+      	// controller:'LoanCtrl'
+      })
+      .when('/loan_application',{
+            templateUrl:'partials/loans/loan_application.html',
+            controller:'LoanApplicationCtrl as vm'
+      })
+      .when('/loan_type',{
+            templateUrl:'partials/loans/loan_type.html',
+            controller:'LoanTypeCtrl as vm'
+      })
+      .when('/loan_form',{
+            templateUrl:'partials/loans/loan_form.html',
+            controller:'LoanFormCtrl as vm'
+      })
+      .when('/loan_list',{
+            templateUrl:'partials/loans/loan_list.html'
+      })
+      .when('/loan_status',{
+            templateUrl:'partials/loans/loan_status.html',
+
+      })
+      .when('/security',{
+            templateUrl:'partials/loans/security.html',
+            controller:'SecurityCtrl as vm'
+      })
+      .when('/security_article',{
+            templateUrl:'partials/loans/security_article.html',
+            controller:'SecurityArticleCtrl as vm'
       })
       .when('/shares',{
       	templateUrl:'views/shares/shares.html',
