@@ -78,27 +78,24 @@ angular.module('gosaccoApp')
       },
       {
          key:'security_details',
-         type:'input',
+         type:'textarea',
          templateOptions:{
-          type:'textarea',
           label:'Security Details',
           required:true
          }
       },
       {
          key:'security',
-         type:'input',
+         type:'textarea',
          templateOptions:{
-          type:'textarea',
           label:'Security',
           required:true
          }
       },
       {
           key:'guarantors',
-          type:'input',
+          type:'textarea',
           templateOptions:{
-            type:'textarea',
             label:'Guarantors',
             required:true
           }

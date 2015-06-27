@@ -54,9 +54,8 @@ angular.module('gosaccoApp')
        },
        {
             key: 'description',
-            type: 'input',
+            type: 'textarea',
             templateOptions: {
-              type:'text',
                 label: 'Description',
                 required: true
             }
