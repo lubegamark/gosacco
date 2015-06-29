@@ -20,3 +20,6 @@ urlpatterns = patterns('',
                        url(r'^docs/', include('rest_framework_swagger.urls')),
                        url(r'^api', include(apipatterns)),
                        )
+admin.site.site_header = 'GoSacco'
+admin.site.site_title = 'Adminsitration'
+admin.site.index_title = 'GoSacco'
