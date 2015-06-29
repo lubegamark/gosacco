@@ -1,4 +1,4 @@
 angular.module('gosaccoApp')
-   .controller('MemberCtrl', ['$scope', function($scope){
-   	$scope.nationality = [{}]
+   .controller('MemberCtrl', ['$scope','Member', function($scope, Member){
+   	$scope.members = Member.query();
    }]);
