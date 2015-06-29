@@ -76,6 +76,18 @@ angular.module('gosaccoApp',['ngResource', 'ngRoute','formly','formlyBootstrap']
       	templateUrl:'views/shares/shares.html',
       	controller:'ShareCtrl'
       })
+      .when('/share_type',{
+            templateUrl:'partials/shares/share_type.html',
+            controller:'SharetypeCtrl as vm'
+      })
+      .when('/share_purchase',{
+            templateUrl:'partials/shares/share_purchase.html',
+            controller:'SharepurchaseCtrl as vm'
+      })
+      .when('/share_transfer',{
+            templateUrl:'partials/shares/share_transfer.html',
+            controller:'SharetransferCtrl as vm'
+      })
       .when('/others',{
       	templateUrl:'views/others/others.html',
       	controller:'OtherCtrl'

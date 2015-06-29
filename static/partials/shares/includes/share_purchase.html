@@ -1,5 +1,5 @@
 
-    <h1 class="ng-scope">Loan Form</h1>
+    <h1 class="ng-scope">Shares Purchase Form</h1>
     <style type="text/css" class="ng-scope">
         .formCon input[type="text"], input[type="password"], select {
             background: none repeat scroll 0 0 #FFFFFF;
@@ -34,9 +34,9 @@
     </style>
  <div class="formCon ">
             <div class="formConInner">
-                <form class="form" method="post" ng-submit="vm.addLoanform()" >
-        <formly-form model="vm.loanform" fields="vm.loanformFields" form="vm.loanformForm">
-        <button class="btn btn-primary" type="submit" ng-disabled="vm.loanformForm.$invalid">Approve</button>
+                <form class="form" method="post" ng-submit="vm.addSharePurchase()" >
+        <formly-form model="vm.sharepurchase" fields="vm.sharepurchaseFields" form="vm.sharepurchaseForm">
+        <button class="btn btn-primary" type="submit" ng-disabled="vm.sharepurchaseForm.$invalid">Purchase</button>
         </formly-form>        
       </form>
                        
