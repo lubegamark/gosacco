@@ -8,12 +8,14 @@ apipatterns = patterns('',
                        url(r'^/members/', include('members.member_urls')),
                        url(r'^/groups/', include('members.group_urls')),
                        url(r'^/shares/', include('shares.urls')),
+                       
                        )
 
 urlpatterns = patterns('',
                        # Examples:
                        # url(r'^$', 'members.views.home', name='home'),
                        # url(r'^blog/', include('blog.urls')),
+                       url(r'^grappelli/', include('grappelli.urls')),
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^docs/', include('rest_framework_swagger.urls')),
                        url(r'^api', include(apipatterns)),

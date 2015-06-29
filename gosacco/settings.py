@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = (
     #'django_admin_bootstrapped',
+    'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_swagger',
+    'polymorphic',
     'gosacco',
     'members',
     'loans',
@@ -92,8 +94,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-STATIC_URL = '/static/'
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.request",
+)
 
+GRAPPELLI_ADMIN_TITLE = "Gosacco"
+STATIC_ROOT = os.path.join(BASE_DIR, 'static').replace('\\', '/')
+STATIC_URL = '/static/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media').replace('\\', '/')
 MEDIA_URL = '/media/'
 
 SWAGGER_SETTINGS = {
