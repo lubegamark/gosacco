@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" ng-app="gosaccoApp">
 <head>
-    <base href="/">
+    <!-- <base href="/"> -->
   <meta charset="utf-8">
   <title>Sacco GO</title>
 
@@ -50,27 +50,27 @@
 
                       <ul id="sortable1" class="connectedSortable">
                           <li>
-                              <a class="" href="#home"><i class="fa fa-home"></i><br>Home</a>          </li>
+                              <a class="" href="/#home"><i class="fa fa-home"></i><br>Home</a>          </li>
                           <li>
-                              <a class="" href="#members"><i class="fa fa-users"></i><br>Members</a>          </li>
+                              <a class="" href="/#members"><i class="fa fa-users"></i><br>Members</a>          </li>
                           <li>
-                              <a class="" href="/index.php?r=employees"><i class="fa fa-archive"></i><br>Savings</a>          </li>
+                              <a class="" href="/#savings"><i class="fa fa-archive"></i><br>Savings</a>          </li>
                           <li>
-                              <a class="" href="/index.php?r=courses"><i class="fa fa-folder"></i><br>Loans</a>          </li>
+                              <a class="" href="/#loans"><i class="fa fa-folder"></i><br>Loans</a>          </li>
                           <li>
-                              <a class="" href="/index.php?r=examination"><i class="fa fa-cubes"></i><br>Shares</a>          </li>
+                              <a class="" href="/#shares"><i class="fa fa-cubes"></i><br>Shares</a>          </li>
 
                           <li>
-                              <a class="" href="/index.php?r=report"><i class="fa fa-newspaper-o"></i><br>Others</a>          </li>
+                              <a class="" href="/#others"><i class="fa fa-newspaper-o"></i><br>Others</a>          </li>
                           <li>
-                              <a class="" href="/index.php?r=attendance"><i class="fa fa-book"></i><br>Accounting</a>          </li>
+                              <a class="" href="/#accounting"><i class="fa fa-book"></i><br>Accounting</a>          </li>
                           <li>
-                              <a class="" href="/index.php?r=timetable"><i class="fa fa-bar-chart"></i><br>Reports</a>          </li>
+                              <a class="" href="/#reports"><i class="fa fa-bar-chart"></i><br>Reports</a>          </li>
                           <li>
-                              <a class="" href="/index.php?r=timetable"><i class="fa fa-envelope"></i><br>Notify</a>          </li>
+                              <a class="" href="/#notifications"><i class="fa fa-envelope"></i><br>Notifications</a>          </li>
 
                           <li>
-                              <a class="" href="/index.php?r=fees"><i class="fa fa-gear"></i><br>Settings</a>          </li>
+                              <a class="" href="/#settings"><i class="fa fa-gear"></i><br>Settings</a>          </li>
 
 
                       </ul>
@@ -86,14 +86,35 @@
   </div>
   </div>
 <script src="vendor/app/bower_components/jquery/dist/jquery.js"></script>
-  <script src="vendor/app/bower_components/angular/angular.js"></script>
+  <script src="vendor/app/bower_components/api-check/dist/api-check.js"></script>
+<script src="vendor/app/bower_components/angular/angular.js"></script>
+<script src="vendor/app/bower_components/angular-formly/dist/formly.js"></script>
+<script src="vendor/app/bower_components/angular-formly-templates-bootstrap/dist/angular-formly-templates-bootstrap.js"></script>
   <script src="vendor/app/bower_components/angular-animate/angular-animate.js"></script>
   <script src="vendor/app/bower_components/angular-route/angular-route.js"></script>
   <script src="vendor/app/bower_components/angular-resource/angular-resource.js"></script>
-   <!--<script src="services/services.js"></script>-->
-  <script src="controllers/basecontroller.js"></script>
-  <!--<script src="controllers/memberControllers.js"></script>-->
   <script src="app.js"></script>
-
+   <!--<script src="services/services.js"></script>-->
+  <script src="controllers/home/basecontroller.js"></script>
+  <script src="controllers/members/membercontroller.js"></script>
+  <script src="controllers/savings/savingcontroller.js"></script>
+  <script src="controllers/savings/depositcontroller.js"></script>
+  <script src="controllers/savings/withdrawcontroller.js"></script>
+  <script src="controllers/loans/loancontroller.js"></script>
+  <script src="controllers/loans/loanapplicationcontroller.js"></script>
+  <script src="controllers/loans/loantypecontroller.js"></script>
+  <script src="controllers/loans/loanformcontroller.js"></script>
+  <script src="controllers/loans/securitycontroller.js"></script>
+  <script src="controllers/loans/securityarticlecontroller.js"></script>
+  <script src="controllers/shares/sharecontroller.js"></script>
+  <script src="controllers/shares/sharetypecontroller.js"></script>
+  <script src="controllers/shares/sharepurchasecontroller.js"></script>
+  <script src="controllers/shares/sharetransfercontroller.js"></script>
+  <script src="controllers/others/othercontroller.js"></script>
+  <script src="controllers/accounting/accountingcontroller.js"></script>
+  <script src="controllers/reports/reportcontroller.js"></script>
+  <script src="controllers/notifications/notificationcontroller.js"></script>
+  <script src="controllers/settings/settingcontroller.js"></script>
+  
 </body>
 </html>
