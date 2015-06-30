@@ -1,5 +1,5 @@
 angular.module('gosaccoApp')
-   .controller('SharepurchaseCtrl', ['$scope', function($scope){
+   .controller('SharepurchaseCtrl', ['$scope','Member', function($scope, Member){
    	   var vm =  this;
    	   vm.sharepurchase = {};
    	   vm.sharepurchaseFields = [{
@@ -7,11 +7,9 @@ angular.module('gosaccoApp')
             type: 'select',
             templateOptions: {
                 label: 'Member',
-                options:[
-                {name:"Buhiire Keneth", value:"Buhiire Keneth"},
-                {name:"Semakula Kraiba", value:"Semakula Kraiba"},
-                {name:"Lubega Mark", value:"Lubega Mark"},
-                {name:"Ricardo Mandela", value:"Ricardo Mark"}],
+                options:Member.query(),
+                valueProp:'id',
+                labelProp:'{user.username}',
                 required: true
             }
         },

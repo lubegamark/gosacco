@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from members.models import Member
 from shares.models import Shares, ShareType, SharePurchase
-from shares.serializers import SharesSerializer
+from shares.serializers import SharesSerializer,ShareTypeSerializer
 
 
 class ShareList(APIView):
@@ -42,3 +42,12 @@ class ShareList(APIView):
             #serializer.save()
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class ShareTypeList(APIView):
+    """
+    List the share types
+    """
+    def get(self, request, format=None):
+        sharetype = ShareType.objects.all()
+        serializer = ShareTypeSerializer(sharetype, many=True)
+        return Response(serializer.data)
