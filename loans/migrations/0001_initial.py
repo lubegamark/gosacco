@@ -7,14 +7,12 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-<<<<<<< .merge_file_8VvmhW
+
         ('shares', '0004_sharetransfer_current_share_price'),
         ('members', '0002_auto_20150617_0905'),
         ('savings', '0004_auto_20150526_1810'),
         ('contenttypes', '0001_initial'),
-=======
-        ('members', '__first__'),
->>>>>>> .merge_file_SQy3KW
+
     ]
 
     operations = [
@@ -68,10 +66,9 @@ class Migration(migrations.Migration):
             name='Security',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-<<<<<<< .merge_file_8VvmhW
-=======
+
                 ('security_type', models.IntegerField(choices=[(b'shares', 1), (b'savings', 2), (b'item', 3)])),
->>>>>>> .merge_file_SQy3KW
+
                 ('attached_to_loan', models.IntegerField()),
             ],
             options={
@@ -112,18 +109,17 @@ class Migration(migrations.Migration):
                 ('number_of_shares', models.IntegerField()),
                 ('value_of_shares', models.BigIntegerField()),
                 ('guarantor', models.ForeignKey(to='members.Member')),
-<<<<<<< .merge_file_8VvmhW
+
                 ('share_type', models.ForeignKey(to='shares.ShareType')),
-=======
                 ('security', models.ForeignKey(related_name='Shares Security', to='loans.Security')),
->>>>>>> .merge_file_SQy3KW
+
             ],
             options={
                 'abstract': False,
             },
             bases=('loans.security',),
         ),
-<<<<<<< .merge_file_8VvmhW
+
         migrations.AddField(
             model_name='security',
             name='polymorphic_ctype',
@@ -172,6 +168,5 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(to='loans.Security', null=True, blank=True),
             preserve_default=True,
         ),
-=======
->>>>>>> .merge_file_SQy3KW
+
     ]
