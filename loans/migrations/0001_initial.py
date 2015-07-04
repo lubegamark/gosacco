@@ -7,12 +7,10 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-
-        ('shares', '0004_sharetransfer_current_share_price'),
-        ('members', '0002_auto_20150617_0905'),
-        ('savings', '0004_auto_20150526_1810'),
+        ('savings', '0001_initial'),
+        ('members', '0001_initial'),
+        ('shares', '0001_initial'),
         ('contenttypes', '0001_initial'),
-
     ]
 
     operations = [
@@ -39,6 +37,8 @@ class Migration(migrations.Migration):
                 ('payment_period', models.IntegerField(max_length=11)),
                 ('status', models.CharField(default=b'pending', max_length=25, choices=[(b'pending', b'Pending'), (b'approved', b'Approved'), (b'rejected', b'Rejected')])),
                 ('security_details', models.TextField()),
+                ('guarantors', models.ManyToManyField(related_name='Proposed Guarantors', to='members.Member')),
+                ('member', models.ForeignKey(to='members.Member')),
             ],
             options={
             },
@@ -66,9 +66,6 @@ class Migration(migrations.Migration):
             name='Security',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-
-                ('security_type', models.IntegerField(choices=[(b'shares', 1), (b'savings', 2), (b'item', 3)])),
-
                 ('attached_to_loan', models.IntegerField()),
             ],
             options={
@@ -85,6 +82,7 @@ class Migration(migrations.Migration):
                 ('identification_type', models.CharField(max_length=100)),
                 ('identification', models.CharField(max_length=100)),
                 ('description', models.TextField()),
+                ('member', models.ForeignKey(to='members.Member')),
             ],
             options={
                 'abstract': False,
@@ -96,6 +94,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('security_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='loans.Security')),
                 ('savings_amount', models.BigIntegerField()),
+                ('member', models.ForeignKey(to='members.Member')),
+                ('savings_type', models.ForeignKey(to='savings.SavingsType')),
             ],
             options={
                 'abstract': False,
@@ -108,18 +108,15 @@ class Migration(migrations.Migration):
                 ('security_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='loans.Security')),
                 ('number_of_shares', models.IntegerField()),
                 ('value_of_shares', models.BigIntegerField()),
-                ('guarantor', models.ForeignKey(to='members.Member')),
-
+                ('guarantor', models.ForeignKey(related_name='Guarantor', to='members.Member')),
+                ('member', models.ForeignKey(to='members.Member')),
                 ('share_type', models.ForeignKey(to='shares.ShareType')),
-                ('security', models.ForeignKey(related_name='Shares Security', to='loans.Security')),
-
             ],
             options={
                 'abstract': False,
             },
             bases=('loans.security',),
         ),
-
         migrations.AddField(
             model_name='security',
             name='polymorphic_ctype',
@@ -168,5 +165,4 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(to='loans.Security', null=True, blank=True),
             preserve_default=True,
         ),
-
     ]

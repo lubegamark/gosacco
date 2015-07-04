@@ -61,7 +61,7 @@ class Migration(migrations.Migration):
                 ('current_subcounty', models.CharField(max_length=100)),
                 ('current_district', models.CharField(max_length=100)),
                 ('permanent_village', models.CharField(max_length=100)),
-                ('pernament_subcounty', models.CharField(max_length=100)),
+                ('permanent_subcounty', models.CharField(max_length=100)),
                 ('permanent_district', models.CharField(max_length=100)),
                 ('signature', models.ImageField(upload_to=b'')),
                 ('member', models.OneToOneField(to='members.Member')),
