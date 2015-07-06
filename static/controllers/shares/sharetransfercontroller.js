@@ -1,5 +1,5 @@
 angular.module('gosaccoApp')
-   .controller('SharetransferCtrl', ['$scope', function($scope){
+   .controller('SharetransferCtrl', ['$scope','ShareType', function($scope, ShareType){
    	  var vm =this;
    	  vm.sharetransfer = {};
    	  vm.sharetransferFields = [
@@ -34,10 +34,9 @@ angular.module('gosaccoApp')
             type: 'select',
             templateOptions: {
                 label: 'Share Type',
-                options:[
-                {name:"Bonds", value:"Bonds"},
-                {name:"Partnership", value:"Partnership"},
-                {name:"Equity", value:"Equity"},],
+                options:ShareType.query(),
+                valueProp:'share_class',
+                labelProp:'share_class',
                 required: true
             }
         },

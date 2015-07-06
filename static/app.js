@@ -2,7 +2,7 @@
  * Created by leona on 5/18/15.
  */
 'use strict';
-angular.module('gosaccoApp',['ngResource', 'ngRoute','formly','formlyBootstrap'])
+angular.module('gosaccoApp',['ngResource', 'ngRoute','ngMessages','mgcrea.ngStrap','formly','formlyBootstrap'])
 .config(['$routeProvider','$locationProvider',function($routeProvider, $locationProvider){
       // $locationProvider.html5Mode(true);
       $routeProvider
@@ -39,11 +39,12 @@ angular.module('gosaccoApp',['ngResource', 'ngRoute','formly','formlyBootstrap']
             controller:'WithdrawCtrl as vm'
       })
       .when('/list_savings',{
-            templateUrl:'partials/savings/list_savings.html'
+            templateUrl:'partials/savings/list_savings.html',
+                controller:'ListSavingsCtrl'
       })
       .when('/loans',{
       	templateUrl:'views/loans/loans.html',
-      	// controller:'LoanCtrl'
+      	 controller:'LoanListCtrl'
       })
       .when('/loan_application',{
             templateUrl:'partials/loans/loan_application.html',
@@ -58,10 +59,12 @@ angular.module('gosaccoApp',['ngResource', 'ngRoute','formly','formlyBootstrap']
             controller:'LoanFormCtrl as vm'
       })
       .when('/loan_list',{
-            templateUrl:'partials/loans/loan_list.html'
+            templateUrl:'partials/loans/loan_list.html',
+                controller:'LoanListCtrl'
       })
       .when('/loan_status',{
             templateUrl:'partials/loans/loan_status.html',
+              controller:'LoanStatusCtrl'
 
       })
       .when('/security',{

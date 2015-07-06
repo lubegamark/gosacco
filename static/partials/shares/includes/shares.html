@@ -11,48 +11,14 @@
             <td>Date</td>
             
         </tr>
-        <tr>
-            <td style="padding-left:10px; text-align:left;">Lubega Mark Musisi</td>
-            <td>SC0102978</td>
-            <td>Bond</td>
-            <td>20%</td>
-            <td>12-05-2015</td>
+        <tr ng-model="members" ng-repeat="member in members" ng-model="{{loadShares(member.id) }}">
+            <td style="padding-left:10px; text-align:left;">{{member.user.first_name}} {{member.user.last_name}}</td>
+            <td>{{member.id}}</td>
+            <td >{{ share.share_type }}</td>
+            <td >{{ share.number_of_shares }}</td>
+            <td >{{ share.date }}</td>
         </tr>
-        <tr>
-            <td style="padding-left:10px; text-align:left;">Semakula Kraiba</td>
-            <td>SC0102978</td>
-            <td>Bond</td>
-            <td>30%</td>
-            <td>16-08-2015</td>
-        </tr>
-        <tr>
-            <td style="padding-left:10px; text-align:left;">Buhiire Keneth</td>
-            <td>SC0102978</td>
-            <td>Bond</td>
-            <td>20%</td>
-            <td>12-05-2015</td>
-        </tr>
-        <tr>
-            <td style="padding-left:10px; text-align:left;">John Doe Smith</td>
-            <td>SC0102978</td>
-            <td>Partnership</td>
-            <td>15%</td>
-            <td>12-09-2015</td>
-        </tr>
-        <tr>
-            <td style="padding-left:10px; text-align:left;">Ricardo Mandela</td>
-            <td>SC0102978</td>
-            <td>Bond</td>
-            <td>5%</td>
-            <td>30-05-2015</td>
-        </tr>
-        <tr>
-            <td style="padding-left:10px; text-align:left;">Martin Luther Black</td>
-            <td>SC0102978</td>
-            <td>Bond</td>
-            <td>10%</td>
-            <td>12-11-2015</td>
-        </tr>
+        
         </tbody>
     </table>
 </div>

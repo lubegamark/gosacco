@@ -4,9 +4,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from members.models import Member
-from shares.models import Shares, ShareType, SharePurchase
-from shares.serializers import SharesSerializer,ShareTypeSerializer
-
+from shares.models import Shares, ShareType, SharePurchase, ShareTransfer
+from shares.serializers import SharesSerializer,ShareTypeSerializer, SharePurchaseSerializer, ShareTransferSerializer
+from django.views.decorators.csrf import csrf_exempt
 
 class ShareList(APIView):
     """
@@ -50,4 +50,33 @@ class ShareTypeList(APIView):
     def get(self, request, format=None):
         sharetype = ShareType.objects.all()
         serializer = ShareTypeSerializer(sharetype, many=True)
+        return Response(serializer.data)
+    @csrf_exempt
+    def post(self, request, format=None):
+        """
+        Add a share type 
+        """
+        serializer = ShareTypeSerializer(data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class SharePurchaseList(APIView):
+    """
+     List the share types 
+    """
+    def get(self, request, format=None):
+        sharepurchase = SharePurchase.objects.all()
+        serializer = SharePurchaseSerializer(sharepurchase, many=True)
+        return Response(serializer.data)
+
+
+class ShareTransferList(APIView):
+    """
+    List of Share Transfers
+    """
+    def get(self, request, format=None):
+        sharetransfer = ShareTransfer.objects.all()
+        serializer = ShareTransferSerializer(sharetransfer, many=True)
         return Response(serializer.data)

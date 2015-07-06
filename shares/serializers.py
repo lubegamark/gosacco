@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from shares.models import ShareType, Shares
+from shares.models import ShareType, Shares, SharePurchase, ShareTransfer
 
 
 class SharesSerializer(serializers.ModelSerializer):
@@ -10,8 +10,16 @@ class SharesSerializer(serializers.ModelSerializer):
 
 
 class ShareTypeSerializer(serializers.ModelSerializer):
-    shareType = SharesSerializer(many=True, read_only=True)
+    # shareType = SharesSerializer(many=True, read_only=True)
 
     class Meta:
         model = ShareType
-        # fields = ()
+        fields = ('id','share_class','share_price','minimum_shares','maximum_shares')
+
+class SharePurchaseSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = SharePurchase
+
+class ShareTransferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShareTransfer

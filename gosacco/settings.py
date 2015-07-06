@@ -106,6 +106,13 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.request",
 )
 
+REST_FRAMEWORK = {
+'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
+
+}
 GRAPPELLI_ADMIN_TITLE = "Gosacco"
 STATIC_ROOT = os.path.join(BASE_DIR, 'static').replace('\\', '/')
 STATIC_URL = '/static/'
