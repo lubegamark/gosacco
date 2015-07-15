@@ -1,6 +1,8 @@
 # Create your models here.
+from django.core.exceptions import ValidationError
 from django.db.models import Model, FloatField, ForeignKey, DateField, BigIntegerField, IntegerField, ManyToManyField, \
     CharField, TextField
+from django.db.models.signals import pre_save
 from polymorphic import PolymorphicModel
 import members
 
@@ -36,20 +38,27 @@ class LoanType(Model):
     def __unicode__(self):
         return self.name
 
+"""
+class LoanTypeRequirements(Model):
+    GREATER_THAN = 'gte'
+    LESS_THAN = 'lte'
+    EQUAL = 'equal'
+    COMPARISON_CHOICES = (
+        (GREATER_THAN, GREATER_THAN),
+        (LESS_THAN, LESS_THAN),
+        (EQUAL, EQUAL),
+    )
+    loan_type = ForeignKey(LoanType)
+    rule_name = CharField(max_length=100)
+    #rule_object =
+    rule_comparison = CharField(max_length=50, choices=COMPARISON_CHOICES)
+
+"""
 
 class Security(PolymorphicModel):
-    SHARES = 'shares'
-    SAVINGS = 'savings'
-    ITEM = 'item'
-    SECURITY_CHOICES = (
-        (SHARES, SHARES),
-        (SAVINGS, SAVINGS),
-        (ITEM, ITEM),
-    )
-    #security_type = CharField(choices=SECURITY_CHOICES, max_length=50)
-    #security_item =
-    #member = ForeignKey(Member)
-    attached_to_loan = IntegerField()
+    member = ForeignKey(Member)
+
+    attached_to_loan = IntegerField(blank=True, default=0, help_text="")
 
     @classmethod
     def get_members_securities(cls, member):
@@ -57,14 +66,20 @@ class Security(PolymorphicModel):
         return loans
 
 
-
 class SecurityShares(Security):
+    def share_value(self):
+        return self.number_of_shares * self.share_type.share_price
+
     number_of_shares = IntegerField()
     share_type = ForeignKey(ShareType)
-    value_of_shares = BigIntegerField()
-    guarantor = ForeignKey(Member, related_name="Guarantor")
-    member = ForeignKey(Member)
-    #security = ForeignKey(Security, related_name='Shares Security')
+    value_of_shares = BigIntegerField(blank=True)
+
+    def clean(self):
+        available_shares = Shares.objects.get(share_type=self.share_type, member=self.member)
+        if available_shares.number_of_shares < self.number_of_shares:
+            raise ValidationError({"number_of_shares": "You don't have enough shares of class "+self.share_type.__str__()} )
+        self.value_of_shares = self.share_value()
+
 
     def __unicode__(self):
         return str(self.number_of_shares)+" "+str(self.share_type)+" shares"
@@ -73,9 +88,6 @@ class SecurityShares(Security):
 class SecuritySavings(Security):
     savings_type = ForeignKey(SavingsType)
     savings_amount = BigIntegerField()
-    member = ForeignKey(Member)
-    #guarantor = ForeignKey(Member, related_name="Guarantor")
-    #security = ForeignKey(Security, related_name='Savings Security')
 
     def __unicode__(self):
         return str(self.savings_amount)+" "+str(self.savings_type)+" savings"
@@ -88,7 +100,6 @@ class SecurityArticle(Security):
     identification = CharField(max_length=100)
     #attached_to_loan = IntegerField('Loan')
     #owner = ForeignKey(Member)
-    member = ForeignKey(Member)
     description = TextField()
     #security = ForeignKey(Security, related_name='Item Security')
 
@@ -114,7 +125,7 @@ class LoanApplication(Model):
     status = CharField(max_length=25, choices=STATUS_CHOICES, default=PENDING)
     security_details = TextField()
     security = ManyToManyField(Security, null=True, blank=True)
-    guarantors = ManyToManyField(Member, related_name='Proposed Guarantors')
+    #guarantors = ManyToManyField(Member, related_name='Proposed Guarantors')
 
     def approve_loan_application(self):
         pass
