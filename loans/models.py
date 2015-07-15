@@ -80,7 +80,6 @@ class SecurityShares(Security):
             raise ValidationError({"number_of_shares": "You don't have enough shares of class "+self.share_type.__str__()} )
         self.value_of_shares = self.share_value()
 
-
     def __unicode__(self):
         return str(self.number_of_shares)+" "+str(self.share_type)+" shares"
 
