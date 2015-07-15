@@ -7,7 +7,7 @@ from polymorphic import PolymorphicModel
 import members
 
 from members.models import Member
-from savings.models import SavingsType
+from savings.models import SavingsType, Savings
 from shares.models import Shares, ShareType
 
 
@@ -87,6 +87,11 @@ class SecurityShares(Security):
 class SecuritySavings(Security):
     savings_type = ForeignKey(SavingsType)
     savings_amount = BigIntegerField()
+
+    def clean(self):
+        available_savings = Savings.objects.get(savings_type=self.savings_type, member=self.member)
+        if available_savings.amount < self.savings_amount:
+            raise ValidationError({"savings_amount": "You don't have enough savings of type "+self.savings_type.__str__()} )
 
     def __unicode__(self):
         return str(self.savings_amount)+" "+str(self.savings_type)+" savings"
