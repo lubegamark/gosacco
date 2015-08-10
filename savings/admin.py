@@ -1,19 +1,17 @@
 # Register your models here.
 from django.contrib import admin
-<<<<<<< HEAD
-
 from savings.models import Savings, SavingsType, SavingsWithdrawal, SavingsPurchase
 
 
 class SavingsAdmin(admin.ModelAdmin):
     list_display = ('member', 'savings_type', 'amount', 'date')
     readonly_fields = ('member', 'savings_type', 'amount', 'date')
-admin.site.register(Savings, SavingsAdmin)
+# # admin.site.register(Savings, SavingsAdmin)
 
 
 class SavingsTypeAdmin(admin.ModelAdmin):
     pass
-admin.site.register(SavingsType, SavingsTypeAdmin)
+# # admin.site.register(SavingsType, SavingsTypeAdmin)
 
 
 class SavingsWithdrawalAdmin(admin.ModelAdmin):
@@ -22,7 +20,7 @@ class SavingsWithdrawalAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         SavingsWithdrawal.withdraw_savings(obj.member, obj.savings_type, obj.amount)
 
-admin.site.register(SavingsWithdrawal, SavingsWithdrawalAdmin)
+# # admin.site.register(SavingsWithdrawal, SavingsWithdrawalAdmin)
 
 
 class SavingsPurchaseAdmin(admin.ModelAdmin):
@@ -31,8 +29,8 @@ class SavingsPurchaseAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         SavingsPurchase.make_savings(obj.member, obj.savings_type, obj.amount)
 
-admin.site.register(SavingsPurchase, SavingsPurchaseAdmin)
-=======
+# # admin.site.register(SavingsPurchase, SavingsPurchaseAdmin)
+
 from savings.models import Savings, SavingsType, SavingsWithdrawal,SavingsPurchase
 
 
@@ -56,8 +54,7 @@ class SavingsTypeAdmin(admin.ModelAdmin):
 	search_fields =['name','category']
 
 
-admin.site.register(Savings, SavingAdmin)
+admin.site.register(Savings, SavingsAdmin)
 admin.site.register(SavingsType, SavingsTypeAdmin)
-admin.site.register(SavingsWithdrawal)
-admin.site.register(SavingsPurchase)
->>>>>>> frontend
+admin.site.register(SavingsWithdrawal, SavingsWithdrawalAdmin)
+admin.site.register(SavingsPurchase, SavingsPurchaseAdmin)

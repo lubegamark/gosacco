@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('current_share_price', models.IntegerField()),
                 ('number_of_shares', models.IntegerField()),
-                ('date', models.DateField()),
+                ('date', models.DateTimeField()),
                 ('member', models.ForeignKey(to='members.Member')),
             ],
             options={
@@ -29,10 +29,11 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('number_of_shares', models.IntegerField()),
-                ('date', models.DateField()),
+                ('date', models.DateTimeField()),
                 ('member', models.ForeignKey(to='members.Member')),
             ],
             options={
+                'verbose_name_plural': 'Shares',
             },
             bases=(models.Model,),
         ),
@@ -42,7 +43,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('number_of_shares', models.IntegerField()),
                 ('current_share_price', models.IntegerField()),
-                ('date', models.DateField()),
+                ('date', models.DateTimeField()),
                 ('buyer', models.ForeignKey(related_name='Recepient', to='members.Member')),
                 ('seller', models.ForeignKey(related_name='Sender', to='members.Member')),
             ],

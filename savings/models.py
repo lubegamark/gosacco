@@ -67,7 +67,7 @@ class Savings(models.Model):
         else:
             savings = cls.objects.filter(savings_type=current_savings_type, member=member)
         return savings
-    
+
     @classmethod
     def get_savings(cls,  members=None, current_savings_type=None):
         if current_savings_type is None:
@@ -143,18 +143,16 @@ class SavingsWithdrawal(models.Model):
                 withdrawals = cls.objects.filter(member__in=members, savings_type=current_savings_type)
         else:
             withdrawals = []
-
-<<<<<<< HEAD
         return withdrawals
-=======
-class SavingsWithdrawal(models.Model):
-    class Meta:
-        verbose_name_plural = "Savings Withdraw"
-    amount = IntegerField()
-    date = DateField()
-    member = ForeignKey(Member)
-    savings_type = ForeignKey(SavingsType)
->>>>>>> frontend
+
+# class SavingsWithdrawal(models.Model):
+#     class Meta:
+#         verbose_name_plural = "Savings Withdraw"
+#     amount = IntegerField()
+#     date = DateField()
+#     member = ForeignKey(Member)
+#     savings_type = ForeignKey(SavingsType)
+
 
 
 
@@ -180,7 +178,7 @@ class SavingsPurchase(models.Model):
             purchase = cls(member=member, savings_type=savings_type, amount=amount, date=date)
             purchase.save()
             savings.save()
-<<<<<<< HEAD
+
 
     @classmethod
     def get_savings_purchases(cls, members=None, current_savings_type=None):
@@ -210,5 +208,4 @@ class SavingsPurchase(models.Model):
             savings_purchases = []
 
         return savings_purchases
-=======
->>>>>>> frontend
+
