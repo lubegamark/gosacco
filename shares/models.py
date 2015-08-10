@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models, Error
 
 # Create your models here.
-from django.db.models import ForeignKey, IntegerField, DateField, CharField, BigIntegerField, Q
+from django.db.models import ForeignKey, IntegerField, CharField, BigIntegerField, Q, DateTimeField
 from django.utils import timezone
 from members.models import Member, Group
 
@@ -26,7 +26,7 @@ class Shares(models.Model):
     member = ForeignKey(Member)
     share_type = ForeignKey(ShareType)
     number_of_shares = IntegerField()
-    date = DateField()
+    date = DateTimeField()
 
     class Meta:
         unique_together = ("member", "share_type")
@@ -82,18 +82,17 @@ class SharePurchase(models.Model):
     member = ForeignKey(Member)
     current_share_price = IntegerField()
     number_of_shares = IntegerField()
-    date = DateField()
+    date = DateTimeField()
     share_type = ForeignKey(ShareType)
 
     def __unicode__(self):
         return str(self.number_of_shares)+" "+"class "+self.share_type.share_class+" shares bought by "+self.member.user.username#+" at "+self.date
 
-
-    """
-    Issue new stock to member
-    """
     @classmethod
     def issue_shares(cls, member, shares, share_type):
+        """
+        Issue new stock to member
+        """
         try:
             share_price = share_type.share_price
             transfer = cls(member=member, number_of_shares=shares, current_share_price=share_price,
@@ -152,7 +151,7 @@ class ShareTransfer(models.Model):
     share_type = ForeignKey(ShareType)
     number_of_shares = IntegerField()
     current_share_price = IntegerField()
-    date = DateField()
+    date = DateTimeField()
 
     def __unicode__(self):
         return str(self.number_of_shares)+" "+"class "+self.share_type.share_class+" shares from "+self.seller.user.username+" to "+self.buyer.user.username

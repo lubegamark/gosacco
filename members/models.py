@@ -7,15 +7,15 @@ class Member(Model):
     phone_number = CharField(max_length=50)
     registration_date = DateField()
     monthly_income = BigIntegerField()
-    occupation = CharField(max_length=250)
-    bank = CharField(max_length=250)
-    account_number = CharField(max_length=250)
+    occupation = CharField(max_length=50)
+    bank = CharField(max_length=100)
+    account_number = CharField(max_length=50)
     signature = ImageField()
-    id_type = CharField(max_length=250)
-    id_number = CharField(max_length=250)
-    address = CharField(max_length=250)
-    city = CharField(max_length=250)
-    nationality = CharField(max_length=250)
+    id_type = CharField(max_length=50)
+    id_number = CharField(max_length=50)
+    address = CharField(max_length=100)
+    city = CharField(max_length=50)
+    nationality = CharField(max_length=50)
     comments = TextField()
 
     def __unicode__(self):
@@ -24,8 +24,8 @@ class Member(Model):
 
 class Group(Model):
     name = CharField(max_length=100)
-    location = CharField(max_length=100)
-    address = CharField(max_length=250)
+    location = CharField(max_length=50)
+    address = CharField(max_length=100)
     leader = ForeignKey(Member, related_name='Group Leader')
     members = ManyToManyField(Member)
 
@@ -40,7 +40,7 @@ class NextOfKin(Model):
     phone_number = CharField(max_length=50)
     occupation = CharField(max_length=50)
     comments = CharField(max_length=250)
-    address = CharField(max_length=250)
+    address = CharField(max_length=100)
     current_village = CharField(max_length=100)
     current_subcounty = CharField(max_length=100)
     current_district = CharField(max_length=100)

@@ -2,9 +2,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 # Create your models here.
-from django.db.models import ForeignKey, IntegerField, DateField, CharField, BooleanField
+from django.db.models import ForeignKey, IntegerField, DateField, CharField, BooleanField, DateTimeField
 from django.utils import timezone
-from django.utils.timezone import now
 from members.models import Member, Group
 
 
@@ -46,7 +45,7 @@ class SavingsType(models.Model):
 class Savings(models.Model):
     member = ForeignKey(Member)
     amount = IntegerField()
-    date = DateField()
+    date = DateTimeField()
     savings_type = ForeignKey(SavingsType)
 
     def __unicode__(self):
@@ -92,7 +91,7 @@ class Savings(models.Model):
 
 class SavingsWithdrawal(models.Model):
     amount = IntegerField()
-    date = DateField()
+    date = DateTimeField()
     member = ForeignKey(Member)
     savings_type = ForeignKey(SavingsType)
 
@@ -141,7 +140,7 @@ class SavingsWithdrawal(models.Model):
 
 class SavingsPurchase(models.Model):
     amount = IntegerField()
-    date = DateField()
+    date = DateTimeField()
     member = ForeignKey(Member)
     savings_type = ForeignKey(SavingsType)
 
