@@ -6,7 +6,7 @@ from django.db.models import ForeignKey, IntegerField, CharField, BigIntegerFiel
 from django.utils import timezone
 from members.models import Member, Group
 
-
+# kraibas commit
 class ShareType(models.Model):
     share_class = CharField(max_length=50)
     share_price = BigIntegerField()
@@ -94,14 +94,7 @@ class SharePurchase(models.Model):
     def __unicode__(self):
         return str(self.number_of_shares)+" "+"class "+self.share_type.share_class+" shares bought by "+self.member.user.username#+" at "+self.date
 
-    def member_name(self):
-        return ' '.join([self.member.user.first_name, self.member.user.last_name])
 
-
-    """
-    Issue new stock to member
-    """
-    @classmethod
     def issue_shares(cls, member, shares, share_type):
         """
         Issue new stock to member
