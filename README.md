@@ -10,14 +10,15 @@ GOSACCO. The software to manage your sacco.
 
 ### How do I get set up? ###
 
-* Summary of set up
-Clone the repository
-Add local_settings.py to gosacco app [Sample app avaiable at]()
-Configure your database details
-Run ./manage.py makemigrations
-Run ./manage.py migrate
-Run ./manage.py test
-Run ./manage.py runserver "ip:port"
+*Clone the repository
+*Create a virtualenvironment and set it up with python2.7
+*Add local_settings.py to gosacco app [Sample app avaiable at]()
+*Configure your database details
+*Run pip install -r requirements.txt
+*Run ./manage.py makemigrations
+*Run ./manage.py migrate
+*Run ./manage.py test
+*Run ./manage.py runserver "ip:port"
 
 * Configuration
 * Dependencies
@@ -35,4 +36,4 @@ Run ./manage.py runserver "ip:port"
 
 * Lubega Mark lubegamark@gmail.com
 * Semakula Kraiba krabz01@gmail.com
-* Buhiire Keneth  
+* Buhiire Keneth buhiirekeneth@gmail.com
