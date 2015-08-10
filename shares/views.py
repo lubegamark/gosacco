@@ -7,8 +7,32 @@ from members.models import Member
 from shares.models import Shares, ShareType, SharePurchase, ShareTransfer
 from shares.serializers import SharesSerializer,ShareTypeSerializer, SharePurchaseSerializer, ShareTransferSerializer
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework import generics
 
-class ShareList(APIView):
+class ShareList(generics.ListAPIView):
+    queryset = Shares.objects.all()
+    serializer_class = SharesSerializer
+    # """
+    # Show are list of shares
+    # """
+    # def get(self, request, format=None):
+    #     shares = Shares.objects.all()
+    #     serializer = SharesSerializer(shares,many=True)
+    #     return  Response(serializer.data)
+
+    # @csrf_exempt
+    # def post(self, request, format=None):
+    #     """
+    #     Add new share
+    #     """
+    #     serializer = SharesSerializer(data=request.DATA)
+    #     if serializer.is_valid:
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ShareDetail(APIView):
     """
     Show a members different shares (totals).
     """
@@ -54,7 +78,7 @@ class ShareTypeList(APIView):
     @csrf_exempt
     def post(self, request, format=None):
         """
-        Add a share type 
+        Add a share type
         """
         serializer = ShareTypeSerializer(data=request.DATA)
         if serializer.is_valid():
@@ -64,12 +88,19 @@ class ShareTypeList(APIView):
 
 class SharePurchaseList(APIView):
     """
-     List the share types 
+     List the share types
     """
     def get(self, request, format=None):
         sharepurchase = SharePurchase.objects.all()
         serializer = SharePurchaseSerializer(sharepurchase, many=True)
         return Response(serializer.data)
+
+    """ Purchase a share"""
+    def post(self, request, format=None):
+        serializer = SharePurchaseSerializer(data=request.DATA)
+        if serializer.is_valid:
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return  Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ShareTransferList(APIView):

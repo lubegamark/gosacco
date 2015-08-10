@@ -1,0 +1,26 @@
+<h1 class="ng-scope">Loan List</h1>
+<div class="tableinnerlist">
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tbody>
+        <tr class="pdtab-h">
+            <td style="text-align:left;">Member</td>
+            <td >Application No.</td>
+
+            <td>Application Date</td>
+            <td>Amount</td>
+            <td>Type</td>
+            <td>Status</td>
+        </tr>
+        <tr ng-model="members" ng-repeat="loanapp in loanapplications">
+            <td style="padding-left:10px; text-align:left;">{{ loanapp.member.user.first_name }} {{ loanapp.member.user.last_name }}</td>
+            <td>{{ loanapp.application_number }}</td>
+            <td>{{ loanapp.application_date }}</td>
+            <td>{{loanapp.amount|currency:"Ush ":0}}</td>
+            <td>{{loanapp.type}}</td>
+            <td>{{loanapp.status}}</td>
+
+        </tr>
+
+        </tbody>
+    </table>
+</div>

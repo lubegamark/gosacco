@@ -50,6 +50,10 @@ angular.module('gosaccoApp',['ngResource', 'ngRoute','ngMessages','mgcrea.ngStra
             templateUrl:'partials/loans/loan_application.html',
             controller:'LoanApplicationCtrl as vm'
       })
+      .when('/loan_application_list',{
+            templateUrl:'partials/loans/loan_application_list.html',
+            controller:'loanApplicationListCtrl as vm'
+      })
       .when('/loan_type',{
             templateUrl:'partials/loans/loan_type.html',
             controller:'LoanTypeCtrl as vm'
@@ -111,4 +115,8 @@ angular.module('gosaccoApp',['ngResource', 'ngRoute','ngMessages','mgcrea.ngStra
       	templateUrl:'views/settings/settings.html',
       	controller:'SettingCtrl'
       }).otherwise({redirectTo:'/'});
-    }]);
+    }])
+    .constant('SERVER', {
+
+       url: 'http://localhost:8000'
+    });

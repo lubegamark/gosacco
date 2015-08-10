@@ -35,15 +35,15 @@ class Security(Model):
     SAVINGS = 'savings'
     ITEM = 'item'
     SECURITY_CHOICES = (
-        (SHARES, 1),
-        (SAVINGS, 2),
-        (ITEM, 3),
+        (SHARES, SHARES),
+        (SAVINGS, SAVINGS),
+        (ITEM, ITEM),
     )
-    security_type = IntegerField(choices=SECURITY_CHOICES)
-    attached_to_loan = IntegerField()
+    security_type = CharField(max_length=50,choices=SECURITY_CHOICES)
+    attached_to_loan = ForeignKey(LoanType)
 
     def __unicode__(self):
-        return 'fish'  #self.get_security_model(self.security_type)
+        return self.security_type  #self.get_security_model(self.security_type)
 
     def get_security_model(self, security_type):
         if security_type is self.SHARES:
@@ -57,6 +57,8 @@ class Security(Model):
 
 
 class SecurityShares(Security):
+    class Meta:
+        verbose_name_plural ="Security shares"
     number_of_shares = IntegerField()
     share_type = ForeignKey(ShareType)
     value_of_shares = BigIntegerField()
@@ -108,11 +110,14 @@ class LoanApplication(Model):
     type = ForeignKey(LoanType)
     status = CharField(max_length=25, choices=STATUS_CHOICES, default=PENDING)
     security_details = TextField()
-    security = ManyToManyField(Security, null=True, blank=True)
-    guarantors = ManyToManyField(Member, related_name='Proposed Guarantors')
+    security = ManyToManyField(Security, verbose_name=('loan_security'), blank=True)
+    guarantors = ManyToManyField(Member, related_name=('backers'), blank=True)
 
     def __unicode__(self):
         return self.member.user.username
+
+    def member_name(self):
+        return ' '.join([self.member.user.first_name, self.member.user.last_name])
 
 
 class Loan(Model):

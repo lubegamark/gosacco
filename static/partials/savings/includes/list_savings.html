@@ -5,14 +5,15 @@
         <tr class="pdtab-h">
             <td style="text-align:left;">Member</td>
             <td >Member No.</td>
-
+            <td>Savings Type</td>
             <td>Amount</td>
-            
+
         </tr>
-        <tr ng-model="members" ng-repeat="member in members">
-            <td style="padding-left:10px; text-align:left;">{{ member.user.first_name }} {{ member.user.last_name }}</td>
-            <td>{{ member.id }}</td>
-            <td>1,200,000</td>
+        <tr ng-model="members" ng-repeat="saving in savings">
+            <td style="padding-left:10px; text-align:left;">{{ saving.member.user.first_name }} {{ saving.member.user.last_name }} </td>
+            <td>{{ saving.id }}</td>
+            <td>{{ saving.savings_type.name}}</td>
+            <td>{{saving.amount|currency:"Ush ":0}}</td>
         </tr>
 
         </tbody>

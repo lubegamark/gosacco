@@ -9,16 +9,16 @@
             <td>Share Type</td>
             <td>Number of Shares</td>
             <td>Date</td>
-            
+
         </tr>
-        <tr ng-model="members" ng-repeat="member in members" ng-model="{{loadShares(member.id) }}">
-            <td style="padding-left:10px; text-align:left;">{{member.user.first_name}} {{member.user.last_name}}</td>
-            <td>{{member.id}}</td>
-            <td >{{ share.share_type }}</td>
+        <tr ng-model="members" ng-repeat="share in shares" ng-model="{{loadShares(member.id) }}">
+            <td style="padding-left:10px; text-align:left;">{{share.member.user.first_name}} {{share.member.user.last_name}}</td>
+            <td>{{share.id}}</td>
+            <td >{{ share.share_type.share_class }}</td>
             <td >{{ share.number_of_shares }}</td>
             <td >{{ share.date }}</td>
         </tr>
-        
+
         </tbody>
     </table>
 </div>

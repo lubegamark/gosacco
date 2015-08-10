@@ -41,15 +41,24 @@ class SavingsType(models.Model):
     def __unicode__(self):
         return self.name
 
+    def interest_rate(self):
+        return str(self.interest)+"%"
+
 
 class Savings(models.Model):
+    class Meta:
+        verbose_name_plural ='Savings'
+
     member = ForeignKey(Member)
     amount = IntegerField()
     date = DateField()
     savings_type = ForeignKey(SavingsType)
 
     def __unicode__(self):
-        return self.member.user.username
+        return ' '.join([self.member.user.first_name, self.member.user.last_name])
+
+    def member_name(self):
+        return ' '.join([self.member.user.first_name, self.member.user.last_name])
 
     @classmethod
     def get_members_savings(cls, member, current_savings_type=None):
@@ -73,13 +82,19 @@ class Savings(models.Model):
 
 
 class SavingsWithdrawal(models.Model):
+    class Meta:
+        verbose_name_plural = "Savings Withdraw"
     amount = IntegerField()
     date = DateField()
     member = ForeignKey(Member)
     savings_type = ForeignKey(SavingsType)
 
 
+
+
 class SavingsPurchase(models.Model):
+    class Meta:
+        verbose_name_plural='Savings Purchase'
     amount = IntegerField()
     date = DateField()
     member = ForeignKey(Member)

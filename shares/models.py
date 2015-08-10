@@ -30,9 +30,15 @@ class Shares(models.Model):
 
     class Meta:
         unique_together = ("member", "share_type")
+        verbose_name_plural='Shares'
 
     def __unicode__(self):
-        return self.member.user.username
+        return ' '.join([self.member.user.first_name, self.member.user.last_name])
+
+    def member_name(self):
+        return ' '.join([self.member.user.first_name, self.member.user.last_name])
+
+
 
     @classmethod
     def get_shares(cls, members=None, current_share_type=None):
@@ -87,6 +93,9 @@ class SharePurchase(models.Model):
 
     def __unicode__(self):
         return str(self.number_of_shares)+" "+"class "+self.share_type.share_class+" shares bought by "+self.member.user.username#+" at "+self.date
+
+    def member_name(self):
+        return ' '.join([self.member.user.first_name, self.member.user.last_name])
 
 
     """
