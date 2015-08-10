@@ -146,6 +146,7 @@ class LoanApplication(Model):
     status = CharField(max_length=25, choices=STATUS_CHOICES, default=PENDING, help_text="Current status of the application")
     security_details = TextField(help_text="Basic info provided about the security")
     security = ManyToManyField(Security, null=True, blank=True)
+    #guarantors = ManyToManyField(Member, related_name=('backers'), blank=True)
 
     def approve_loan_application(self):
         pass
@@ -164,12 +165,6 @@ class LoanApplication(Model):
             loans = cls.objects.filter(member=member, loan_type=loan_type)
 
         return loans
-    payment_period = IntegerField(max_length=11)
-    type = ForeignKey(LoanType)
-    status = CharField(max_length=25, choices=STATUS_CHOICES, default=PENDING)
-    security_details = TextField()
-    security = ManyToManyField(Security, verbose_name=('loan_security'), blank=True)
-    guarantors = ManyToManyField(Member, related_name=('backers'), blank=True)
 
     def __unicode__(self):
         return self.member.user.username
@@ -192,7 +187,7 @@ class Loan(Model):
     loan_type = ForeignKey(LoanType)
     security_details = TextField(help_text="Basic info provided about the security")
     security = ManyToManyField(Security, blank=True, null=True)
-    guarantors = ManyToManyField(Member, related_name='Guarantors')
+    #guarantors = ManyToManyField(Member, related_name='Guarantors')
 
     @classmethod
     def get_members_loans(cls, member, loan_type=None):

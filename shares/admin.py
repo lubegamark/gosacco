@@ -17,20 +17,18 @@ class ShareAdmin(admin.ModelAdmin):
 class SharePurchaseAdmin(admin.ModelAdmin):
     change_list_template = "admin/change_list_filter_sidebar.html"
     change_list_filter_template = "admin/filter_listing.html"
-    list_display = ('member_name', 'share_type', 'number_of_shares', 'date')
+    list_display = ('__unicode__', 'member_name', 'share_type', 'number_of_shares', 'date')
     search_fields = ('member', 'share_type', 'date')
     exclude = ('current_share_price',)
-
 
     def save_model(self, request, obj, form, change):
         SharePurchase.issue_shares(obj.member, obj.number_of_shares, obj.share_type)
 
 
-
 class ShareTransferAdmin(admin.ModelAdmin):
     change_list_template = "admin/change_list_filter_sidebar.html"
     change_list_filter_template = "admin/filter_listing.html"
-    list_display = ('seller', 'buyer', 'share_type', 'number_of_shares', 'date')
+    list_display = ('__unicode__','seller', 'buyer', 'share_type', 'number_of_shares', 'date')
     exclude = ('current_share_price',)
     list_filter=['date','share_type']
     search_fields=['share_type']
