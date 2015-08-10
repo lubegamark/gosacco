@@ -6,8 +6,7 @@ from loans.models import LoanType, LoanApplication,  Loan, Security, SecurityArt
 
 
 class LoanAdmin(admin.ModelAdmin):
-    pass#list_display = ('member','application', 'approval_date', 'amount', 'loan_type')
-    #readonly_fields = ('member','application', 'approval_date', 'amount', 'loan_type')
+    pass
 admin.site.register(Loan, LoanAdmin)
 
 
@@ -29,7 +28,7 @@ class SecurityChildAdmin(PolymorphicChildModelAdmin):
 
 
 class SecurityArticleAdmin(SecurityChildAdmin):
-    list_display = ('__unicode__',)
+    list_display = ('__unicode__', 'member')
 
 admin.site.register(SecurityArticle, SecurityArticleAdmin)
 
@@ -54,6 +53,8 @@ class SecurityAdmin(PolymorphicParentModelAdmin):
         (SecurityShares, SecuritySharesAdmin),
         (SecurityArticle, SecurityArticleAdmin),
     )
+
     polymorphic_list = True
+    list_display = ('__unicode__', 'member')
 
 admin.site.register(Security, SecurityAdmin)

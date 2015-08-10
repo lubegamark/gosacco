@@ -1,11 +1,12 @@
 # Create your models here.
+from django.core.exceptions import ValidationError
 from django.db.models import Model, FloatField, ForeignKey, DateField, BigIntegerField, IntegerField, ManyToManyField, \
-    CharField, TextField
+    CharField, TextField, DateTimeField
+
 from polymorphic import PolymorphicModel
-import members
 
 from members.models import Member
-from savings.models import SavingsType
+from savings.models import SavingsType, Savings
 from shares.models import Shares, ShareType
 
 
@@ -18,13 +19,13 @@ class LoanType(Model):
         (MONTH, 'per month'),
         (DAY, 'per day'),
     )
-    name = CharField(max_length=255)
+    name = CharField(max_length=50)
     interest = FloatField()
     interest_period = CharField(max_length=50, choices=INTEREST_PERIOD_CHOICES, default=YEAR)
-    processing_period = IntegerField()
+    processing_period = IntegerField( help_text="In days")
     minimum_amount = BigIntegerField()
     maximum_amount = BigIntegerField()
-    minimum_membership_period = IntegerField() #months
+    minimum_membership_period = IntegerField(help_text="In months") #months
     minimum_share = IntegerField()
     minimum_savings = BigIntegerField()
 
@@ -36,20 +37,27 @@ class LoanType(Model):
     def __unicode__(self):
         return self.name
 
+"""
+class LoanTypeRequirements(Model):
+    GREATER_THAN = 'gte'
+    LESS_THAN = 'lte'
+    EQUAL = 'equal'
+    COMPARISON_CHOICES = (
+        (GREATER_THAN, GREATER_THAN),
+        (LESS_THAN, LESS_THAN),
+        (EQUAL, EQUAL),
+    )
+    loan_type = ForeignKey(LoanType)
+    rule_name = CharField(max_length=100)
+    #rule_object =
+    rule_comparison = CharField(max_length=50, choices=COMPARISON_CHOICES)
+
+"""
 
 class Security(PolymorphicModel):
-    SHARES = 'shares'
-    SAVINGS = 'savings'
-    ITEM = 'item'
-    SECURITY_CHOICES = (
-        (SHARES, SHARES),
-        (SAVINGS, SAVINGS),
-        (ITEM, ITEM),
-    )
-    #security_type = CharField(choices=SECURITY_CHOICES, max_length=50)
-    #security_item =
-    #member = ForeignKey(Member)
-    attached_to_loan = IntegerField()
+    member = ForeignKey(Member)
+
+    attached_to_loan = IntegerField(blank=True, default=0, help_text="0 for none, or id of loan")
 
     @classmethod
     def get_members_securities(cls, member):
@@ -57,14 +65,19 @@ class Security(PolymorphicModel):
         return loans
 
 
-
 class SecurityShares(Security):
+    def share_value(self):
+        return self.number_of_shares * self.share_type.share_price
+
     number_of_shares = IntegerField()
     share_type = ForeignKey(ShareType)
-    value_of_shares = BigIntegerField()
-    guarantor = ForeignKey(Member, related_name="Guarantor")
-    member = ForeignKey(Member)
-    #security = ForeignKey(Security, related_name='Shares Security')
+    value_of_shares = BigIntegerField(blank=True)
+
+    def clean(self):
+        available_shares = Shares.objects.get(share_type=self.share_type, member=self.member)
+        if available_shares.number_of_shares < self.number_of_shares:
+            raise ValidationError({"number_of_shares": "You don't have enough shares of class "+self.share_type.__str__()} )
+        self.value_of_shares = self.share_value()
 
     def __unicode__(self):
         return str(self.number_of_shares)+" "+str(self.share_type)+" shares"
@@ -73,9 +86,11 @@ class SecurityShares(Security):
 class SecuritySavings(Security):
     savings_type = ForeignKey(SavingsType)
     savings_amount = BigIntegerField()
-    member = ForeignKey(Member)
-    #guarantor = ForeignKey(Member, related_name="Guarantor")
-    #security = ForeignKey(Security, related_name='Savings Security')
+
+    def clean(self):
+        available_savings = Savings.objects.get(savings_type=self.savings_type, member=self.member)
+        if available_savings.amount < self.savings_amount:
+            raise ValidationError({"savings_amount": "You don't have enough savings of type "+self.savings_type.__str__()} )
 
     def __unicode__(self):
         return str(self.savings_amount)+" "+str(self.savings_type)+" savings"
@@ -83,14 +98,10 @@ class SecuritySavings(Security):
 
 class SecurityArticle(Security):
     name = CharField(max_length=100)
-    type = CharField(max_length=100)  # eg. (Land, car, house)
-    identification_type = CharField(max_length=100)  # eg Land title, car logbook
-    identification = CharField(max_length=100)
-    #attached_to_loan = IntegerField('Loan')
-    #owner = ForeignKey(Member)
-    member = ForeignKey(Member)
+    type = CharField(max_length=100, help_text="eg Land, car, house")
+    identification_type = CharField(max_length=100, help_text="eg Land title, car logbook")
+    identification = CharField(max_length=100, help_text="eg ID Number, Title number")
     description = TextField()
-    #security = ForeignKey(Security, related_name='Item Security')
 
     def __unicode__(self):
         return self.name
@@ -109,12 +120,12 @@ class LoanApplication(Model):
     member = ForeignKey(Member)
     application_date = DateField()
     amount = BigIntegerField()
-    payment_period = IntegerField(max_length=11)
-    type = ForeignKey(LoanType)
-    status = CharField(max_length=25, choices=STATUS_CHOICES, default=PENDING)
-    security_details = TextField()
+    purpose = CharField(max_length=250, help_text="Purpose for the loan")
+    payment_period = IntegerField(help_text="In Days eg. 90 days")
+    loan_type = ForeignKey(LoanType)
+    status = CharField(max_length=25, choices=STATUS_CHOICES, default=PENDING, help_text="Current status of the application")
+    security_details = TextField(help_text="Basic info provided about the security")
     security = ManyToManyField(Security, null=True, blank=True)
-    guarantors = ManyToManyField(Member, related_name='Proposed Guarantors')
 
     def approve_loan_application(self):
         pass
@@ -145,11 +156,11 @@ class LoanApplication(Model):
 class Loan(Model):
     application = ForeignKey(LoanApplication)
     member = ForeignKey(Member)
-    approval_date = DateField()
-    amount = BigIntegerField()
-    payment_period = IntegerField()
+    approval_date = DateTimeField()
+    amount = BigIntegerField(help_text="Actual amount approved")
+    payment_period = IntegerField(help_text="In days")
     loan_type = ForeignKey(LoanType)
-    security_details = TextField()
+    security_details = TextField(help_text="Basic info provided about the security")
     security = ManyToManyField(Security, blank=True, null=True)
     guarantors = ManyToManyField(Member, related_name='Guarantors')
 

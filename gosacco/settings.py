@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '88#!8jg=31budym*0ug5n$8as1pw&y579%r4w%ewsq4k8)jrpg'
+SECRET_KEY = '' #Add secret in local_settings.py
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -31,7 +31,6 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = (
     #'django_admin_bootstrapped',
-    'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -69,9 +68,9 @@ WSGI_APPLICATION = 'gosacco.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'gosacco',                      # Or path to database file if using sqlite3.
-        'USER': 'root',                      # Not used with sqlite3.
-        'PASSWORD': 'leona',                  # Not used with sqlite3.
+        'NAME': '',                      # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -94,15 +93,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.request",
-)
-
-GRAPPELLI_ADMIN_TITLE = "Gosacco"
-STATIC_ROOT = os.path.join(BASE_DIR, 'static').replace('\\', '/')
 STATIC_URL = '/static/'
-MEDIA_ROOT = os.path.join(BASE_DIR,'media').replace('\\', '/')
+
 MEDIA_URL = '/media/'
 
 SWAGGER_SETTINGS = {
@@ -130,3 +122,8 @@ SWAGGER_SETTINGS = {
     },
     'doc_expansion': 'none',
 }
+#All secrets should be added from the local_settings.py that's not added to source control
+try:
+    from local_settings import *
+except:
+    pass
