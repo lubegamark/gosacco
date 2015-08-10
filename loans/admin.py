@@ -5,8 +5,8 @@ from loans.models import LoanType, LoanApplication,  Loan, Security, SecurityArt
 from loans.models import LoanType, LoanApplication, SecurityArticle, Loan, Security, SecurityShares
 
 class LoanAdmin(admin.ModelAdmin):
-    # change_list_template = "admin/change_list_filter_sidebar.html"
-    # change_list_filter_template = "admin/filter_listing.html"
+    change_list_template = "admin/change_list_filter_sidebar.html"
+    change_list_filter_template = "admin/filter_listing.html"
 
     list_display=('member','application','approval_date','amount','payment_period','loan_type')
     list_filter =['approval_date','payment_period','loan_type']
@@ -25,8 +25,8 @@ class LoanApplicationAdmin(admin.ModelAdmin):
 
 # admin.site.register(LoanApplication, LoanApplicationAdmin)
 
-    # change_list_template = "admin/change_list_filter_sidebar.html"
-    # change_list_filter_template = "admin/filter_listing.html"
+    change_list_template = "admin/change_list_filter_sidebar.html"
+    change_list_filter_template = "admin/filter_listing.html"
 
     list_display = ('member','application_date','amount','payment_period','status')
     list_filter=['application_date','payment_period']
@@ -81,8 +81,8 @@ class SecurityAdmin(PolymorphicParentModelAdmin):
 
 
 class SecurityArticleAdmin(admin.ModelAdmin):
-    # change_list_template = "admin/change_list_filter_sidebar.html"
-    # change_list_filter_template = "admin/filter_listing.html"
+    change_list_template = "admin/change_list_filter_sidebar.html"
+    change_list_filter_template = "admin/filter_listing.html"
     list_display=('name','type','identification_type','identification')
     list_filter = ['type','identification_type']
     search_fields=['name','type']
@@ -90,15 +90,15 @@ class SecurityArticleAdmin(admin.ModelAdmin):
 
 
 class SecurityAdmin(admin.ModelAdmin):
-    # change_list_template = "admin/change_list_filter_sidebar.html"
-    # change_list_filter_template = "admin/filter_listing.html"
+    change_list_template = "admin/change_list_filter_sidebar.html"
+    change_list_filter_template = "admin/filter_listing.html"
     list_display =('member','attached_to_loan')
     list_filter =['attached_to_loan']
     search_fields=['member']
 
 class SecuritySharesAdmin(admin.ModelAdmin):
-    # change_list_template = "admin/change_list_filter_sidebar.html"
-    # change_list_filter_template = "admin/filter_listing.html"
+    change_list_template = "admin/change_list_filter_sidebar.html"
+    change_list_filter_template = "admin/filter_listing.html"
     list_display=('share_type','number_of_shares','value_of_shares')
     list_filter=['share_type']
     search_fields=['share_type']
