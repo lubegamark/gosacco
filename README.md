@@ -12,7 +12,7 @@ GOSACCO. The software to manage your sacco.
 
 * Clone the repository
 * Create a virtualenvironment and set it up with python2.7
-* Add local_settings.py to gosacco app [Sample app avaiable at]()
+* Add local_settings.py to gosacco app [Download Sample local_settings.py](https://bitbucket.org/gosacco/gosacco/downloads/local_settings.py)
 * Configure your database details
 * Run pip install -r requirements.txt
 * Run ./manage.py makemigrations
