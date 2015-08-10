@@ -16,10 +16,11 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('amount', models.IntegerField()),
-                ('date', models.DateField()),
+                ('date', models.DateTimeField()),
                 ('member', models.ForeignKey(to='members.Member')),
             ],
             options={
+                'verbose_name_plural': 'Savings',
             },
             bases=(models.Model,),
         ),
@@ -28,10 +29,11 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('amount', models.IntegerField()),
-                ('date', models.DateField()),
+                ('date', models.DateTimeField()),
                 ('member', models.ForeignKey(to='members.Member')),
             ],
             options={
+                'verbose_name_plural': 'Savings Purchase',
             },
             bases=(models.Model,),
         ),
@@ -56,7 +58,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('amount', models.IntegerField()),
-                ('date', models.DateField()),
+                ('date', models.DateTimeField()),
                 ('member', models.ForeignKey(to='members.Member')),
                 ('savings_type', models.ForeignKey(to='savings.SavingsType')),
             ],

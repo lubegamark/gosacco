@@ -1,52 +1,46 @@
 # Register your models here.
 from django.contrib import admin
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
-
 from loans.models import LoanType, LoanApplication,  Loan, Security, SecurityArticle, SecuritySavings, SecurityShares
-
-<<<<<<< HEAD
-=======
 from loans.models import LoanType, LoanApplication, SecurityArticle, Loan, Security, SecurityShares
->>>>>>> frontend
 
 class LoanAdmin(admin.ModelAdmin):
-    change_list_template = "admin/change_list_filter_sidebar.html"
-    change_list_filter_template = "admin/filter_listing.html"
+    # change_list_template = "admin/change_list_filter_sidebar.html"
+    # change_list_filter_template = "admin/filter_listing.html"
 
-    list_display=('member','application','approval_date','amount','payment_period','type')
-    list_filter =['approval_date','payment_period','type']
-    search_fields=['type','member']
-
+    list_display=('member','application','approval_date','amount','payment_period','loan_type')
+    list_filter =['approval_date','payment_period','loan_type']
+    search_fields=['loan_type','member']
 
 
 class LoanTypeAdmin(admin.ModelAdmin):
-<<<<<<< HEAD
+
     pass
 
-admin.site.register(LoanType, LoanTypeAdmin)
+# admin.site.register(LoanType, LoanTypeAdmin)
 
 
 class LoanApplicationAdmin(admin.ModelAdmin):
     pass
 
-admin.site.register(LoanApplication, LoanApplicationAdmin)
-=======
-    change_list_template = "admin/change_list_filter_sidebar.html"
-    change_list_filter_template = "admin/filter_listing.html"
+# admin.site.register(LoanApplication, LoanApplicationAdmin)
 
-    list_display = ('name','interest','interest_period','minimum_amount','maximum_amount','minimum_share','minimum_savings')
-    list_filter=['interest_period','minimum_membership_period']
-    search_fields=['name']
+    # change_list_template = "admin/change_list_filter_sidebar.html"
+    # change_list_filter_template = "admin/filter_listing.html"
+
+    list_display = ('member','application_date','amount','payment_period','status')
+    list_filter=['application_date','payment_period']
+    search_fields=['member']
 
 
-class LoanApplicationAdmin(admin.ModelAdmin):
-    change_list_template = "admin/change_list_filter_sidebar.html"
-    change_list_filter_template = "admin/filter_listing.html"
-    list_display=('member_name','application_number','application_date','amount','type','status')
-    list_filter=['application_date','type','status']
-    search_fields =['application_number','type','status']
+# class LoanApplicationAdmin(admin.ModelAdmin):
+    # change_list_template = "admin/change_list_filter_sidebar.html"
+    # change_list_filter_template = "admin/filter_listing.html"
+    # list_display=('member_name','application_number','application_date','amount','type','status')
+    # list_filter=['application_date','type','status']
+    # search_fields =['application_number','type','status']
 
->>>>>>> frontend
+
 
 class SecurityChildAdmin(PolymorphicChildModelAdmin):
     """ Base admin class for all child models """
@@ -57,8 +51,8 @@ class SecurityChildAdmin(PolymorphicChildModelAdmin):
 class SecurityArticleAdmin(SecurityChildAdmin):
     list_display = ('__unicode__', 'member')
 
-<<<<<<< HEAD
-admin.site.register(SecurityArticle, SecurityArticleAdmin)
+
+# admin.site.register(SecurityArticle, SecurityArticleAdmin)
 
 
 
@@ -66,12 +60,12 @@ admin.site.register(SecurityArticle, SecurityArticleAdmin)
 class SecuritySharesAdmin(SecurityChildAdmin):
     list_display = ('__unicode__', 'member')
 
-admin.site.register(SecurityShares, SecuritySharesAdmin)
+# admin.site.register(SecurityShares, SecuritySharesAdmin)
 
 class SecuritySavingsAdmin(SecurityChildAdmin):
     list_display = ('__unicode__', 'member')
 
-admin.site.register(SecuritySavings, SecuritySavingsAdmin)
+# admin.site.register(SecuritySavings, SecuritySavingsAdmin)
 
 
 class SecurityAdmin(PolymorphicParentModelAdmin):
@@ -85,35 +79,33 @@ class SecurityAdmin(PolymorphicParentModelAdmin):
     polymorphic_list = True
     list_display = ('__unicode__', 'member')
 
-=======
+
 class SecurityArticleAdmin(admin.ModelAdmin):
-    change_list_template = "admin/change_list_filter_sidebar.html"
-    change_list_filter_template = "admin/filter_listing.html"
-    list_display=('name','owner','type','identification_type','attached_to_loan','security')
-    list_filter = ['type','identification_type','security']
-    search_fields=['name','type','owner','identification_type','security']
+    # change_list_template = "admin/change_list_filter_sidebar.html"
+    # change_list_filter_template = "admin/filter_listing.html"
+    list_display=('name','type','identification_type','identification')
+    list_filter = ['type','identification_type']
+    search_fields=['name','type']
 
 
 
 class SecurityAdmin(admin.ModelAdmin):
-    change_list_template = "admin/change_list_filter_sidebar.html"
-    change_list_filter_template = "admin/filter_listing.html"
-    list_display =('security_type','attached_to_loan')
+    # change_list_template = "admin/change_list_filter_sidebar.html"
+    # change_list_filter_template = "admin/filter_listing.html"
+    list_display =('member','attached_to_loan')
     list_filter =['attached_to_loan']
-    search_fields=['security_type']
+    search_fields=['member']
 
 class SecuritySharesAdmin(admin.ModelAdmin):
-    change_list_template = "admin/change_list_filter_sidebar.html"
-    change_list_filter_template = "admin/filter_listing.html"
-    list_display=('share_type','number_of_shares','value_of_shares','security')
-    list_filter=['share_type','security']
-    search_fields=['share_type','security']
-
+    # change_list_template = "admin/change_list_filter_sidebar.html"
+    # change_list_filter_template = "admin/filter_listing.html"
+    list_display=('share_type','number_of_shares','value_of_shares')
+    list_filter=['share_type']
+    search_fields=['share_type']
 
 admin.site.register(Loan, LoanAdmin)
 admin.site.register(LoanType, LoanTypeAdmin)
 admin.site.register(LoanApplication, LoanApplicationAdmin)
 admin.site.register(SecurityArticle, SecurityArticleAdmin)
->>>>>>> frontend
 admin.site.register(Security, SecurityAdmin)
 admin.site.register(SecurityShares, SecuritySharesAdmin)

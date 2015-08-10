@@ -37,7 +37,7 @@ class LoanType(Model):
     def __unicode__(self):
         return self.name
 
-<<<<<<< HEAD
+
 """
 class LoanTypeRequirements(Model):
     GREATER_THAN = 'gte'
@@ -54,23 +54,22 @@ class LoanTypeRequirements(Model):
     rule_comparison = CharField(max_length=50, choices=COMPARISON_CHOICES)
 
 """
-=======
 
-class Security(Model):
-    SHARES = 'shares'
-    SAVINGS = 'savings'
-    ITEM = 'item'
-    SECURITY_CHOICES = (
-        (SHARES, SHARES),
-        (SAVINGS, SAVINGS),
-        (ITEM, ITEM),
-    )
-    security_type = CharField(max_length=50,choices=SECURITY_CHOICES)
-    attached_to_loan = ForeignKey(LoanType)
+# class Security(Model):
+#     SHARES = 'shares'
+#     SAVINGS = 'savings'
+#     ITEM = 'item'
+#     SECURITY_CHOICES = (
+#         (SHARES, SHARES),
+#         (SAVINGS, SAVINGS),
+#         (ITEM, ITEM),
+#     )
+#     security_type = CharField(max_length=50,choices=SECURITY_CHOICES)
+#     attached_to_loan = ForeignKey(LoanType)
 
-    def __unicode__(self):
-        return self.security_type  #self.get_security_model(self.security_type)
->>>>>>> frontend
+#     def __unicode__(self):
+#         return self.security_type  #self.get_security_model(self.security_type)
+
 
 class Security(PolymorphicModel):
     member = ForeignKey(Member)
@@ -84,14 +83,12 @@ class Security(PolymorphicModel):
 
 
 class SecurityShares(Security):
-<<<<<<< HEAD
+
     def share_value(self):
         return self.number_of_shares * self.share_type.share_price
 
-=======
     class Meta:
         verbose_name_plural ="Security shares"
->>>>>>> frontend
     number_of_shares = IntegerField()
     share_type = ForeignKey(ShareType)
     value_of_shares = BigIntegerField(blank=True)
@@ -143,10 +140,9 @@ class LoanApplication(Model):
     member = ForeignKey(Member)
     application_date = DateField()
     amount = BigIntegerField()
-<<<<<<< HEAD
     purpose = CharField(max_length=250, help_text="Purpose for the loan")
     payment_period = IntegerField(help_text="In Days eg. 90 days")
-    loan_type = ForeignKey(LoanType)
+    loan_type = ForeignKey(LoanType, related_name="LoanType")
     status = CharField(max_length=25, choices=STATUS_CHOICES, default=PENDING, help_text="Current status of the application")
     security_details = TextField(help_text="Basic info provided about the security")
     security = ManyToManyField(Security, null=True, blank=True)
@@ -168,26 +164,23 @@ class LoanApplication(Model):
             loans = cls.objects.filter(member=member, loan_type=loan_type)
 
         return loans
-=======
     payment_period = IntegerField(max_length=11)
     type = ForeignKey(LoanType)
     status = CharField(max_length=25, choices=STATUS_CHOICES, default=PENDING)
     security_details = TextField()
     security = ManyToManyField(Security, verbose_name=('loan_security'), blank=True)
     guarantors = ManyToManyField(Member, related_name=('backers'), blank=True)
->>>>>>> frontend
 
     def __unicode__(self):
         return self.member.user.username
 
-<<<<<<< HEAD
     @classmethod
     def view_loan_applications(cls, member=None, ):
         pass
-=======
+
     def member_name(self):
         return ' '.join([self.member.user.first_name, self.member.user.last_name])
->>>>>>> frontend
+
 
 
 class Loan(Model):
@@ -211,8 +204,5 @@ class Loan(Model):
         return loans
 
     def __unicode__(self):
-<<<<<<< HEAD
-        return self.member.user.username+" "
-=======
         return self.member.user.username
->>>>>>> frontend
+
