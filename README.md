@@ -1,6 +1,6 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+GOSACCO. The software to manage your sacco.
 
 ### What is this repository for? ###
 
@@ -11,6 +11,14 @@ This README would normally document whatever steps are necessary to get your app
 ### How do I get set up? ###
 
 * Summary of set up
+Clone the repository
+Add local_settings.py to gosacco app [Sample app avaiable at]()
+Configure your database details
+Run ./manage.py makemigrations
+Run ./manage.py migrate
+Run ./manage.py test
+Run ./manage.py runserver "ip:port"
+
 * Configuration
 * Dependencies
 * Database configuration
@@ -25,5 +33,6 @@ This README would normally document whatever steps are necessary to get your app
 
 ### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+* Lubega Mark lubegamark@gmail.com
+* Semakula Kraiba krabz01@gmail.com
+* Buhiire Keneth  
