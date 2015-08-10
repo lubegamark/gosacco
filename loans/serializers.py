@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers, viewsets
 
 from members.models import Member, Group, NextOfKin
+from loans.models import LoanApplication
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -18,6 +19,12 @@ class MemberSerializer(serializers.ModelSerializer):
         model = Member
         depth = 0
 
+
+class LoanApplicationSerializer(serializers.ModelSerializer):
+    member = MemberSerializer()
+    class Meta:
+        model = LoanApplication
+        fields=('id','member','application_number','application_date','amount','type','status','security_details','security','guarantors')
 
 class GroupSerializer(serializers.ModelSerializer):
     members = serializers.StringRelatedField(many=True)

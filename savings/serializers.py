@@ -1,7 +1,10 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers, viewsets
 
+from savings.models import Savings, SavingsType, SavingsPurchase, SavingsWithdrawal
+from django.contrib.auth.models import User
 from members.models import Member, Group, NextOfKin
+
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -18,33 +21,31 @@ class MemberSerializer(serializers.ModelSerializer):
         model = Member
         depth = 0
 
-
-class GroupSerializer(serializers.ModelSerializer):
-    members = serializers.StringRelatedField(many=True)
-    leader = serializers.StringRelatedField()
-
+class SavingsTypeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Group
+        model = SavingsType
+        fields = ('id','name','category','compulsory','interval','minimum_amount','maximum_amount','interest')
 
 
-class GroupMemberSerializer(serializers.ModelSerializer):
-    members = MemberSerializer(many=True, read_only=True)
-
+class SavingsSerializer(serializers.ModelSerializer):
+    member = MemberSerializer()
+    savings_type = SavingsTypeSerializer()
     class Meta:
-        model = Group
-        # fields = ()
+        model = Savings
+        fields = ('id','member','amount','date','savings_type')
 
-
-class NextOfKinSerializer(serializers.ModelSerializer):
-
+class CreateSavingsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = NextOfKin
+        model = Savings
+        fields = ('id','member','amount','date','savings_type')
 
 
-class MemberViewSet(viewsets.ModelViewSet):
-    def list(self, request, *args, **kwargs):
-        """
-        Return a list of objects.
+class SavingsPurchaseSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = SavingsPurchase
+		fields = ('id','amount','date','member','savings_type')
 
-        """
-        return super(MemberViewSet, self).list(request, *args, **kwargs)
+class SavingsWithdrawSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = SavingsWithdrawal
+		fields = ('id','amount','date','member','savings_type')

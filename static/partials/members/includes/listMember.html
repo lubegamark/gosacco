@@ -9,48 +9,14 @@
             <td>Edit</td>
             <td>Delete</td>
         </tr>
-        <tr>
-            <td style="padding-left:10px; text-align:left;">Lubega Mark Musisi</td>
-            <td>SC0102978</td>
+        <tr ng-repeat="member in members" ng-model="$scope.members">
+            <td style="padding-left:10px; text-align:left;">{{member.user.first_name}} {{member.user.last_name}}</td>
+            <td>{{member.id}}</td>
             <td><a href="#"><i class="fa fa-pencil"></i></a></td>
 
             <td><a href="#" ><i class="fa fa-remove"></i> </a></td>
         </tr>
-        <tr>
-            <td style="padding-left:10px; text-align:left;">Semakula Kraiba</td>
-            <td>SC0102978</td>
-            <td><a href="#"><i class="fa fa-pencil"></i></a></td>
-
-            <td><a href="#" ><i class="fa fa-remove"></i> </a></td>
-        </tr>
-        <tr>
-            <td style="padding-left:10px; text-align:left;">Rathan John Black</td>
-            <td>SC0102978</td>
-            <td><a href="#"><i class="fa fa-pencil"></i></a></td>
-
-            <td><a href="#" ><i class="fa fa-remove"></i> </a></td>
-        </tr>
-        <tr>
-            <td style="padding-left:10px; text-align:left;">John Doe Smith</td>
-            <td>SC0102978</td>
-            <td><a href="#"><i class="fa fa-pencil"></i></a></td>
-
-            <td><a href="#" ><i class="fa fa-remove"></i> </a></td>
-        </tr>
-        <tr>
-            <td style="padding-left:10px; text-align:left;">Ricardo Mandela</td>
-            <td>SC0102978</td>
-            <td><a href="#"><i class="fa fa-pencil"></i></a></td>
-
-            <td><a href="#" ><i class="fa fa-remove"></i> </a></td>
-        </tr>
-        <tr>
-            <td style="padding-left:10px; text-align:left;">Martin Luther Black</td>
-            <td>SC0102978</td>
-            <td><a href="#"><i class="fa fa-pencil"></i></a></td>
-
-            <td><a href="#" ><i class="fa fa-remove"></i> </a></td>
-        </tr>
+        
         </tbody>
     </table>
 </div>

@@ -41,6 +41,5 @@
   },
   "_source": "git://github.com/janantala/angular-qr.git",
   "_target": "~0.2.0",
-  "_originalSource": "angular-qr",
-  "_direct": true
+  "_originalSource": "angular-qr"
 }
