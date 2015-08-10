@@ -9,7 +9,7 @@ apipatterns = patterns('',
                        url(r'^/groups/', include('members.group_urls')),
                        url(r'^/shares/', include('shares.urls')),
                        url(r'^/savings/', include('savings.urls')),
-                       url(r'^/loans/', include('loans.urls')),
+                       #url(r'^/loans/', include('loans.urls')),
 
                        )
 
