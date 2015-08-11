@@ -9,7 +9,7 @@ GOSACCO. The software to manage your sacco.
 * [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
 ### How do I get set up? ###
-
+#### How do I get set up? ####
 * Clone the repository
 * Create a virtualenvironment and set it up with python2.7
 * Add local_settings.py to gosacco app [Download Sample local_settings.py](https://bitbucket.org/gosacco/gosacco/downloads/local_settings.py)
