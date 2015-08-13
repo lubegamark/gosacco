@@ -1,5 +1,5 @@
 
-    <h1 class="ng-scope">Deposit Form</h1>
+    <h1 class="ng-scope">Deposit sForm</h1>
     <style type="text/css" class="ng-scope">
         .formCon input[type="text"], input[type="password"], textArea, select {
             background: none repeat scroll 0 0 #FFFFFF;
@@ -29,10 +29,28 @@
     </style>
  <div class="formCon ">
             <div class="formConInner">
-                <form class="form" method="post" ng-submit="vm.addDeposit()" >
-        <formly-form model="vm.deposit" fields="vm.depositFields" form="vm.depositForm">
-        <button class="btn btn-primary" type="submit" ng-disabled="vm.depositForm.$invalid">Deposit</button>
-        </formly-form>        
+                <form class="form" method="post" >
+
+
+                <label>Member Name *</label>
+                <select ng-model="deposit.member">
+                    <option value="1">kraiba</option>
+
+                </select>
+
+
+                <label>Amount  *</label>
+                <input type="text" ng-model="deposit.amount"/>
+
+
+
+                <label>Savings Type  *</label>
+                <input type="text" ng-model="deposit.savings_type"/>
+
+
+            </form>
+        <button class="btn btn-primary" ng-click="addDeposit(deposit)" type="submit">Deposit</button>
+
       </form>
                        
             </div>

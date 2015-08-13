@@ -51,7 +51,7 @@ class Savings(models.Model):
 
     member = ForeignKey(Member)
     amount = IntegerField()
-    date = DateTimeField()
+    date = DateTimeField(auto_now_add=True)
     savings_type = ForeignKey(SavingsType)
 
     def __unicode__(self):
