@@ -29,17 +29,28 @@
     </style>
  <div class="formCon ">
             <div class="formConInner">
-                <form class="form" method="post" ng-submit="vm.addDeposit()" >
-        <formly-form model="vm.deposit" fields="vm.depositFields" form="vm.depositForm">
-        <button class="btn btn-primary" type="submit" ng-disabled="vm.depositForm.$invalid">Deposit</button>
-        </formly-form>        
+
+      <form ng-submit="vm.submitForm()">
+           <label for="name">Member Name:</label>
+           <select ng-model="member_username" ng-options="member.user.username for member in members">
+               <option value="">Select member</option>  <!--not selected option-->
+           </select>
+           <label for="password">Amount:</label>
+           <input type="text" name="amount" id="amount" ng-model="vm.amount" />
+           <label for="name">Date:</label>
+           <input type="date" name="date" id="date" ng-model="vm.date" />
+           <label for="name">Savings Type:</label>
+           <select ng-model="savings_type" ng-options="savingtype.name for savingtype in savingtypes">
+               <option value="">Select Savings Type</option>  <!--not selected option-->
+           </select>
+           <button type="submit">Deposit</button>
       </form>
-                       
+
             </div>
-        </div>
-
-        
+ </div>
 
 
 
-            
+
+
+

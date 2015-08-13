@@ -29,17 +29,28 @@
     </style>
  <div class="formCon ">
             <div class="formConInner">
-                <form class="form" method="post" ng-submit="vm.addWithdraw()" >
+        <!--<form class="form" method="post" ng-submit="vm.addWithdraw()" >
         <formly-form model="vm.withdraw" fields="vm.withdrawFields" form="vm.withdrawForm">
         <button class="btn btn-primary" type="submit" ng-disabled="vm.withdrawForm.$invalid">Withdraw</button>
-        </formly-form>        
+        </formly-form>
+      </form> -->
+      <form ng-submit="vm.submitForm()">
+           <label for="name">Member Name:</label>
+           <select ng-model="selected" ng-options="member.user.username for member in members">
+               <option value="">Select member</option>  <!--not selected option-->
+           </select>
+           <label for="password">Amount:</label>
+           <input type="text" name="amount" id="amount" ng-model="vm.amount" />
+           <label for="name">Date:</label>
+           <input type="date" name="date" id="date" ng-model="vm.date" />
+           <button type="submit">Withdraw</button>
       </form>
-                       
+
             </div>
         </div>
 
-        
 
 
 
-            
+
+

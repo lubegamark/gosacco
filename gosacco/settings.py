@@ -94,7 +94,7 @@ USE_L10N = True
 USE_TZ = True
 
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:9000',
+    'http://localhost:5000',
 ]
 
 CORS_ORIGIN_ALLOW_ALL =True

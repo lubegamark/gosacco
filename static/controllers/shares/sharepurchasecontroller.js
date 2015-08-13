@@ -1,45 +1,16 @@
 angular.module('gosaccoApp')
-   .controller('SharepurchaseCtrl', ['$scope','Member','ShareType', function($scope, Member, ShareType){
+   .controller('SharepurchaseCtrl', ['$scope','$resource','Member','ShareType','SharePurchase', function($scope,$resource, Member, ShareType,SharePurchase){
    	   var vm =  this;
    	   vm.sharepurchase = {};
-   	   vm.sharepurchaseFields = [{
-            key: 'member',
-            type: 'select',
-            templateOptions: {
-                label: 'Member',
-                options:Member.query(),
-                valueProp:'id',
-                labelProp:'user',
-                required: true
-            }
-        },
-        {
-            key: 'number_of_shares',
-            type: 'input',
-            templateOptions: {
-            	type:'text',
-                label: 'Number Of Shares',
-                required: true
-            }
-        },
-        {
-            key: 'date',
-            type: 'input',
-            templateOptions: {
-            	type:'date',
-                label: 'Date',
-                required: true
-            }
-        },
-        {
-            key: 'share_type',
-            type: 'select',
-            templateOptions: {
-                label: 'Share Type',
-                options:ShareType.query(),
-                valueProp:'share_class',
-                labelProp:'share_class',
-                required: true
-            }
-        },];
+   	   $scope.members = Member.query();
+        $scope.sharetypes = ShareType.query();
+
+        $scope.sharePurchase = function(purchase){
+            alert(angular.toJson(purchase));
+            SharePurchase.save(purchase, function(result){
+                alert(result);
+            }, function(error){
+               alert(angular.toJson(error));
+            });
+        }
    }]);

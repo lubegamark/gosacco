@@ -10,6 +10,11 @@
             width: 175px !important;
         }
 
+        formCon textarea{
+            width: 58% !important;
+            height:200px;
+        }
+
         .formCon select{background: none repeat scroll 0 0 #FFFFFF;
             border: 1px solid #C2CFD8;
             border-radius: 2px;
@@ -29,17 +34,36 @@
     </style>
  <div class="formCon ">
             <div class="formConInner">
-                <form class="form" method="post" ng-submit="vm.addLoan()" >
-        <formly-form model="vm.loan" fields="vm.loanFields" form="vm.loanForm">
-        <button class="btn btn-primary" type="submit" ng-disabled="vm.loanForm.$invalid">Apply</button>
-        </formly-form>        
+        <form ng-submit="vm.submitForm()">
+           <label for="name">Member Name:</label>
+           <select ng-model="member_username" ng-options="member.user.username for member in members">
+               <option value="">Select member</option>  <!--not selected option-->
+           </select>
+           <label for="name">Date:</label>
+           <input type="date" name="date" id="date" ng-model="vm.date" />
+           <label for="password">Amount:</label>
+           <input type="text" name="amount" id="amount" ng-model="vm.amount" />
+           <label for="name">Payment Period:</label>
+           <input type="date" name="payment_period" id="payment_period" ng-model="vm.payment_period" />
+           <label for="name">Loan Type:</label>
+           <select ng-model="savings_type" ng-options="savingtype.name for savingtype in savingtypes">
+               <option value="">Select Loan Type</option>  <!--not selected option-->
+           </select>
+           <label for="password">Security Details:</label>
+           <textarea id="security_detail" ng-model="vm.security_detail" ></textarea>
+           <label for="security">Security:</label>
+           <textarea id="security" ng-model="vm.security" ></textarea>
+           <label for="password">Guarantors:</label>
+           <textarea id="guarantors" ng-model="vm.guarantors" ></textarea>
+           <button type="submit">Apply</button>
       </form>
-                       
+
+
             </div>
         </div>
 
-        
 
 
 
-            
+
+

@@ -89,7 +89,7 @@ angular.module('gosaccoApp',['ngResource', 'ngRoute','ngMessages','mgcrea.ngStra
       })
       .when('/share_purchase',{
             templateUrl:'partials/shares/share_purchase.html',
-            controller:'SharepurchaseCtrl as vm'
+            controller:'SharepurchaseCtrl'
       })
       .when('/share_transfer',{
             templateUrl:'partials/shares/share_transfer.html',

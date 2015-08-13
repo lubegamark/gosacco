@@ -15,8 +15,8 @@
             <td style="padding-left:10px; text-align:left;">{{share.member.user.first_name}} {{share.member.user.last_name}}</td>
             <td>{{share.id}}</td>
             <td >{{ share.share_type.share_class }}</td>
-            <td >{{ share.number_of_shares }}</td>
-            <td >{{ share.date }}</td>
+            <td >{{ share.number_of_shares|currency:"":0}}</td>
+            <td >{{ share.date|date:'MMM-dd-yyyy' }}</td>
         </tr>
 
         </tbody>
