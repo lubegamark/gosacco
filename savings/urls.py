@@ -16,8 +16,8 @@ urlpatterns = patterns('',
                        url(r'^savingstypedetail/(?P<pk>[0-9]+)/', views.SavingsTypeDetail.as_view()),
                        url(r'^savingswithdrawlist', views.SavingsWithdrawList.as_view()),
                        url(r'^savingswithdrawdetail/(?P<pk>[0-9]+)/', views.SavingsWithdrawDetail.as_view()),
-                       url(r'^savingsdepositlist/$', views.savingsdepositList.as_view()),
-                       url(r'^savingsdepositdetail/(?P<pk>[0-9]+)/', views.savingsdepositDetail.as_view()),
+                       url(r'^savingsdepositlist/$', views.SavingsDepositList.as_view()),
+                       url(r'^savingsdepositdetail/(?P<pk>[0-9]+)/', views.SavingsDepositDetail.as_view()),
 
                        )
 

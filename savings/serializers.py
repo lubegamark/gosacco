@@ -1,25 +1,12 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers, viewsets
+from members.serializers import MemberSerializer, MemberUserSerializer
 
 from savings.models import Savings, SavingsType, SavingsDeposit, SavingsWithdrawal
 from django.contrib.auth.models import User
 from members.models import Member, Group, NextOfKin
 
 
-
-class UserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ('username', 'first_name', 'last_name')
-
-
-class MemberSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-
-    class Meta:
-        model = Member
-        depth = 0
 
 class SavingsTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,6 +17,7 @@ class SavingsTypeSerializer(serializers.ModelSerializer):
 class SavingsSerializer(serializers.ModelSerializer):
     member = MemberSerializer()
     savings_type = SavingsTypeSerializer()
+
     class Meta:
         model = Savings
         fields = ('id','member','amount','date','savings_type')
@@ -40,12 +28,41 @@ class CreateSavingsSerializer(serializers.ModelSerializer):
         fields = ('id','member','amount','date','savings_type')
 
 
-class savingsdepositSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = SavingsDeposit
-		fields = ('id','amount','date','member','savings_type')
+class SavingsDepositSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SavingsDeposit
+        fields = ('id','amount','date','member','savings_type')
 
 class SavingsWithdrawSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = SavingsWithdrawal
-		fields = ('id','amount','date','member','savings_type')
+    class Meta:
+        model = SavingsWithdrawal
+        fields = ('id','amount','date','member','savings_type')
+
+
+
+
+class SavingsMinimalSerializer(serializers.ModelSerializer):
+    member = MemberUserSerializer()
+    savings_type = SavingsTypeSerializer()
+
+    class Meta:
+        model = Savings
+        fields = ('id','member','amount','date','savings_type')
+
+
+class SavingsDepositMinimalSerializer(serializers.ModelSerializer):
+    member = MemberUserSerializer()
+    #savings_type = SavingsTypeSerializer()
+
+    class Meta:
+        model = SavingsDeposit
+        fields = ('id','member','amount','date','savings_type')
+
+
+class SavingsWithdrawalMinimalSerializer(serializers.ModelSerializer):
+    member = MemberUserSerializer()
+    #savings_type = SavingsTypeSerializer()
+
+    class Meta:
+        model = SavingsDeposit
+        fields = ('id','member','amount','date','savings_type')

@@ -23,38 +23,38 @@ class SavingsWithdrawalAdmin(admin.ModelAdmin):
 # # admin.site.register(SavingsWithdrawal, SavingsWithdrawalAdmin)
 
 
-class savingsdepositAdmin(admin.ModelAdmin):
+class SavingsDepositAdmin(admin.ModelAdmin):
     list_display = ('member', 'savings_type', 'amount', 'date')
 
     def save_model(self, request, obj, form, change):
         SavingsDeposit.make_savings(obj.member, obj.savings_type, obj.amount)
 
-# # admin.site.register(SavingsDeposit, savingsdepositAdmin)
+# # admin.site.register(SavingsDeposit, SavingsDepositAdmin)
 
 from savings.models import Savings, SavingsType, SavingsWithdrawal,SavingsDeposit
 
 
 class SavingAdmin(admin.ModelAdmin):
-	change_list_template = "admin/change_list_filter_sidebar.html"
-	change_list_filter_template = "admin/filter_listing.html"
+    change_list_template = "admin/change_list_filter_sidebar.html"
+    change_list_filter_template = "admin/filter_listing.html"
 
-	list_display=('member_name','savings_type','amount','date')
-	list_filter=['savings_type','date','amount']
-	search_fields=[]
+    list_display=('member_name','savings_type','amount','date')
+    list_filter=['savings_type','date','amount']
+    search_fields=[]
 
 
 
 
 class SavingsTypeAdmin(admin.ModelAdmin):
-	change_list_template = "admin/change_list_filter_sidebar.html"
-	change_list_filter_template = "admin/filter_listing.html"
+    change_list_template = "admin/change_list_filter_sidebar.html"
+    change_list_filter_template = "admin/filter_listing.html"
 
-	list_display =('name','category','compulsory','interval','minimum_amount','maximum_amount','interest_rate')
-	list_filter = ['name']
-	search_fields =['name','category']
+    list_display =('name','category','compulsory','interval','minimum_amount','maximum_amount','interest_rate')
+    list_filter = ['name']
+    search_fields =['name','category']
 
 
 admin.site.register(Savings, SavingsAdmin)
 admin.site.register(SavingsType, SavingsTypeAdmin)
 admin.site.register(SavingsWithdrawal, SavingsWithdrawalAdmin)
-admin.site.register(SavingsDeposit, savingsdepositAdmin)
+admin.site.register(SavingsDeposit, SavingsDepositAdmin)

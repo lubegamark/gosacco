@@ -175,10 +175,9 @@ class SavingsDeposit(models.Model):
             savings = Savings(member=member, savings_type=savings_type, amount=amount, date=date)
 
         finally:
-            purchase = cls(member=member, savings_type=savings_type, amount=amount, date=date)
-            purchase.save()
+            deposit = cls(member=member, savings_type=savings_type, amount=amount, date=date)
+            deposit.save()
             savings.save()
-
 
     @classmethod
     def get_savings_deposits(cls, members=None, current_savings_type=None):

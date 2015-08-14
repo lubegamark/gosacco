@@ -181,7 +181,7 @@ class SavingsModelsTestCase(TestCase):
         savings = Savings.get_savings(members=self.group1, current_savings_type=self.savingType1)
         self.assertSequenceEqual(savings, [self.saving1])
 
-    #savingsdeposits without savingstypes
+    #SavingsDeposits without savingstypes
 
     def test_get_savings_deposits_no_member_no_savingstype(self):
         SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
@@ -220,7 +220,7 @@ class SavingsModelsTestCase(TestCase):
         purchased_savings = SavingsDeposit.get_savings_deposits(members=[self.member2])
         self.assertItemsEqual(purchased_savings, purchase_list)
 
-    #savingsdeposits with savingstypes
+    #SavingsDeposits with savingstypes
 
     def test_get_savings_deposits_no_member_with_savingstype(self):
         SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
