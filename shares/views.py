@@ -1,6 +1,6 @@
 # Create your views here.
 from django.http.response import Http404
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from members.models import Member
@@ -67,40 +67,45 @@ class ShareDetail(APIView):
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-class ShareTypeList(APIView):
+class ShareTypeList(generics.ListCreateAPIView):
     """
     List the share types
     """
-    def get(self, request, format=None):
-        sharetype = ShareType.objects.all()
-        serializer = ShareTypeSerializer(sharetype, many=True)
-        return Response(serializer.data)
-    @csrf_exempt
-    def post(self, request, format=None):
-        """
-        Add a share type
-        """
-        serializer = ShareTypeSerializer(data=request.DATA)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    queryset = ShareType.objects.all()
+    serializer_class = ShareTypeSerializer
+    # def get(self, request, format=None):
+    #     sharetype = ShareType.objects.all()
+    #     serializer = ShareTypeSerializer(sharetype, many=True)
+    #     return Response(serializer.data)
+    # @csrf_exempt
+    # def post(self, request, format=None):
+    #     """
+    #     Add a share type
+    #     """
+    #     serializer = ShareTypeSerializer(data=request.DATA)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class SharePurchaseList(APIView):
+class SharePurchaseList(generics.ListCreateAPIView):
     """
      List the share types
     """
-    def get(self, request, format=None):
-        sharepurchase = SharePurchase.objects.all()
-        serializer = SharePurchaseSerializer(sharepurchase, many=True)
-        return Response(serializer.data)
-
-    """ Purchase a share"""
-    def post(self, request, format=None):
-        serializer = SharePurchaseSerializer(data=request.DATA)
-        if serializer.is_valid:
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return  Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # def get(self, request, format=None):
+    #     sharepurchase = SharePurchase.objects.all()
+    #     serializer = SharePurchaseSerializer(sharepurchase, many=True)
+    #     return Response(serializer.data)
+    #
+    # """ Purchase a share"""
+    # @csrf_exempt
+    # def post(self, request, format=None):
+    #     serializer = SharePurchaseSerializer(data=request.DATA)
+    #     if serializer.is_valid:
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return  Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    queryset = SharePurchase.objects.all()
+    serializer_class = SharePurchaseSerializer
 
 
 class ShareTransferList(APIView):

@@ -1,10 +1,17 @@
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import Http404
 
 from members.models import Member, Group
-from members.serializers import MemberSerializer, GroupSerializer, GroupMemberSerializer
+from django.contrib.auth.models import User
+from members.serializers import MemberSerializer, GroupSerializer, GroupMemberSerializer, UserSerializer
+
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
 
 
 class MemberList(APIView):

@@ -29,6 +29,7 @@
     </style>
  <div class="formCon ">
             <div class="formConInner">
+<<<<<<< HEAD
                 <form class="form" method="post" >
 
 
@@ -51,13 +52,30 @@
             </form>
         <button class="btn btn-primary" ng-click="addDeposit(deposit)" type="submit">Deposit</button>
 
+=======
+
+      <form ng-submit="vm.submitForm()">
+           <label for="name">Member Name:</label>
+           <select ng-model="member_username" ng-options="member.user.username for member in members">
+               <option value="">Select member</option>  <!--not selected option-->
+           </select>
+           <label for="password">Amount:</label>
+           <input type="text" name="amount" id="amount" ng-model="vm.amount" />
+           <label for="name">Date:</label>
+           <input type="date" name="date" id="date" ng-model="vm.date" />
+           <label for="name">Savings Type:</label>
+           <select ng-model="savings_type" ng-options="savingtype.name for savingtype in savingtypes">
+               <option value="">Select Savings Type</option>  <!--not selected option-->
+           </select>
+           <button type="submit">Deposit</button>
+>>>>>>> frontend
       </form>
-                       
+
             </div>
-        </div>
-
-        
+ </div>
 
 
 
-            
+
+
+

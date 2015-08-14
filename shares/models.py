@@ -88,7 +88,7 @@ class SharePurchase(models.Model):
     member = ForeignKey(Member)
     current_share_price = IntegerField()
     number_of_shares = IntegerField()
-    date = DateTimeField()
+    date = DateTimeField(auto_now_add=True)
     share_type = ForeignKey(ShareType)
 
     def __unicode__(self):

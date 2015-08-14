@@ -21,6 +21,9 @@ class Member(Model):
     def __unicode__(self):
         return self.user.username
 
+    def member_name(self):
+        return " ".join([self.user.first_name, self.user.last_name])
+
 
 class Group(Model):
     name = CharField(max_length=100)

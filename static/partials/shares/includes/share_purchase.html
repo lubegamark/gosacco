@@ -34,10 +34,23 @@
     </style>
  <div class="formCon ">
             <div class="formConInner">
-                <form class="form" method="post" ng-submit="vm.addSharePurchase()" >
-        <formly-form model="vm.sharepurchase" fields="vm.sharepurchaseFields" form="vm.sharepurchaseForm">
-        <button class="btn btn-primary" type="submit" ng-disabled="vm.sharepurchaseForm.$invalid">Purchase</button>
-        </formly-form>        
+                <form >
+           <label for="name">Member Name:</label>
+           <!--<select ng-model="purchase.member" ng-options="member.user.username for member in members">
+               <option value="member.user.id">Select member</option>
+           </select> -->
+                    <input type="text" name="member" id="share_price" ng-model="purchase.member" />
+                    <label for="password">Current Share Price:</label>
+           <input type="text" name="share_price" id="share_price" ng-model="purchase.current_share_price" />
+           <label for="password">Number of Shares:</label>
+
+           <input type="text" name="amount" id="amount" ng-model="purchase.number_of_shares" />
+           <label for="name">Share Type:</label>
+           <!--<select ng-model="purchase.share_type" ng-options="sharetype.share_class for sharetype in sharetypes">
+               <option value="sharetype.id">Select Share Type</option>
+           </select> -->
+                    <input type="text" name="share_type" id="share_price" ng-model="purchase.share_type" />
+           <button type="submit" ng-click="sharePurchase(purchase)">Purchase</button>
       </form>
                        
             </div>
