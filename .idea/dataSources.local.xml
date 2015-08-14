@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="Django default" uuid="fb12f09c-15ac-4a12-98c8-66272b5b2f39">
+      <schema-pattern>gosacco.*</schema-pattern>
+      <default-schemas>gosacco.*</default-schemas>
+    </data-source>
+  </component>
+</project>

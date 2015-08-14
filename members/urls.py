@@ -7,7 +7,7 @@ from shares.models import Shares
 member_urls = patterns('',
                        # Examples:
                        # url(r'^$', 'members.views.home', name='home'),
-                       # url(r'^blog/', include('blog.urls')),
+                       url(r'^users/$', views.UserList.as_view()),
                        url(r'^members/$', views.MemberList.as_view()),
                        url(r'^members/(?P<pk>[0-9]+)/$', views.MemberDetail.as_view()),
                        url(r'^members/(?P<pk>[0-9]+)/shares$', Shares.views.ShareDetail.as_view()),

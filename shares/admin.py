@@ -7,7 +7,7 @@ from shares.models import Shares, ShareType, SharePurchase, ShareTransfer
 class ShareAdmin(admin.ModelAdmin):
     change_list_template = "admin/change_list_filter_sidebar.html"
     change_list_filter_template = "admin/filter_listing.html"
-    list_display = ('member_name', 'share_type', 'number_of_shares', 'date')
+    list_display = ('member', 'share_type', 'number_of_shares', 'date')
     # search_fields = ['member']
     list_filter=['date','share_type']
     readonly_fields = ('member', 'share_type', 'number_of_shares', 'date')
@@ -17,9 +17,15 @@ class ShareAdmin(admin.ModelAdmin):
 class SharePurchaseAdmin(admin.ModelAdmin):
     change_list_template = "admin/change_list_filter_sidebar.html"
     change_list_filter_template = "admin/filter_listing.html"
+
     list_display = ('__unicode__', 'member', 'share_type', 'number_of_shares', 'date')
     search_fields = ('member', 'share_type', 'date')
     exclude = ('current_share_price',)
+
+    list_display = ('member', 'share_type', 'number_of_shares')
+    search_fields = ('member', 'share_type')
+    exclude = ('current_share_price','date')
+
 
     def save_model(self, request, obj, form, change):
         SharePurchase.issue_shares(obj.member, obj.number_of_shares, obj.share_type)

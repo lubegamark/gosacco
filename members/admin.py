@@ -5,7 +5,7 @@ from django.contrib import admin
 
 
 class MemberAdmin(admin.ModelAdmin):
-    list_display = ('username', 'first_name', 'last_name', 'email')
+    list_display = ('member_name', 'email')
 
     def username(self, Member):
         return Member.user.username
