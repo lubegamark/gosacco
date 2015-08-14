@@ -12,6 +12,9 @@ class FeeType(Model):
     minimum_amount = IntegerField()
     maximum_amount = IntegerField()
 
+    def __unicode__(self):
+        return self.name
+
 
 class FeePayment(Model):
     member = ForeignKey(Member)
@@ -19,3 +22,6 @@ class FeePayment(Model):
     date = DateTimeField()
     amount = IntegerField()
     reason = CharField(max_length=250)
+
+    def __unicode__(self):
+        return str(self.member)
