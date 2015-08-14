@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='SavingsPurchase',
+            name='SavingsDeposit',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('amount', models.IntegerField()),
@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.AddField(
-            model_name='savingspurchase',
+            model_name='savingsdeposit',
             name='savings_type',
             field=models.ForeignKey(to='savings.SavingsType'),
             preserve_default=True,

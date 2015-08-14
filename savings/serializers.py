@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers, viewsets
 
-from savings.models import Savings, SavingsType, SavingsPurchase, SavingsWithdrawal
+from savings.models import Savings, SavingsType, SavingsDeposit, SavingsWithdrawal
 from django.contrib.auth.models import User
 from members.models import Member, Group, NextOfKin
 
@@ -40,9 +40,9 @@ class CreateSavingsSerializer(serializers.ModelSerializer):
         fields = ('id','member','amount','date','savings_type')
 
 
-class SavingsPurchaseSerializer(serializers.ModelSerializer):
+class savingsdepositSerializer(serializers.ModelSerializer):
 	class Meta:
-		model = SavingsPurchase
+		model = SavingsDeposit
 		fields = ('id','amount','date','member','savings_type')
 
 class SavingsWithdrawSerializer(serializers.ModelSerializer):

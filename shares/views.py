@@ -1,62 +1,66 @@
 # Create your views here.
 from django.http.response import Http404
 from rest_framework import status, generics
+from rest_framework import status
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from members.models import Member
 from shares.models import Shares, ShareType, SharePurchase, ShareTransfer
-from shares.serializers import SharesSerializer,ShareTypeSerializer, SharePurchaseSerializer, ShareTransferSerializer
+from shares.serializers import SharesSerializer,ShareTypeSerializer, SharePurchaseSerializer, ShareTransferSerializer, \
+    SharesMinimalSerializer
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics
 
-class ShareList(generics.ListAPIView):
-    queryset = Shares.objects.all()
-    serializer_class = SharesSerializer
-    # """
-    # Show are list of shares
-    # """
-    # def get(self, request, format=None):
-    #     shares = Shares.objects.all()
-    #     serializer = SharesSerializer(shares,many=True)
-    #     return  Response(serializer.data)
+class ShareList(APIView):
 
-    # @csrf_exempt
-    # def post(self, request, format=None):
-    #     """
-    #     Add new share
-    #     """
-    #     serializer = SharesSerializer(data=request.DATA)
-    #     if serializer.is_valid:
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request, format=None):
+        """
+        Show are list of shares
+        """
+        shares = Shares.objects.all()
+        serializer = SharesSerializer(shares,many=True)
+        return Response(serializer.data)
+
+    @csrf_exempt
+    def post(self, request, format=None):
+        """
+        Add new share
+        """
+        serializer = SharesSerializer(data=request.DATA)
+        if serializer.is_valid:
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ShareDetail(APIView):
     """
-    Show a members different shares (totals).
+    Handles all deltails about a users shares
     """
     def get_member(self, pk):
+        """
+        Get a member.
+        """
         try:
             return Member.objects.get(pk=pk)
         except Member.DoesNotExist:
             raise Http404
 
-
-    def get(self,  request, member_pk, format=None):
+    def get(self,  request, pk, format=None):
         """
         List members shares
         """
-        member =  self.get_member(int(member_pk))
+        member = self.get_member(int(pk))
         shares = Shares.get_members_shares(member, )
-        serializer = SharesSerializer(shares, many=True)
+        serializer = SharesMinimalSerializer(shares, many=True)
         return Response(serializer.data)
 
-    def post(self, request, member_pk, format=None):
+    def post(self, request, pk, format=None):
         """
         Add a new share for a user
         """
-        member = self.get_member(member_pk)
+        member = self.get_member(pk)
         new_share_details = request.data
         share_type = ShareType.objects.get(pk=new_share_details['share_type'])
         #serializer = SharesSerializer(data=request.data)
@@ -107,12 +111,74 @@ class SharePurchaseList(generics.ListCreateAPIView):
     queryset = SharePurchase.objects.all()
     serializer_class = SharePurchaseSerializer
 
+    def get(self, request, format=None):
+        sharetype = ShareType.objects.all()
+        serializer = ShareTypeSerializer(sharetype, many=True)
+        return Response(serializer.data)
+
+    @csrf_exempt
+    def post(self, request, format=None):
+        """
+        Add a share type
+        """
+        serializer = ShareTypeSerializer(data=request.DATA)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class SharePurchaseList(APIView):
+    def get_member(self, pk):
+        """
+        Get a member.
+        """
+        try:
+            return Member.objects.get(pk=pk)
+        except Member.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        """
+        List the Share Purchase Transactions
+        """
+        if pk is not None:
+            member = self.get_member(int(pk))
+        else:
+            member = None
+        sharepurchase = SharePurchase.get_share_purchases(members=member)
+        serializer = SharePurchaseSerializer(sharepurchase, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        """
+        Purchase a share
+        """
+        serializer = SharePurchaseSerializer(data=request.DATA)
+        if serializer.is_valid:
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class ShareTransferList(APIView):
-    """
-    List of Share Transfers
-    """
-    def get(self, request, format=None):
-        sharetransfer = ShareTransfer.objects.all()
+    def get_member(self, pk):
+        """
+        Get a member.
+        """
+        try:
+            return Member.objects.get(pk=pk)
+        except Member.DoesNotExist:
+            raise Http404
+
+
+    def get(self, request, pk, format=None):
+        """
+        List of Share Transfers
+        """
+        if pk is not None:
+            member = self.get_member(int(pk))
+        else:
+            member = None
+        sharetransfer = ShareTransfer.get_share_transfers(members=member)
         serializer = ShareTransferSerializer(sharetransfer, many=True)
         return Response(serializer.data)

@@ -94,7 +94,7 @@ class SharePurchase(models.Model):
     def __unicode__(self):
         return str(self.number_of_shares)+" "+"class "+self.share_type.share_class+" shares bought by "+self.member.user.username#+" at "+self.date
 
-
+    @classmethod
     def issue_shares(cls, member, shares, share_type):
         """
         Issue new stock to member

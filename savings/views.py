@@ -3,8 +3,8 @@ from django.http.response import Http404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from savings.models import Savings, SavingsType, SavingsWithdrawal, SavingsPurchase
-from savings.serializers import SavingsSerializer, SavingsTypeSerializer, SavingsWithdrawSerializer, SavingsPurchaseSerializer, CreateSavingsSerializer
+from savings.models import Savings, SavingsType, SavingsWithdrawal, SavingsDeposit
+from savings.serializers import SavingsSerializer, SavingsTypeSerializer, SavingsWithdrawSerializer, savingsdepositSerializer, CreateSavingsSerializer
 from rest_framework import generics
 
 # class SavingsList(APIView):
@@ -45,10 +45,10 @@ class SavingsWithdrawDetail(generics.RetrieveUpdateDestroyAPIView):
 	queryset = SavingsWithdrawal.objects.all()
 	serializer_class = SavingsWithdrawSerializer
 
-class SavingsPurchaseList(generics.ListCreateAPIView):
-	queryset = SavingsPurchase.objects.all()
-	serializer_class = SavingsPurchaseSerializer
+class savingsdepositList(generics.ListCreateAPIView):
+	queryset = SavingsDeposit.objects.all()
+	serializer_class = savingsdepositSerializer
 
-class SavingsPurchaseDetail(generics.RetrieveUpdateDestroyAPIView):
-	queryset = SavingsPurchase.objects.all()
-	serializer_class = SavingsPurchaseSerializer
+class savingsdepositDetail(generics.RetrieveUpdateDestroyAPIView):
+	queryset = SavingsDeposit.objects.all()
+	serializer_class = savingsdepositSerializer

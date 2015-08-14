@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.test import TestCase
 from django.utils import timezone
 from members.models import Member, Group
-from savings.models import SavingsType, Savings, SavingsPurchase, SavingsWithdrawal
+from savings.models import SavingsType, Savings, SavingsDeposit, SavingsWithdrawal
 
 
 class SavingsModelsTestCase(TestCase):
@@ -128,7 +128,7 @@ class SavingsModelsTestCase(TestCase):
         new_savings = 5000
         savings_before = Savings.objects.get(member=self.member1, savings_type=self.savingType1)
         self.assertEqual(savings_before, self.saving1)
-        SavingsPurchase.make_savings(self.member1, self.savingType1, new_savings, timezone.now())
+        SavingsDeposit.make_savings(self.member1, self.savingType1, new_savings, timezone.now())
         savings_after = Savings.objects.get(member=self.member1, savings_type=self.savingType1)
         self.assertEqual(savings_after, self.saving1)
         self.assertEqual(savings_before.amount+new_savings, savings_after.amount)
@@ -181,91 +181,91 @@ class SavingsModelsTestCase(TestCase):
         savings = Savings.get_savings(members=self.group1, current_savings_type=self.savingType1)
         self.assertSequenceEqual(savings, [self.saving1])
 
-    #SavingsPurchases without savingstypes
+    #savingsdeposits without savingstypes
 
-    def test_get_savings_purchases_no_member_no_savingstype(self):
-        SavingsPurchase.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
-        SavingsPurchase.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
-        purchase_list = SavingsPurchase.objects.filter()
-        purchased_savings = SavingsPurchase.get_savings_purchases()
+    def test_get_savings_deposits_no_member_no_savingstype(self):
+        SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
+        SavingsDeposit.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
+        purchase_list = SavingsDeposit.objects.filter()
+        purchased_savings = SavingsDeposit.get_savings_deposits()
         self.assertItemsEqual(purchased_savings, purchase_list)
 
-    def test_get_savings_purchases_with_member_no_savingstype(self):
-        SavingsPurchase.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
-        SavingsPurchase.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
-        purchase_list = SavingsPurchase.objects.filter(member=self.member1)
-        purchased_savings = SavingsPurchase.get_savings_purchases(members=self.member1)
+    def test_get_savings_deposits_with_member_no_savingstype(self):
+        SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
+        SavingsDeposit.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
+        purchase_list = SavingsDeposit.objects.filter(member=self.member1)
+        purchased_savings = SavingsDeposit.get_savings_deposits(members=self.member1)
         self.assertItemsEqual(purchased_savings, purchase_list)
 
-    def test_get_savings_purchases_with_group_no_savingstype(self):
-        SavingsPurchase.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
-        SavingsPurchase.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
+    def test_get_savings_deposits_with_group_no_savingstype(self):
+        SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
+        SavingsDeposit.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
         member= Member.objects.filter(group__pk=self.group1.pk)
-        purchase_list = SavingsPurchase.objects.filter(member=member)
-        purchased_savings = SavingsPurchase.get_savings_purchases(members=self.group1)
+        purchase_list = SavingsDeposit.objects.filter(member=member)
+        purchased_savings = SavingsDeposit.get_savings_deposits(members=self.group1)
         self.assertItemsEqual(purchased_savings, purchase_list)
 
-    def test_get_savings_purchases_with_list_no_savingstype(self):
-        SavingsPurchase.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
-        SavingsPurchase.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
-        purchase_list = SavingsPurchase.objects.filter(member=self.member2)
-        purchased_savings = SavingsPurchase.get_savings_purchases(members=[self.member2])
+    def test_get_savings_deposits_with_list_no_savingstype(self):
+        SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
+        SavingsDeposit.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
+        purchase_list = SavingsDeposit.objects.filter(member=self.member2)
+        purchased_savings = SavingsDeposit.get_savings_deposits(members=[self.member2])
         self.assertItemsEqual(purchased_savings, purchase_list)
 
-    #SavingsPurchases with savingstypes
+    #savingsdeposits with savingstypes
 
-    def test_get_savings_purchases_no_member_with_savingstype(self):
-        SavingsPurchase.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
-        SavingsPurchase.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
-        purchase_list = SavingsPurchase.objects.filter(savings_type=self.savingType1)
-        purchased_savings = SavingsPurchase.get_savings_purchases(current_savings_type=self.savingType1)
+    def test_get_savings_deposits_no_member_with_savingstype(self):
+        SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
+        SavingsDeposit.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
+        purchase_list = SavingsDeposit.objects.filter(savings_type=self.savingType1)
+        purchased_savings = SavingsDeposit.get_savings_deposits(current_savings_type=self.savingType1)
         self.assertItemsEqual(purchased_savings, purchase_list)
 
-    def test_get_savings_purchases_with_member_with_savingstype(self):
-        SavingsPurchase.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
-        SavingsPurchase.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
-        purchase_list = SavingsPurchase.objects.filter(member=self.member1, savings_type=self.savingType1)
-        purchased_savings = SavingsPurchase.get_savings_purchases(members=self.member1, current_savings_type=self.savingType1)
+    def test_get_savings_deposits_with_member_with_savingstype(self):
+        SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
+        SavingsDeposit.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
+        purchase_list = SavingsDeposit.objects.filter(member=self.member1, savings_type=self.savingType1)
+        purchased_savings = SavingsDeposit.get_savings_deposits(members=self.member1, current_savings_type=self.savingType1)
         self.assertItemsEqual(purchased_savings, purchase_list)
 
-    def test_get_savings_purchases_with_group_with_savingstype(self):
-        SavingsPurchase.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
-        SavingsPurchase.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
+    def test_get_savings_deposits_with_group_with_savingstype(self):
+        SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
+        SavingsDeposit.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
         member= Member.objects.filter(group__pk=self.group1.pk)
-        purchase_list = SavingsPurchase.objects.filter(member=member, savings_type=self.savingType1)
-        purchased_savings = SavingsPurchase.get_savings_purchases(members=self.group1, current_savings_type=self.savingType1)
+        purchase_list = SavingsDeposit.objects.filter(member=member, savings_type=self.savingType1)
+        purchased_savings = SavingsDeposit.get_savings_deposits(members=self.group1, current_savings_type=self.savingType1)
         self.assertItemsEqual(purchased_savings, purchase_list)
 
-    def test_get_savings_purchases_with_list_with_savingstype(self):
-        SavingsPurchase.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
-        SavingsPurchase.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
-        purchase_list = SavingsPurchase.objects.filter(member=self.member2, savings_type=self.savingType1)
-        purchased_savings = SavingsPurchase.get_savings_purchases(members=[self.member2], current_savings_type=self.savingType1)
+    def test_get_savings_deposits_with_list_with_savingstype(self):
+        SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
+        SavingsDeposit.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
+        purchase_list = SavingsDeposit.objects.filter(member=self.member2, savings_type=self.savingType1)
+        purchased_savings = SavingsDeposit.get_savings_deposits(members=[self.member2], current_savings_type=self.savingType1)
         self.assertItemsEqual(purchased_savings, purchase_list)
 
     #SavingsTransfers without savingstypes
 
     def test_get_withdrawals(self):
-        SavingsPurchase.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
-        SavingsPurchase.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
+        SavingsDeposit.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
 
         SavingsWithdrawal.withdraw_savings(member=self.member2, amount=11, savings_type=self.savingType1)
         transferred_list = SavingsWithdrawal.objects.all()
@@ -274,10 +274,10 @@ class SavingsModelsTestCase(TestCase):
         self.assertItemsEqual(transferred_savings, transferred_list)
 
     def test_get_savings_withdrawals_with_member_no_savingstype(self):
-        SavingsPurchase.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
-        SavingsPurchase.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
+        SavingsDeposit.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
 
         SavingsWithdrawal.withdraw_savings(member=self.member1, amount=11, savings_type=self.savingType1)
         transferred_list = SavingsWithdrawal.objects.filter(member=self.member1)
@@ -286,10 +286,10 @@ class SavingsModelsTestCase(TestCase):
         self.assertItemsEqual(transferred_savings, transferred_list)
 
     def test_get_savings_withdrawal_with_group_no_savingstype(self):
-        SavingsPurchase.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
-        SavingsPurchase.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
+        SavingsDeposit.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
 
         SavingsWithdrawal.withdraw_savings(member=self.member1, amount=11, savings_type=self.savingType1)
         SavingsWithdrawal.withdraw_savings(member=self.member2, amount=2, savings_type=self.savingType1)
@@ -300,10 +300,10 @@ class SavingsModelsTestCase(TestCase):
         self.assertItemsEqual(transferred_savings, transferred_list)
 
     def test_get_savings_withdrawals_with_list_no_savingstype(self):
-        SavingsPurchase.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
-        SavingsPurchase.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
+        SavingsDeposit.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
 
         SavingsWithdrawal.withdraw_savings(member=self.member1, amount=11, savings_type=self.savingType1)
         SavingsWithdrawal.withdraw_savings(member=self.member2, amount=2, savings_type=self.savingType1)
@@ -316,10 +316,10 @@ class SavingsModelsTestCase(TestCase):
     #SavingsTransfers with savingstypes
 
     def test_get_savings_withdrawals_with_savingstype(self):
-        SavingsPurchase.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
-        SavingsPurchase.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
+        SavingsDeposit.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
 
         SavingsWithdrawal.withdraw_savings(member=self.member1, amount=11, savings_type=self.savingType1)
         SavingsWithdrawal.withdraw_savings(member=self.member2, amount=2, savings_type=self.savingType1)
@@ -329,10 +329,10 @@ class SavingsModelsTestCase(TestCase):
         self.assertItemsEqual(transferred_savings, transferred_list)
 
     def test_get_savings_withdrawals_with_member_with_savingstype(self):
-        SavingsPurchase.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
-        SavingsPurchase.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
+        SavingsDeposit.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
 
         SavingsWithdrawal.withdraw_savings(member=self.member1, amount=11, savings_type=self.savingType1)
         SavingsWithdrawal.withdraw_savings(member=self.member2, amount=2, savings_type=self.savingType1)
@@ -343,10 +343,10 @@ class SavingsModelsTestCase(TestCase):
         self.assertItemsEqual(transferred_savings, transferred_list)
 
     def test_get_savings_withdrawal_with_group_with_savingstype(self):
-        SavingsPurchase.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
-        SavingsPurchase.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
+        SavingsDeposit.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
 
         SavingsWithdrawal.withdraw_savings(member=self.member1, amount=11, savings_type=self.savingType1)
         SavingsWithdrawal.withdraw_savings(member=self.member2, amount=2, savings_type=self.savingType1)
@@ -357,10 +357,10 @@ class SavingsModelsTestCase(TestCase):
         self.assertItemsEqual(transferred_savings, transferred_list)
 
     def test_get_savings_withdrawals_with_list_with_savingstype(self):
-        SavingsPurchase.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
-        SavingsPurchase.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
-        SavingsPurchase.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=3, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member2, amount=15, savings_type=self.savingType2)
+        SavingsDeposit.make_savings(member=self.member2, amount=67, savings_type=self.savingType1)
+        SavingsDeposit.make_savings(member=self.member1, amount=1, savings_type=self.savingType1)
 
         SavingsWithdrawal.withdraw_savings(member=self.member1, amount=11, savings_type=self.savingType1)
         SavingsWithdrawal.withdraw_savings(member=self.member2, amount=2, savings_type=self.savingType1)

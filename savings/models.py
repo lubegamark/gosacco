@@ -157,7 +157,7 @@ class SavingsWithdrawal(models.Model):
 
 
 
-class SavingsPurchase(models.Model):
+class SavingsDeposit(models.Model):
     class Meta:
         verbose_name_plural='Savings Purchase'
     amount = IntegerField()
@@ -181,31 +181,31 @@ class SavingsPurchase(models.Model):
 
 
     @classmethod
-    def get_savings_purchases(cls, members=None, current_savings_type=None):
+    def get_savings_deposits(cls, members=None, current_savings_type=None):
         if current_savings_type is None:
             if members is None:
-                savings_purchases = cls.objects.all()
+                savings_deposits = cls.objects.all()
             elif isinstance(members, Member):
-                savings_purchases = cls.objects.filter(member=members)
+                savings_deposits = cls.objects.filter(member=members)
             elif isinstance(members, Group):
                 #TODO Refactor these two statements inot one query
                 group_members = Member.objects.filter(group__pk=members.pk)
-                savings_purchases = cls.objects.filter(member__in=group_members)
+                savings_deposits = cls.objects.filter(member__in=group_members)
             elif isinstance(members, list):
-                savings_purchases = cls.objects.filter(member__in=members)
+                savings_deposits = cls.objects.filter(member__in=members)
         elif isinstance(current_savings_type, SavingsType):
             if members is None:
-                savings_purchases = cls.objects.filter(savings_type=current_savings_type)
+                savings_deposits = cls.objects.filter(savings_type=current_savings_type)
             elif isinstance(members, Member):
-                savings_purchases = cls.objects.filter(member=members, savings_type=current_savings_type)
+                savings_deposits = cls.objects.filter(member=members, savings_type=current_savings_type)
             elif isinstance(members, Group):
                 #TODO Refactor these two statements inot one query
                 group_members = Member.objects.filter(group__pk=members.pk)
-                savings_purchases = cls.objects.filter(member__in=group_members, savings_type=current_savings_type)
+                savings_deposits = cls.objects.filter(member__in=group_members, savings_type=current_savings_type)
             elif isinstance(members, list):
-                savings_purchases = cls.objects.filter(member__in=members, savings_type=current_savings_type)
+                savings_deposits = cls.objects.filter(member__in=members, savings_type=current_savings_type)
         else:
-            savings_purchases = []
+            savings_deposits = []
 
-        return savings_purchases
+        return savings_deposits
 

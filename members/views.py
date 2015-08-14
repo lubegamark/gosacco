@@ -15,10 +15,6 @@ class UserList(generics.ListAPIView):
 
 
 class MemberList(APIView):
-    """
-    List all members, or create a new member.
-    """
-
     def get(self, request, format=None):
         """
         List all members
@@ -39,10 +35,6 @@ class MemberList(APIView):
 
 
 class GroupList(APIView):
-    """
-    List all group, or create a new group.
-    """
-
     def get(self, request, format=None):
         """
         List groups.
@@ -63,10 +55,6 @@ class GroupList(APIView):
 
 
 class MemberDetail(APIView):
-    """
-    Retrieve, update or delete a Member.
-    """
-
     def get_member(self, pk):
         try:
             return Member.objects.get(pk=pk)
@@ -102,10 +90,6 @@ class MemberDetail(APIView):
 
 
 class GroupDetail(APIView):
-    """
-    Retrieve, update or delete a Group.
-    """
-
     def get_group(self, pk):
         try:
             return Group.objects.get(pk=pk)
@@ -141,10 +125,6 @@ class GroupDetail(APIView):
 
 
 class GroupMember(APIView):
-    """
-    Retrieve, update or delete a Group Member.
-    """
-
     def get_groupmember(self, pk):
         try:
             return Group.objects.get(pk=pk)
