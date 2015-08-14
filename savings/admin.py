@@ -1,6 +1,6 @@
 # Register your models here.
 from django.contrib import admin
-from savings.models import Savings, SavingsType, SavingsWithdrawal, SavingsPurchase
+from savings.models import Savings, SavingsType, SavingsWithdrawal, SavingsDeposit
 
 
 class SavingsAdmin(admin.ModelAdmin):
@@ -23,15 +23,15 @@ class SavingsWithdrawalAdmin(admin.ModelAdmin):
 # # admin.site.register(SavingsWithdrawal, SavingsWithdrawalAdmin)
 
 
-class SavingsPurchaseAdmin(admin.ModelAdmin):
+class savingsdepositAdmin(admin.ModelAdmin):
     list_display = ('member', 'savings_type', 'amount', 'date')
 
     def save_model(self, request, obj, form, change):
-        SavingsPurchase.make_savings(obj.member, obj.savings_type, obj.amount)
+        SavingsDeposit.make_savings(obj.member, obj.savings_type, obj.amount)
 
-# # admin.site.register(SavingsPurchase, SavingsPurchaseAdmin)
+# # admin.site.register(SavingsDeposit, savingsdepositAdmin)
 
-from savings.models import Savings, SavingsType, SavingsWithdrawal,SavingsPurchase
+from savings.models import Savings, SavingsType, SavingsWithdrawal,SavingsDeposit
 
 
 class SavingAdmin(admin.ModelAdmin):
@@ -57,4 +57,4 @@ class SavingsTypeAdmin(admin.ModelAdmin):
 admin.site.register(Savings, SavingsAdmin)
 admin.site.register(SavingsType, SavingsTypeAdmin)
 admin.site.register(SavingsWithdrawal, SavingsWithdrawalAdmin)
-admin.site.register(SavingsPurchase, SavingsPurchaseAdmin)
+admin.site.register(SavingsDeposit, savingsdepositAdmin)

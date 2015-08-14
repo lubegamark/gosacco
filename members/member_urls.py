@@ -10,4 +10,8 @@ urlpatterns = patterns('',
                        url(r'^(?P<pk>[0-9]+)/shares$', shares_views.ShareDetail.as_view()),
                        url(r'^(?P<pk>[0-9]+)/sharepurchases$', shares_views.SharePurchaseList.as_view()),
                        url(r'^(?P<pk>[0-9]+)/sharetransfers$', shares_views.ShareTransferList.as_view()),
+                       url(r'^(?P<pk>[0-9]+)/savings$', shares_views.ShareDetail.as_view()),
+                       url(r'^(?P<pk>[0-9]+)/sharepurchases$', shares_views.SharePurchaseList.as_view()),
+                       url(r'^(?P<pk>[0-9]+)/sharetransfers$', shares_views.ShareTransferList.as_view()),
+
                        )
