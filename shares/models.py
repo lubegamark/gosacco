@@ -38,8 +38,6 @@ class Shares(models.Model):
     def member_name(self):
         return ' '.join([self.member.user.first_name, self.member.user.last_name])
 
-
-
     @classmethod
     def get_shares(cls, members=None, current_share_type=None):
         """

@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('current_share_price', models.IntegerField()),
                 ('number_of_shares', models.IntegerField()),
-                ('date', models.DateTimeField()),
+                ('date', models.DateTimeField(auto_now_add=True)),
                 ('member', models.ForeignKey(to='members.Member')),
             ],
             options={

@@ -20,7 +20,7 @@ from rest_framework import generics
 #         return Response(serializer.data)
 
 
-class SavingsList(generics.ListAPIView):
+class SavingsList(APIView):
     queryset = Savings.objects.all()
     serializer_class = SavingsSerializer
 
