@@ -5,7 +5,8 @@ from django.http import Http404
 
 from members.models import Member, Group
 from django.contrib.auth.models import User
-from members.serializers import MemberSerializer, GroupSerializer, GroupMemberSerializer, UserSerializer
+from members.serializers import MemberSerializer, GroupSerializer, GroupMemberSerializer, UserSerializer, \
+    MemberUserSerializer
 
 
 class UserList(generics.ListAPIView):
@@ -15,12 +16,13 @@ class UserList(generics.ListAPIView):
 
 
 class MemberList(APIView):
+
     def get(self, request, format=None):
         """
         List all members
         """
         members = Member.objects.all()
-        serializer = MemberSerializer(members, many=True)
+        serializer = MemberUserSerializer(members, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
