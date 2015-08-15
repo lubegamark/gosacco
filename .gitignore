@@ -1,5 +1,5 @@
 local_settings.py
-.idea
+.idea/
 *.py[cod]
 
 
@@ -44,3 +44,4 @@ nosetests.xml
 
 # Virtual environment
 venv
+.idea
