@@ -5,5 +5,6 @@
 
 angular.module('gosaccoApp')
 .controller('BaseCtrl',['$scope', function($scope){
+$scope.login=true;
 
     }]);
