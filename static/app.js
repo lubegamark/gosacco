@@ -8,6 +8,7 @@ angular.module('gosaccoApp',['ngResource', 'ngRoute','ngMessages','mgcrea.ngStra
         // angular which cookie to add to what header.
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+        $httpProvider.defaults.withCredentials=true;
     }])
 .config(['$routeProvider','$locationProvider',function($routeProvider, $locationProvider){
       // $locationProvider.html5Mode(true);

@@ -54,7 +54,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     #'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -94,12 +94,13 @@ USE_L10N = True
 
 USE_TZ = True
 
+#CORS_ORIGIN_ALLOW_ALL = True
+#CORS_ALLOW_CREDENTIALS = True
+
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:5000',
 ]
 
-CORS_ORIGIN_ALLOW_ALL =True
-CORS_ALLOW_CREDENTIALS = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
@@ -149,6 +150,24 @@ SWAGGER_SETTINGS = {
         'title': 'GoSacco API',
     },
     'doc_expansion': 'none',
+}
+
+LOGGING = {
+'version': 1,
+'disable_existing_loggers': False,
+'handlers': {
+'file': {
+'level': 'ERROR',
+'class': 'logging.FileHandler',
+'filename': BASE_DIR+'/debug.log',
+},
+},
+'loggers': {
+'django.request': {
+'handlers': ['file'],
+'level': 'INFO',
+},
+},
 }
 #All secrets should be added from the local_settings.py that's not added to source control
 try:
