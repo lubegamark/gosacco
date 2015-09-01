@@ -1,7 +1,8 @@
 # Register your models here.
 from django.contrib import admin
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
-from loans.models import LoanType, LoanApplication,  Loan, Security, SecurityArticle, SecuritySavings, SecurityShares
+from loans.models import LoanType, LoanApplication,  Loan, Security, SecurityArticle, SecuritySavings, SecurityShares, \
+    LoanRule
 from loans.models import LoanType, LoanApplication, SecurityArticle, Loan, Security, SecurityShares
 
 class LoanAdmin(admin.ModelAdmin):
@@ -12,10 +13,11 @@ class LoanAdmin(admin.ModelAdmin):
     list_filter =['approval_date','payment_period','loan_type']
     search_fields=['loan_type','member']
 
+class LoanRuleAdmin(admin.TabularInline):
+    model = LoanRule
 
 class LoanTypeAdmin(admin.ModelAdmin):
-
-    pass
+    inlines = [LoanRuleAdmin]
 
 # admin.site.register(LoanType, LoanTypeAdmin)
 

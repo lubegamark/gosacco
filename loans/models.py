@@ -1,7 +1,9 @@
 # Create your models here.
+from datetime import timedelta
 from django.core.exceptions import ValidationError
 from django.db.models import Model, FloatField, ForeignKey, DateField, BigIntegerField, IntegerField, ManyToManyField, \
-    CharField, TextField, DateTimeField
+    CharField, TextField, DateTimeField, OneToOneField
+from django.utils.timezone import now
 
 from polymorphic import PolymorphicModel
 
@@ -25,17 +27,31 @@ class LoanType(Model):
     processing_period = IntegerField( help_text="In days")
     minimum_amount = BigIntegerField()
     maximum_amount = BigIntegerField()
-    minimum_membership_period = IntegerField(help_text="In months") #months
+    minimum_membership_period = IntegerField(help_text="In months(A month is 30 days)") #months
     minimum_share = IntegerField()
     minimum_savings = BigIntegerField()
 
     @classmethod
-    def get_loan_types(cls, member):
-        loan_types = cls.objects.filter(member=member)
+    def get_loan_types(cls):
+        loan_types = cls.objects.filter()
         return loan_types
 
     def __unicode__(self):
         return self.name
+
+
+class LoanRule(Model):
+
+    ARTIFACT_CHOICES = (
+         ('shares', 'shares'),
+         ('savings', 'savings'),
+     )
+    artifact = CharField(max_length=100, choices=ARTIFACT_CHOICES)
+    loan_type = ForeignKey(LoanType, related_name='extra_rules')
+    share_type = ForeignKey(ShareType, blank=True, null=True)
+    savings_type = ForeignKey(SavingsType, blank=True, null=True)
+    minimum = BigIntegerField()
+    maximum = BigIntegerField()
 
 
 """
@@ -52,7 +68,6 @@ class LoanTypeRequirements(Model):
     rule_name = CharField(max_length=100)
     #rule_object =
     rule_comparison = CharField(max_length=50, choices=COMPARISON_CHOICES)
-
 """
 
 # class Security(Model):
@@ -165,6 +180,36 @@ class LoanApplication(Model):
             loans = cls.objects.filter(member=member, loan_type=loan_type)
 
         return loans
+    valid = False
+
+    def meets_requirements(self):
+        self.valid = True
+        errors =[]
+        if self.amount < self.loan_type.minimum_amount:
+            self.valid = False
+            error ='The minimum amount you can ask for is '+str(self.loan_type.minimum_amount)
+            errors.append(error)
+            print error
+
+        if self.amount > self.loan_type.maximum_amount:
+            self.valid = False
+            error ='The maximum amount you can ask for is '+str(self.loan_type.maximum_amount)
+            errors.append(error)
+            print error
+
+        membership_period = now().date() - self.member.registration_date
+        if membership_period < timedelta(self.loan_type.minimum_membership_period*30):
+            self.valid = False
+            error ='You must be a member for at least '+str(self.loan_type.minimum_membership_period)+' months to be eligible'
+            errors.append(error)
+            print error
+
+        return errors
+
+    def clean(self):
+        errors = self.meets_requirements()
+        if self.valid is False:
+            raise ValidationError(errors)
 
     def __unicode__(self):
         return self.member.user.username
@@ -197,6 +242,7 @@ class Loan(Model):
             loans = cls.objects.filter(member=member, loan_type=loan_type)
 
         return loans
+
 
     def __unicode__(self):
         return self.member.user.username

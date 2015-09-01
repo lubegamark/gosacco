@@ -114,6 +114,10 @@ angular.module('gosaccoApp',['ngResource', 'ngRoute','ngMessages','mgcrea.ngStra
       .when('/settings',{
       	templateUrl:'views/settings/settings.html',
       	controller:'SettingCtrl'
+      })
+      .when('/login',{
+        templateUrl:'views/auth/login.html',
+        controller:'LoginCtrl'
       }).otherwise({redirectTo:'/'});
     }])
     .constant('SERVER', {

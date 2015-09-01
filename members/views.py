@@ -1,7 +1,9 @@
+from django.contrib.auth.decorators import permission_required
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import Http404
+from members import permissions
 
 from members.models import Member, Group
 from django.contrib.auth.models import User
@@ -14,9 +16,7 @@ class UserList(generics.ListAPIView):
     serializer_class = UserSerializer
 
 
-
 class MemberList(APIView):
-
     def get(self, request, format=None):
         """
         List all members
@@ -57,6 +57,9 @@ class GroupList(APIView):
 
 
 class MemberDetail(APIView):
+    #@permission_required('permissions.IsOwner')
+    #permission_classes = (permissions.IsOwner,)
+
     def get_member(self, pk):
         try:
             return Member.objects.get(pk=pk)

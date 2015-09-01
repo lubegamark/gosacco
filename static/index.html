@@ -5,13 +5,15 @@
   <meta charset="utf-8">
   <title>Sacco GO</title>
 
-  <link rel="stylesheet" href="stylesheets/css/theme/formstyle.css">
+  <!--<link rel="stylesheet" href="stylesheets/css/theme/formstyle.css">-->
   <link rel="stylesheet" href="stylesheets/css/theme/formelements.css">
   <link rel="stylesheet" href="stylesheets/css/theme/dashboard.css">
   <link rel="stylesheet" href="stylesheets/css/theme/coda-slider-2.0.css">
-  <link rel="stylesheet" href="stylesheets/css/theme/style.css">
+  <!--<link rel="stylesheet" href="stylesheets/css/theme/style.css">-->
   <link rel="stylesheet" href="stylesheets/css/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="stylesheets/css/app.css">
+    <link rel="stylesheet" href="stylesheets/css/style.css">
+
 
 
 
@@ -42,7 +44,7 @@
 
 
 
-      <div class="wrapper">
+     <!-- <div class="wrapper" ng-hide="user == null">
 
 
 
@@ -80,7 +82,7 @@
               </div>
 
 
-          </div>
+          </div>-->
 
 
 
@@ -100,12 +102,14 @@
   <script src="vendor/app/bower_components/angular-message/angular-messages.js"></script>
   <script src="app.js"></script>
    <!--<script src="services/services.js"></script>-->
+  <script src="services/auth/auth.js"></script>
    <script src="services/members/member.js"></script>
    <script src="services/shares/sharetype.js"></script>
    <script src="services/shares/share.js"></script>
    <script src="services/savings/saving.js"></script>
    <script src="services/savings/savingstype.js"></script>
    <script src="services/loans/loan.js"></script>
+  <script src="controllers/auth/authcontroller.js"></script>
   <script src="controllers/home/basecontroller.js"></script>
   <script src="controllers/members/membercontroller.js"></script>
   <script src="controllers/savings/savingcontroller.js"></script>
