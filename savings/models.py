@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 # Create your models here.
-from django.db.models import ForeignKey, IntegerField, DateField, CharField, BooleanField, DateTimeField
+from django.db.models import ForeignKey, IntegerField, DateField, CharField, BooleanField, DateTimeField, Sum
 from django.utils import timezone
 from members.models import Member, Group
 
@@ -67,6 +67,11 @@ class Savings(models.Model):
         else:
             savings = cls.objects.filter(savings_type=current_savings_type, member=member)
         return savings
+
+    @classmethod
+    def get_members_savings_total(cls, member):
+        savings = cls.objects.filter(member=member).aggregate(Sum('amount'))
+        return savings['amount__sum']
 
     @classmethod
     def get_savings(cls,  members=None, current_savings_type=None):

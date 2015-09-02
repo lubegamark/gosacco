@@ -2,7 +2,7 @@
 from django.contrib import admin
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
 from loans.models import LoanType, LoanApplication,  Loan, Security, SecurityArticle, SecuritySavings, SecurityShares, \
-    LoanRule
+     LoanRuleShares, LoanRuleSavings, LoanRuleOther
 from loans.models import LoanType, LoanApplication, SecurityArticle, Loan, Security, SecurityShares
 
 class LoanAdmin(admin.ModelAdmin):
@@ -13,17 +13,29 @@ class LoanAdmin(admin.ModelAdmin):
     list_filter =['approval_date','payment_period','loan_type']
     search_fields=['loan_type','member']
 
-class LoanRuleAdmin(admin.TabularInline):
-    model = LoanRule
+class LoanRuleSharesAdmin(admin.TabularInline):
+    model = LoanRuleShares
+    max_num = 1
+
+
+class LoanRuleSavingsAdmin(admin.TabularInline):
+    model = LoanRuleSavings
+    max_num = 1
+
+
+class LoanRuleOtherAdmin(admin.TabularInline):
+    model = LoanRuleOther
+    max_num = 1
+
 
 class LoanTypeAdmin(admin.ModelAdmin):
-    inlines = [LoanRuleAdmin]
+    inlines = [LoanRuleSharesAdmin, LoanRuleSavingsAdmin, LoanRuleOtherAdmin]
 
 # admin.site.register(LoanType, LoanTypeAdmin)
 
 
 class LoanApplicationAdmin(admin.ModelAdmin):
-    pass
+    fields = ['application_number', 'member', 'amount', 'purpose', 'payment_period', 'loan_type', 'status', 'security_details', 'security']
 
 # admin.site.register(LoanApplication, LoanApplicationAdmin)
 

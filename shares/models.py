@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models, Error
 
 # Create your models here.
-from django.db.models import ForeignKey, IntegerField, CharField, BigIntegerField, Q, DateTimeField
+from django.db.models import ForeignKey, IntegerField, CharField, BigIntegerField, Q, DateTimeField, Sum
 from django.utils import timezone
 from members.models import Member, Group
 
@@ -80,6 +80,11 @@ class Shares(models.Model):
         else:
             shares = Shares.objects.filter(share_type=current_share_type, member=member)
         return shares
+
+    @classmethod
+    def get_members_shares_total(cls, member):
+        shares = cls.objects.filter(member=member).aggregate(Sum('number_of_shares'))
+        return shares['number_of_shares__sum']
 
 
 class SharePurchase(models.Model):
