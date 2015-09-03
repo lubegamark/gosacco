@@ -15,17 +15,17 @@ class LoanAdmin(admin.ModelAdmin):
 
 class LoanRuleSharesAdmin(admin.TabularInline):
     model = LoanRuleShares
-    max_num = 1
+    extra = 0
 
 
 class LoanRuleSavingsAdmin(admin.TabularInline):
     model = LoanRuleSavings
-    max_num = 1
+    extra = 0
 
 
 class LoanRuleOtherAdmin(admin.TabularInline):
     model = LoanRuleOther
-    max_num = 1
+    extra = 0
 
 
 class LoanTypeAdmin(admin.ModelAdmin):
@@ -34,17 +34,7 @@ class LoanTypeAdmin(admin.ModelAdmin):
 # admin.site.register(LoanType, LoanTypeAdmin)
 
 
-class LoanApplicationAdmin(admin.ModelAdmin):
-    fields = ['application_number', 'member', 'amount', 'purpose', 'payment_period', 'loan_type', 'status', 'security_details', 'security']
 
-# admin.site.register(LoanApplication, LoanApplicationAdmin)
-
-    change_list_template = "admin/change_list_filter_sidebar.html"
-    change_list_filter_template = "admin/filter_listing.html"
-
-    list_display = ('member','application_date','amount','payment_period','status')
-    list_filter=['application_date','payment_period']
-    search_fields=['member']
 
 
 # class LoanApplicationAdmin(admin.ModelAdmin):
@@ -63,7 +53,7 @@ class SecurityChildAdmin(PolymorphicChildModelAdmin):
 
 
 class SecurityArticleAdmin(SecurityChildAdmin):
-    list_display = ('__unicode__', 'member')
+    list_display = ('__unicode__',)
 
 
 # admin.site.register(SecurityArticle, SecurityArticleAdmin)
@@ -72,12 +62,12 @@ class SecurityArticleAdmin(SecurityChildAdmin):
 
 
 class SecuritySharesAdmin(SecurityChildAdmin):
-    list_display = ('__unicode__', 'member')
+    list_display = ('__unicode__',)
 
 # admin.site.register(SecurityShares, SecuritySharesAdmin)
 
 class SecuritySavingsAdmin(SecurityChildAdmin):
-    list_display = ('__unicode__', 'member')
+    list_display = ('__unicode__',)
 
 # admin.site.register(SecuritySavings, SecuritySavingsAdmin)
 
@@ -91,24 +81,16 @@ class SecurityAdmin(PolymorphicParentModelAdmin):
     )
 
     polymorphic_list = True
-    list_display = ('__unicode__', 'member')
+    list_display = ('__unicode__',)
 
 
 class SecurityArticleAdmin(admin.ModelAdmin):
     change_list_template = "admin/change_list_filter_sidebar.html"
     change_list_filter_template = "admin/filter_listing.html"
-    list_display=('name','type','identification_type','identification')
+    list_display =('name','type','identification_type','identification')
     list_filter = ['type','identification_type']
-    search_fields=['name','type']
+    search_fields =['name','type']
 
-
-
-class SecurityAdmin(admin.ModelAdmin):
-    change_list_template = "admin/change_list_filter_sidebar.html"
-    change_list_filter_template = "admin/filter_listing.html"
-    list_display =('member','attached_to_loan')
-    list_filter =['attached_to_loan']
-    search_fields=['member']
 
 class SecuritySharesAdmin(admin.ModelAdmin):
     change_list_template = "admin/change_list_filter_sidebar.html"
@@ -117,9 +99,39 @@ class SecuritySharesAdmin(admin.ModelAdmin):
     list_filter=['share_type']
     search_fields=['share_type']
 
+
+class SecuritySavingsInline(admin.StackedInline):
+    model = SecuritySavings
+    extra = 0
+
+
+class SecuritySharesInline(admin.StackedInline):
+    model = SecurityShares
+    extra = 0
+
+
+class SecurityArticleInline(admin.StackedInline):
+    model = SecurityArticle
+    extra = 0
+
+
+class LoanApplicationAdmin(admin.ModelAdmin):
+    fields = ['application_number', 'member', 'amount', 'purpose', 'payment_period', 'loan_type', 'status', 'security_details',]
+
+# admin.site.register(LoanApplication, LoanApplicationAdmin)
+
+    change_list_template = "admin/change_list_filter_sidebar.html"
+    change_list_filter_template = "admin/filter_listing.html"
+
+    list_display = ('member','application_date','amount','payment_period','status')
+    list_filter=['application_date','payment_period']
+    search_fields=['member']
+    inlines = [SecuritySharesInline, SecuritySavingsInline, SecurityArticleInline]
+
 admin.site.register(Loan, LoanAdmin)
 admin.site.register(LoanType, LoanTypeAdmin)
 admin.site.register(LoanApplication, LoanApplicationAdmin)
 admin.site.register(SecurityArticle, SecurityArticleAdmin)
 admin.site.register(Security, SecurityAdmin)
 admin.site.register(SecurityShares, SecuritySharesAdmin)
+admin.site.register(SecuritySavings, SecuritySavingsAdmin)

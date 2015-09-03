@@ -42,82 +42,6 @@ class LoanType(Model):
         return self.name
 
 
-class LoanRuleSavings(Model):
-    loan_type = ForeignKey(LoanType, related_name='savings_rules')
-    savings_type = ForeignKey(SavingsType, blank=True, null=True)
-    minimum = BigIntegerField()
-    maximum = BigIntegerField()
-
-
-class LoanRuleShares(Model):
-    loan_type = ForeignKey(LoanType, related_name='shares_rules')
-    shares_type = ForeignKey(ShareType, blank=True, null=True)
-    minimum = BigIntegerField()
-    maximum = BigIntegerField()
-
-
-class LoanRuleOther(Model):
-    loan_type = ForeignKey(LoanType, related_name='extra_rules')
-    rule = CharField(max_length=500)
-
-
-class Security(PolymorphicModel):
-    member = ForeignKey(Member)
-
-    attached_to_loan = IntegerField(blank=True, default=0, help_text="0 for none, or id of loan")
-
-    @classmethod
-    def get_members_securities(cls, member):
-        loans = cls.objects.filter(member=member)
-        return loans
-
-
-class SecurityShares(Security):
-    def share_value(self):
-        return self.number_of_shares * self.share_type.share_price
-
-    class Meta:
-        verbose_name_plural = "Security shares"
-
-    number_of_shares = IntegerField()
-    share_type = ForeignKey(ShareType)
-    value_of_shares = BigIntegerField(blank=True)
-
-    def clean(self):
-        available_shares = Shares.objects.get(share_type=self.share_type, member=self.member)
-        if available_shares.number_of_shares < self.number_of_shares:
-            raise ValidationError(
-                {"number_of_shares": "You don't have enough shares of class " + self.share_type.__str__()})
-        self.value_of_shares = self.share_value()
-
-    def __unicode__(self):
-        return str(self.number_of_shares) + " " + str(self.share_type) + " shares"
-
-
-class SecuritySavings(Security):
-    savings_type = ForeignKey(SavingsType)
-    savings_amount = BigIntegerField()
-
-    def clean(self):
-        available_savings = Savings.objects.get(savings_type=self.savings_type, member=self.member)
-        if available_savings.amount < self.savings_amount:
-            raise ValidationError(
-                {"savings_amount": "You don't have enough savings of type " + self.savings_type.__str__()})
-
-    def __unicode__(self):
-        return str(self.savings_amount) + " " + str(self.savings_type) + " savings"
-
-
-class SecurityArticle(Security):
-    name = CharField(max_length=100)
-    type = CharField(max_length=100, help_text="eg Land, car, house")
-    identification_type = CharField(max_length=100, help_text="eg Land title, car logbook")
-    identification = CharField(max_length=100, help_text="eg ID Number, Title number")
-    description = TextField()
-
-    def __unicode__(self):
-        return self.name
-
 
 class LoanApplication(Model):
     PENDING = 'pending'
@@ -138,8 +62,8 @@ class LoanApplication(Model):
     status = CharField(max_length=25, choices=STATUS_CHOICES, default=PENDING,
                        help_text="Current status of the application")
     security_details = TextField(help_text="Basic info provided about the security")
-    security = ManyToManyField(Security, null=True, blank=True)
-    # guarantors = ManyToManyField(Member, related_name=('backers'), blank=True)
+    #security = ManyToManyField(Security, null=True, blank=True)
+    #guarantors = ManyToManyField(Member, related_name=('backers'), blank=True)
 
     def approve_loan_application(self):
         pass
@@ -268,8 +192,8 @@ class Loan(Model):
     payment_period = IntegerField(help_text="In days")
     loan_type = ForeignKey(LoanType)
     security_details = TextField(help_text="Basic info provided about the security")
-    security = ManyToManyField(Security, blank=True, null=True)
-    # guarantors = ManyToManyField(Member, related_name='Guarantors')
+    #security = ManyToManyField(Security, blank=True, null=True)
+    #guarantors = ManyToManyField(Member, related_name='Guarantors')
 
     @classmethod
     def get_members_loans(cls, member, loan_type=None):
@@ -282,4 +206,81 @@ class Loan(Model):
 
     def __unicode__(self):
         return self.member.user.username
+
+
+
+class LoanRuleSavings(Model):
+    loan_type = ForeignKey(LoanType, related_name='savings_rules')
+    savings_type = ForeignKey(SavingsType, blank=True, null=True)
+    minimum = BigIntegerField()
+    maximum = BigIntegerField()
+
+
+class LoanRuleShares(Model):
+    loan_type = ForeignKey(LoanType, related_name='shares_rules')
+    shares_type = ForeignKey(ShareType, blank=True, null=True)
+    minimum = BigIntegerField()
+    maximum = BigIntegerField()
+
+
+class LoanRuleOther(Model):
+    loan_type = ForeignKey(LoanType, related_name='extra_rules')
+    rule = CharField(max_length=500)
+
+
+class Security(PolymorphicModel):
+    loan_application = ForeignKey(LoanApplication)
+    loan = ForeignKey(Loan, blank=True, null=True)
+
+    @classmethod
+    def get_members_securities(cls, member):
+        loans = cls.objects.filter(member=member)
+        return loans
+
+
+class SecurityShares(Security):
+    def share_value(self):
+        return self.number_of_shares * self.share_type.share_price
+
+    class Meta:
+        verbose_name_plural = "Security shares"
+
+    number_of_shares = IntegerField()
+    share_type = ForeignKey(ShareType)
+    value_of_shares = BigIntegerField(blank=True)
+
+    def clean(self):
+        available_shares = Shares.objects.get(share_type=self.share_type, member=self.loan_application.member)
+        if available_shares.number_of_shares < self.number_of_shares:
+            raise ValidationError(
+                {"number_of_shares": "You don't have enough shares of class " + self.share_type.__str__()})
+        self.value_of_shares = self.share_value()
+
+    def __unicode__(self):
+        return str(self.number_of_shares) + " " + str(self.share_type) + " shares"
+
+
+class SecuritySavings(Security):
+    savings_type = ForeignKey(SavingsType)
+    savings_amount = BigIntegerField()
+
+    def clean(self):
+        available_savings = Savings.objects.get(savings_type=self.savings_type, member=self.loan_application.member)
+        if available_savings.amount < self.savings_amount:
+            raise ValidationError(
+                {"savings_amount": "You don't have enough savings of type " + self.savings_type.__str__()})
+
+    def __unicode__(self):
+        return str(self.savings_amount) + " " + str(self.savings_type) + " savings"
+
+
+class SecurityArticle(Security):
+    name = CharField(max_length=100)
+    type = CharField(max_length=100, help_text="eg Land, car, house")
+    identification_type = CharField(max_length=100, help_text="eg Land title, car logbook")
+    identification = CharField(max_length=100, help_text="eg ID Number, Title number")
+    description = TextField()
+
+    def __unicode__(self):
+        return self.name
 
