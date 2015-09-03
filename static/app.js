@@ -3,6 +3,13 @@
  */
 'use strict';
 angular.module('gosaccoApp',['ngResource', 'ngRoute','ngMessages','mgcrea.ngStrap','formly','formlyBootstrap'])
+.config(['$httpProvider', function($httpProvider){
+        // django and angular both support csrf tokens. This tells
+        // angular which cookie to add to what header.
+        $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+        $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+        $httpProvider.defaults.withCredentials=true;
+    }])
 .config(['$routeProvider','$locationProvider',function($routeProvider, $locationProvider){
       // $locationProvider.html5Mode(true);
       $routeProvider
@@ -10,6 +17,11 @@ angular.module('gosaccoApp',['ngResource', 'ngRoute','ngMessages','mgcrea.ngStra
       	templateUrl:'views/home/home.html',
       	controller:'BaseCtrl'
       })
+      .when('/login',{
+      	templateUrl:'views/auth/login.html',
+      	controller:'authCtrl'
+      })
+
       .when('/members',{
       	templateUrl:'views/members/members.html',
       	controller:'MemberCtrl'

@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="stylesheets/css/theme/coda-slider-2.0.css">
   <!--<link rel="stylesheet" href="stylesheets/css/theme/style.css">-->
   <link rel="stylesheet" href="stylesheets/css/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="stylesheets/css/login.css">
   <link rel="stylesheet" href="stylesheets/css/app.css">
     <link rel="stylesheet" href="stylesheets/css/style.css">
 
@@ -48,15 +49,15 @@
 
 
 
-          <div class="navigation_wrapper_outer" style="height: 85px;">
+          <div ng-hide="login" class="navigation_wrapper_outer" style="height: 85px;">
               <div class="navigation_wrapper">
                   <div class="nav">
 
                       <ul id="sortable1" class="connectedSortable">
                           <li>
                               <a class="" href="/#home"><i class="fa fa-home"></i><br>Home</a>          </li>
-                          <li>
-                              <a class="" href="/#members"><i class="fa fa-users"></i><br>Members</a>          </li>
+                          <li ng-show="admin">
+                              <a class=""  href="/#members"><i class="fa fa-users"></i><br>Members</a>          </li>
                           <li>
                               <a class="" href="/#savings"><i class="fa fa-archive"></i><br>Savings</a>          </li>
                           <li>
@@ -64,16 +65,16 @@
                           <li>
                               <a class="" href="/#shares"><i class="fa fa-cubes"></i><br>Shares</a>          </li>
 
-                          <li>
+                          <li ng-show="admin">
                               <a class="" href="/#others"><i class="fa fa-newspaper-o"></i><br>Others</a>          </li>
-                          <li>
-                              <a class="" href="/#accounting"><i class="fa fa-book"></i><br>Accounting</a>          </li>
-                          <li>
+                          <li ng-show="admin">
+                              <a class=""  href="/#accounting"><i class="fa fa-book"></i><br>Accounting</a>          </li>
+                          <li ng-show="admin">
                               <a class="" href="/#reports"><i class="fa fa-bar-chart"></i><br>Reports</a>          </li>
                           <li>
                               <a class="" href="/#notifications"><i class="fa fa-envelope"></i><br>Notifications</a>          </li>
 
-                          <li>
+                          <li ng-show="admin">
                               <a class="" href="/#settings"><i class="fa fa-gear"></i><br>Settings</a>          </li>
 
 
@@ -104,6 +105,7 @@
    <!--<script src="services/services.js"></script>-->
   <script src="services/auth/auth.js"></script>
    <script src="services/members/member.js"></script>
+   <script src="services/authentication/auth.js"></script>
    <script src="services/shares/sharetype.js"></script>
    <script src="services/shares/share.js"></script>
    <script src="services/savings/saving.js"></script>
@@ -111,6 +113,7 @@
    <script src="services/loans/loan.js"></script>
   <script src="controllers/auth/authcontroller.js"></script>
   <script src="controllers/home/basecontroller.js"></script>
+  <script src="controllers/authentication/auth.js"></script>
   <script src="controllers/members/membercontroller.js"></script>
   <script src="controllers/savings/savingcontroller.js"></script>
   <script src="controllers/savings/listsavingscontroller.js"></script>
