@@ -7,10 +7,10 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('shares', '0001_initial'),
-        ('contenttypes', '0001_initial'),
         ('savings', '0001_initial'),
+        ('shares', '0001_initial'),
         ('members', '0001_initial'),
+        ('contenttypes', '0001_initial'),
     ]
 
     operations = [

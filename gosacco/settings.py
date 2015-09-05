@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -17,7 +18,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ertyuiop4345679809-0--lkjhgvc' #Add secret in local_settings.py
+SECRET_KEY = 'ertyuiop4345679809-0--lkjhgvc'  # Add secret in local_settings.py
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -30,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
-    #'django_admin_bootstrapped',
+    # 'django_admin_bootstrapped',
     'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -52,7 +53,7 @@ INSTALLED_APPS = (
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
-    #'corsheaders.middleware.CorsMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -72,12 +73,12 @@ WSGI_APPLICATION = 'gosacco.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.mysql',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': '',  # Or path to database file if using sqlite3.
+        'USER': '',  # Not used with sqlite3.
+        'PASSWORD': '',  # Not used with sqlite3.
+        'HOST': '',  # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',  # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -94,8 +95,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-#CORS_ORIGIN_ALLOW_ALL = True
-#CORS_ALLOW_CREDENTIALS = True
+# CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOW_CREDENTIALS = True
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:5000',
@@ -111,12 +112,11 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 REST_FRAMEWORK = {
-'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
 
-
     ),
-'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
 
 }
 GRAPPELLI_ADMIN_TITLE = "Gosacco"
@@ -145,31 +145,31 @@ SWAGGER_SETTINGS = {
         'contact': 'mark@lubegamark.com',
         'description': 'This is the API for GoSacco. ',
         # 'license': 'Apache 2.0',
-        #'licenseUrl': 'http://www.apache.org/licenses/LICENSE-2.0.html',
-        #'termsOfServiceUrl': 'http://helloreverb.com/terms/',
+        # 'licenseUrl': 'http://www.apache.org/licenses/LICENSE-2.0.html',
+        # 'termsOfServiceUrl': 'http://helloreverb.com/terms/',
         'title': 'GoSacco API',
     },
     'doc_expansion': 'none',
 }
 
 LOGGING = {
-'version': 1,
-'disable_existing_loggers': False,
-'handlers': {
-'file': {
-'level': 'ERROR',
-'class': 'logging.FileHandler',
-'filename': BASE_DIR+'/debug.log',
-},
-},
-'loggers': {
-'django.request': {
-'handlers': ['file'],
-'level': 'INFO',
-},
-},
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR + '/debug.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+        },
+    },
 }
-#All secrets should be added from the local_settings.py that's not added to source control
+# All secrets should be added from the local_settings.py that's not added to source control
 try:
     from local_settings import *
 except:
