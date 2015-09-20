@@ -284,3 +284,13 @@ class SecurityArticle(Security):
     def __unicode__(self):
         return self.name
 
+
+class SecurityGuarantor(Security):
+    guarantor = ForeignKey(Member)
+    number_of_shares = IntegerField()
+    share_type = ForeignKey(ShareType)
+    description = TextField()
+
+    def __unicode__(self):
+        return self.name
+
