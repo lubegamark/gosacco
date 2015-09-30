@@ -115,21 +115,25 @@ class SecurityGuarantorAdmin(admin.ModelAdmin):
 class SecuritySavingsInline(admin.StackedInline):
     model = SecuritySavings
     extra = 0
+    exclude = ('loan',)
 
 
 class SecuritySharesInline(admin.StackedInline):
     model = SecurityShares
     extra = 0
+    exclude = ('loan',)
 
 
 class SecurityArticleInline(admin.StackedInline):
     model = SecurityArticle
     extra = 0
+    exclude = ('loan',)
 
 
 class SecurityGuarantorInline(admin.StackedInline):
     model = SecurityGuarantor
     extra = 0
+    exclude = ('loan',)
 
 class LoanApplicationAdmin(admin.ModelAdmin):
     fields = ['application_number', 'member', 'amount', 'purpose', 'payment_period', 'loan_type', 'status', 'security_details',]
