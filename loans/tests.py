@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.test.testcases import TestCase
 from loans.models import LoanApplication, LoanType, Security, SecuritySavings
 from members.models import Member
-from savings.models import SavingsType
+from savings.models import SavingsType, Savings
 
 
 class LoansModelsTestCase(TestCase):
@@ -40,10 +40,6 @@ class LoansModelsTestCase(TestCase):
                                              nationality="Ug",
                                              comments="Bongo huh",
                                              )
-        self.security1 = Security.objects.create(
-            security_type=Security.SECURITY_CHOICES[1][1],
-            attached_to_loan=0,
-        )
 
         self.loan_type1 = LoanType.objects.create(
             name="Short term",
@@ -53,8 +49,10 @@ class LoansModelsTestCase(TestCase):
             minimum_amount=1000,
             maximum_amount=100000,
             minimum_membership_period=5,  # months
-            minimum_share=12,
+            minimum_shares=12,
             minimum_savings=5,
+            minimum_payback_period=120,
+            maximum_payback_period=100,
         )
 
         self.savingType1 = SavingsType.objects.create(name="Annual",
@@ -64,14 +62,33 @@ class LoansModelsTestCase(TestCase):
                                                       maximum_amount=100000,
                                                       interest=1,
                                                       )
+        self.savings1 = Savings.objects.create(member=self.member1,
+    amount = 100000,
+    savings_type = self.savingType1,
+
+        )
+
+        self.loan_application1 = LoanApplication.objects.create(
+    application_number = "fsdf34234",
+    member = self.member1,
+    application_date = "2015-12-15",
+    amount = 899,
+    purpose = "UHIH IUBHISA",
+    payment_period = 60,
+    loan_type = self.loan_type1,
+    security_details = "fsgdfsgd",
+    comment = "sdfsdffsd",
+        )
 
         self.savings_security1 = SecuritySavings.objects.create(
             savings_type=self.savingType1,
-            savings_amount=50,
-            guarantor=self.member2,
-            security=self.security1,
+            savings_amount=5000,
+            loan_application=self.loan_application1,
+
         )
 
+    def test_total_security_value(self):
+        self.assertEquals(self.loan_application1.total_security_value(), 5000)
 
-def test_get_security_model(self):
-    self.assertEquals(self.security1.get_security_model(self.security1), 2)
+    def test_is_security_sufficient(self):
+        self.assertEquals(self.loan_application1.is_security_sufficient(), True)

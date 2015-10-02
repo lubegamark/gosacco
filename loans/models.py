@@ -2,7 +2,7 @@
 from datetime import timedelta
 from django.core.exceptions import ValidationError
 from django.db.models import Model, FloatField, ForeignKey, DateField, BigIntegerField, IntegerField, ManyToManyField, \
-    CharField, TextField, DateTimeField, OneToOneField
+    CharField, TextField, DateTimeField, OneToOneField, Sum
 from django.utils.timezone import now
 
 from polymorphic import PolymorphicModel
@@ -42,7 +42,6 @@ class LoanType(Model):
         return self.name
 
 
-
 class LoanApplication(Model):
     PENDING = 'pending'
     APPROVED = 'approved'
@@ -62,17 +61,16 @@ class LoanApplication(Model):
     status = CharField(max_length=25, choices=STATUS_CHOICES, default=PENDING,
                        help_text="Current status of the application")
     security_details = TextField(help_text="Basic info provided about the security")
-    #security = ManyToManyField(Security, null=True, blank=True)
-    #guarantors = ManyToManyField(Member, related_name=('backers'), blank=True)
+    comment = TextField(blank=True, null=True, help_text="Feedback from management")
 
     def approve_loan_application(self):
-        pass
+        self.status = self.APPROVED
 
     def reject_loan_application(self):
-        pass
+        self.status = self.REJECTED
 
-    def give_feedback_on_loan_application(self):
-        pass
+    def give_feedback_on_loan_application(self, comment):
+        self.comment = comment
 
     @classmethod
     def get_members_loan_applications(cls, member, loan_type=None):
@@ -90,23 +88,23 @@ class LoanApplication(Model):
         errors = []
         if self.amount < self.loan_type.minimum_amount:
             self.valid = False
-            error = 'The minimum amount you can ask for is %d' %self.loan_type.minimum_amount
+            error = 'The minimum amount you can ask for is %d' % self.loan_type.minimum_amount
             errors.append(error)
 
         if self.amount > self.loan_type.maximum_amount:
             self.valid = False
-            error = 'The maximum amount you can ask for is %d' %self.loan_type.maximum_amount
+            error = 'The maximum amount you can ask for is %d' % self.loan_type.maximum_amount
             errors.append(error)
 
         membership_period = now().date() - self.member.registration_date
         if membership_period < timedelta(self.loan_type.minimum_membership_period * 30):
             self.valid = False
-            error = 'You must be a member for at least %d months to be eligible' %self.loan_type.minimum_membership_period
+            error = 'You must be a member for at least %d months to be eligible' % self.loan_type.minimum_membership_period
             errors.append(error)
 
         if self.payment_period < self.loan_type.minimum_payback_period:
             self.valid = False
-            error = 'This loan must be paid in more than %d days' %self.loan_type.minimum_payback_period
+            error = 'This loan must be paid in more than %d days' % self.loan_type.minimum_payback_period
             errors.append(error)
 
         if self.payment_period > self.loan_type.maximum_payback_period:
@@ -165,8 +163,21 @@ class LoanApplication(Model):
                 error = 'You need to have at least %s %s savings to qualify for this loan' % (
                     rule.minimum, rule.savings_type)
                 errors.append(error)
+        if not self.is_security_sufficient():
+            self.valid = False
+            #TODO Check that the value of of shares is not None and print 0 if it is.
+            error = 'Your total securities value(%s) is less that what you are requesting for(%s)' % (
+                self.total_security_value(), self.amount)
+            errors.append(error)
 
         return errors
+
+    def total_security_value(self):
+        all_securites = Security.objects.filter(loan_application=self).aggregate(total_value=Sum('value'))
+        return all_securites['total_value']
+
+    def is_security_sufficient(self):
+        return self.amount <= self.total_security_value()
 
     def clean(self):
         errors = self.meets_requirements()
@@ -192,8 +203,6 @@ class Loan(Model):
     payment_period = IntegerField(help_text="In days")
     loan_type = ForeignKey(LoanType)
     security_details = TextField(help_text="Basic info provided about the security")
-    #security = ManyToManyField(Security, blank=True, null=True)
-    #guarantors = ManyToManyField(Member, related_name='Guarantors')
 
     @classmethod
     def get_members_loans(cls, member, loan_type=None):
@@ -206,7 +215,6 @@ class Loan(Model):
 
     def __unicode__(self):
         return self.member.user.username
-
 
 
 class LoanRuleSavings(Model):
@@ -231,6 +239,7 @@ class LoanRuleOther(Model):
 class Security(PolymorphicModel):
     loan_application = ForeignKey(LoanApplication)
     loan = ForeignKey(Loan, blank=True, null=True)
+    value = BigIntegerField()
 
     @classmethod
     def get_members_securities(cls, member):
@@ -239,22 +248,26 @@ class Security(PolymorphicModel):
 
 
 class SecurityShares(Security):
-    def share_value(self):
-        return self.number_of_shares * self.share_type.share_price
+    number_of_shares = IntegerField()
+    share_type = ForeignKey(ShareType)
+    # value_of_shares = BigIntegerField(blank=True)
 
     class Meta:
         verbose_name_plural = "Security shares"
 
-    number_of_shares = IntegerField()
-    share_type = ForeignKey(ShareType)
-    value_of_shares = BigIntegerField(blank=True)
+    def save(self, *args, **kwargs):
+        self.value = self.share_value()
+        super(SecurityShares, self).save(*args, **kwargs)
+
+    def share_value(self):
+        return self.number_of_shares * self.share_type.share_price
 
     def clean(self):
         available_shares = Shares.objects.get(share_type=self.share_type, member=self.loan_application.member)
         if available_shares.number_of_shares < self.number_of_shares:
             raise ValidationError(
                 {"number_of_shares": "You don't have enough shares of class " + self.share_type.__str__()})
-        self.value_of_shares = self.share_value()
+            # self.value_of_shares = self.share_value()
 
     def __unicode__(self):
         return str(self.number_of_shares) + " " + str(self.share_type) + " shares"
@@ -263,6 +276,13 @@ class SecurityShares(Security):
 class SecuritySavings(Security):
     savings_type = ForeignKey(SavingsType)
     savings_amount = BigIntegerField()
+
+    def save(self, *args, **kwargs):
+        self.value = self.saving_value()
+        super(SecuritySavings, self).save(*args, **kwargs)
+
+    def saving_value(self):
+        return self.savings_amount
 
     def clean(self):
         available_savings = Savings.objects.get(savings_type=self.savings_type, member=self.loan_application.member)
@@ -290,6 +310,13 @@ class SecurityGuarantor(Security):
     number_of_shares = IntegerField()
     share_type = ForeignKey(ShareType)
     description = TextField()
+
+    def save(self, *args, **kwargs):
+        self.value = self.share_value()
+        super(SecurityGuarantor, self).save(*args, **kwargs)
+
+    def share_value(self):
+        return self.number_of_shares * self.share_type.share_price
 
     def __unicode__(self):
         return self.name

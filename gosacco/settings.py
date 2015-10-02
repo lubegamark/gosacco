@@ -117,8 +117,9 @@ REST_FRAMEWORK = {
 
     ),
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
-
 }
+
+
 GRAPPELLI_ADMIN_TITLE = "Gosacco"
 STATIC_ROOT = os.path.join(BASE_DIR, 'static').replace('\\', '/')
 
