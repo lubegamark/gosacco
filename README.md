@@ -1,4 +1,4 @@
-# README #
+# GOSACCO #
 
 GOSACCO. The software to manage your sacco.
 
