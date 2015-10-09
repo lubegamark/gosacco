@@ -146,7 +146,7 @@ class SavingsWithdrawalView(APIView):
         """
         member = self.get_member(pk)
         new_savings_details = request.data
-        savings_type = SavingsType.objects.get(pk=new_savings_details['share_type'])
+        savings_type = SavingsType.objects.get(pk=new_savings_details['savings_type'])
         amount = new_savings_details['amount']
         savings_withdrawn = SavingsWithdrawal.withdraw_savings(member=member, savings_type=savings_type, amount=amount)
 
