@@ -4,11 +4,11 @@ from django.contrib import admin
 from fees.models import Fee, FeeType, FeePayment
 
 
-class FeesAdmin(admin.ModelAdmin):
-    pass
-    #list_display = ('member_name', 'share_type', 'number_of_shares', 'date')
+#class FeesAdmin(admin.ModelAdmin):
+#    pass
+#    #list_display = ('member_name', 'share_type', 'number_of_shares', 'date')
 
-admin.site.register(Fee, FeesAdmin)
+#admin.site.register(Fee, FeesAdmin)
 
 class FeeTypeAdmin(admin.ModelAdmin):
     list_display = ('name', 'purpose', 'minimum_amount', 'maximum_amount')
