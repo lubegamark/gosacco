@@ -4,6 +4,7 @@ from django.contrib import admin
 from members import views
 from shares import views as shares_views
 from savings import views as savings_views
+from loans import views as loan_views
 
 urlpatterns = patterns('',
                        url(r'^$', views.MemberList.as_view()),
@@ -14,7 +15,7 @@ urlpatterns = patterns('',
                        url(r'^(?P<pk>[0-9]+)/savings$', savings_views.SavingsView.as_view()),
                        url(r'^(?P<pk>[0-9]+)/savings/deposits$', savings_views.SavingsDepositView.as_view()),
                        url(r'^(?P<pk>[0-9]+)/savings/withdrawals$', savings_views.SavingsWithdrawalView.as_view()),
-                       url(r'^(?P<pk>[0-9]+)/loans$', ),
-                       url(r'^(?P<pk>[0-9]+)/loans/applications$', ),
-                       url(r'^(?P<pk>[0-9]+)/loans/securities$', ),
+                       url(r'^(?P<pk>[0-9]+)/loans$', loan_views.LoansView.as_view()),
+                       url(r'^(?P<pk>[0-9]+)/loans/applications$', loan_views.LoanApplicationView.as_view()),
+                       url(r'^(?P<pk>[0-9]+)/loans/securities$', loan_views.SecurityView.as_view()),
                        )

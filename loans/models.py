@@ -243,8 +243,8 @@ class Security(PolymorphicModel):
 
     @classmethod
     def get_members_securities(cls, member):
-        loans = cls.objects.filter(member=member)
-        return loans
+        securities = cls.objects.filter(loan_application__member=member)
+        return securities
 
 
 class SecurityShares(Security):

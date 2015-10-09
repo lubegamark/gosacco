@@ -2,56 +2,79 @@ from django.contrib.auth.models import User
 from rest_framework import serializers, viewsets
 
 from members.models import Member, Group, NextOfKin
-from loans.models import LoanApplication
+from loans.models import LoanApplication, Security, SecurityShares, SecuritySavings, SecurityArticle, SecurityGuarantor
+from members.serializers import MemberSerializer, MemberUserSerializer
 
 
-class UserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = ('username', 'first_name', 'last_name')
-
-
-class MemberSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-
-    class Meta:
-        model = Member
-        depth = 0
+class LoanSerializer(serializers.ModelSerializer):
+    member = MemberUserSerializer()
 
 
 class LoanApplicationSerializer(serializers.ModelSerializer):
-    member = MemberSerializer()
+    member = MemberUserSerializer()
+
     class Meta:
         model = LoanApplication
-        fields=('id','member','application_number','application_date','amount','type','status','security_details','security','guarantors')
 
-class GroupSerializer(serializers.ModelSerializer):
-    members = serializers.StringRelatedField(many=True)
-    leader = serializers.StringRelatedField()
+
+class SecuritySerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Group
+        model = Security
 
-
-class GroupMemberSerializer(serializers.ModelSerializer):
-    members = MemberSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Group
-        # fields = ()
-
-
-class NextOfKinSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = NextOfKin
-
-
-class MemberViewSet(viewsets.ModelViewSet):
-    def list(self, request, *args, **kwargs):
+    def to_representation(self, obj):
         """
-        Return a list of objects.
-
+        Because Security is Polymorphic
         """
-        return super(MemberViewSet, self).list(request, *args, **kwargs)
+        if isinstance(obj, SecuritySavings):
+            return SecuritySavingsSerializer(obj, context=self.context). to_representation(obj)
+        elif isinstance(obj, SecurityShares):
+            return SecuritySharesSerializer(obj, context=self.context). to_representation(obj)
+        elif isinstance(obj, SecurityArticle):
+            return SecurityArticleSerializer(obj, context=self.context). to_representation(obj)
+        elif isinstance(obj, SecurityGuarantor):
+            return SecurityGuarantorSerializer(obj, context=self.context). to_representation(obj)
+
+        return super(SecuritySerializer, self). to_representation(obj)
+
+
+class SecuritySharesSerializer(serializers.ModelSerializer):
+    security_type = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SecurityShares
+        exclude = ('polymorphic_ctype',)
+
+    def get_security_type(self, obj):
+        return obj.polymorphic_ctype.name
+
+
+class SecuritySavingsSerializer(serializers.ModelSerializer):
+    security_type = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SecuritySavings
+        exclude = ('polymorphic_ctype',)
+
+    def get_security_type(self, obj):
+        return obj.polymorphic_ctype.name
+
+class SecurityArticleSerializer(serializers.ModelSerializer):
+    security_type = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SecurityArticle
+        exclude = ('polymorphic_ctype',)
+
+    def get_security_type(self, obj):
+        return obj.polymorphic_ctype.name
+
+class SecurityGuarantorSerializer(serializers.ModelSerializer):
+    security_type = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SecurityGuarantor
+        exclude = ('polymorphic_ctype',)
+
+    def get_security_type(self, obj):
+        return obj.polymorphic_ctype.name
