@@ -10,10 +10,10 @@ class FeesAdmin(admin.ModelAdmin):
 
 admin.site.register(Fee, FeesAdmin)
 
-class FeeTypeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'purpose', 'minimum_amount', 'maximum_amount')
+#class FeeTypeAdmin(admin.ModelAdmin):
+#    list_display = ('name', 'purpose', 'minimum_amount', 'maximum_amount')
 
-admin.site.register(FeeType, FeeTypeAdmin)
+#admin.site.register(FeeType, FeeTypeAdmin)
 
 
 class FeePaymentAdmin(admin.ModelAdmin):
