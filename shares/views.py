@@ -1,17 +1,19 @@
 # Create your views here.
 from django.http.response import Http404
 from rest_framework import status
-from rest_framework.generics import ListAPIView
+from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.views.decorators.csrf import csrf_exempt
+
 from members.models import Member
 from shares.models import Shares, ShareType, SharePurchase, ShareTransfer
 from shares.serializers import SharesSerializer,ShareTypeSerializer, SharePurchaseSerializer, ShareTransferSerializer, \
     SharesMinimalSerializer, ShareTransactionsSerializer
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework import generics
+
 
 class ShareList(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, format=None):
         """
@@ -21,7 +23,6 @@ class ShareList(APIView):
         serializer = SharesSerializer(shares,many=True)
         return Response(serializer.data)
 
-    @csrf_exempt
     def post(self, request, format=None):
         """
         Add new share
@@ -34,6 +35,8 @@ class ShareList(APIView):
 
 
 class ShareDetail(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get_member(self, pk):
         """
         Get a member.
@@ -54,6 +57,8 @@ class ShareDetail(APIView):
 
 
 class ShareTypeList(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get(self, request, format=None):
         """
         List the share types
@@ -62,7 +67,6 @@ class ShareTypeList(APIView):
         serializer = ShareTypeSerializer(sharetype, many=True)
         return Response(serializer.data)
 
-    @csrf_exempt
     def post(self, request, format=None):
         """
         Add a share type
@@ -74,6 +78,8 @@ class ShareTypeList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class SharePurchaseList(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get_member(self, pk):
         """
         Get a member.
@@ -106,6 +112,8 @@ class SharePurchaseList(APIView):
 
 
 class ShareTransferList(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get_member(self, pk):
         """
         Get a member.
@@ -129,6 +137,8 @@ class ShareTransferList(APIView):
 
 
 class ShareTransactionsView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get_member(self, pk):
         """
         Get a member.

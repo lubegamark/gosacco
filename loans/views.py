@@ -1,16 +1,17 @@
 # Create your views here.
 from django.http.response import Http404
-from rest_framework import status
+from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from loans.models import Loan, LoanApplication, LoanType, Security, SecuritySavings, SecurityShares, SecurityArticle, \
-    SecurityGuarantor
-from loans.serializers import SecuritySerializer, LoanApplicationSerializer, LoanSerializer, SecurityArticleSerializer, \
-    SecurityGuarantorSerializer, SecuritySharesSerializer, SecuritySavingsSerializer
+
+from loans.models import Loan, LoanApplication, Security
+from loans.serializers import SecuritySerializer, LoanApplicationSerializer, LoanSerializer
 from members.models import Member
 
 
 class LoansView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get_member(self, pk):
         """
         Get a member.
@@ -34,6 +35,8 @@ class LoansView(APIView):
 
 
 class LoanApplicationView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get_member(self, pk):
         """
         Get a member.
@@ -64,6 +67,8 @@ class LoanApplicationView(APIView):
 
 
 class SecurityView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get_member(self, pk):
         """
         Get a member.

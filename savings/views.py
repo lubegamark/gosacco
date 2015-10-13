@@ -3,63 +3,16 @@ from django.http.response import Http404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import authentication, permissions
 from members.models import Member
 from savings.models import Savings, SavingsType, SavingsWithdrawal, SavingsDeposit
-from savings.serializers import SavingsSerializer, SavingsTypeSerializer, SavingsWithdrawSerializer, SavingsDepositSerializer, CreateSavingsSerializer, \
-    SavingsMinimalSerializer, SavingsDepositMinimalSerializer, SavingsWithdrawalMinimalSerializer, \
+from savings.serializers import SavingsMinimalSerializer, SavingsDepositMinimalSerializer, SavingsWithdrawalMinimalSerializer, \
     SavingsTransactionsMinimalSerializer
-from rest_framework import generics
-
-# class SavingsList(APIView):
-
-#     def get(self, request, format=None ):
-#         """
-#         A list of Savings
-#         """
-#         savings = Savings.objects.all()
-#         serializer = SavingsSerializer(savings, many=True)
-#         return Response(serializer.data)
-
-
-class SavingsList(APIView):
-    queryset = Savings.objects.all()
-    serializer_class = SavingsSerializer
-
-class SavingsCreate(generics.CreateAPIView):
-    queryset = Savings.objects.all()
-    serializer_class = CreateSavingsSerializer
-
-class SavingsDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Savings.objects.all()
-    serializer_class = CreateSavingsSerializer
-
-class SavingsTypeList(generics.ListCreateAPIView):
-    queryset = SavingsType.objects.all()
-    serializer_class = SavingsTypeSerializer
-
-class SavingsTypeDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = SavingsType.objects.all()
-    serializer_class = SavingsTypeSerializer
-
-class SavingsWithdrawList(generics.ListCreateAPIView):
-    queryset = SavingsWithdrawal.objects.all()
-    serializer_class = SavingsWithdrawSerializer
-
-class SavingsWithdrawDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = SavingsWithdrawal.objects.all()
-    serializer_class = SavingsWithdrawSerializer
-
-class SavingsDepositList(generics.ListCreateAPIView):
-    queryset = SavingsDeposit.objects.all()
-    serializer_class = SavingsDepositSerializer
-
-class SavingsDepositDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = SavingsDeposit.objects.all()
-    serializer_class = SavingsDepositSerializer
-
 
 
 class SavingsView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get_member(self, pk):
         """
         Get a member.
@@ -83,6 +36,8 @@ class SavingsView(APIView):
 
 
 class SavingsDepositView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get_member(self, pk):
         """
         Get a member.
@@ -120,6 +75,8 @@ class SavingsDepositView(APIView):
 
 
 class SavingsWithdrawalView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get_member(self, pk):
         """
         Get a member.
@@ -157,6 +114,8 @@ class SavingsWithdrawalView(APIView):
 
 
 class SavingsTransactionsView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def get_member(self, pk):
         """
         Get a member.
