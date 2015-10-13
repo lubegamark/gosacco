@@ -29,8 +29,39 @@ class SharesMinimalSerializer(serializers.ModelSerializer):
 class SharePurchaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = SharePurchase
-        # fields = ('id','member','current_share_price','number_of_shares','date','share_type')
+
 
 class ShareTransferSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShareTransfer
+
+
+class SharePurchaseTransactionSerializer(serializers.ModelSerializer):
+    transaction_type = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SharePurchase
+
+    def get_transaction_type(self,obj):
+        return obj.__class__.__name__
+
+class ShareTransferTransactionSerializer(serializers.ModelSerializer):
+    transaction_type = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ShareTransfer
+
+    def get_transaction_type(self,obj):
+        return obj.__class__.__name__
+
+class ShareTransactionsSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, obj):
+        """
+        Transactions can be deposits or withdrawals
+        """
+        if isinstance(obj, SharePurchase):
+            return SharePurchaseTransactionSerializer(obj, context=self.context). to_representation(obj)
+        elif isinstance(obj, ShareTransfer):
+            return ShareTransferTransactionSerializer(obj, context=self.context). to_representation(obj)
+        return super(SharePurchaseTransactionSerializer, self). to_representation(obj)

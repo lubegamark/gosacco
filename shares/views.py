@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from members.models import Member
 from shares.models import Shares, ShareType, SharePurchase, ShareTransfer
 from shares.serializers import SharesSerializer,ShareTypeSerializer, SharePurchaseSerializer, ShareTransferSerializer, \
-    SharesMinimalSerializer
+    SharesMinimalSerializer, ShareTransactionsSerializer
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics
 
@@ -125,4 +125,27 @@ class ShareTransferList(APIView):
             member = None
         sharetransfer = ShareTransfer.get_share_transfers(members=member)
         serializer = ShareTransferSerializer(sharetransfer, many=True)
+        return Response(serializer.data)
+
+
+class ShareTransactionsView(APIView):
+    def get_member(self, pk):
+        """
+        Get a member.
+        """
+        try:
+            return Member.objects.get(pk=pk)
+        except Member.DoesNotExist:
+            raise Http404
+
+    def get(self,  request, pk, format=None):
+        """
+        List Member's savings Deposits
+        """
+        if pk is not None:
+            member = self.get_member(int(pk))
+        else:
+            member = None
+        transactions = Shares.get_share_transactions(member)
+        serializer = ShareTransactionsSerializer(transactions, many=True)
         return Response(serializer.data)

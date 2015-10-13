@@ -1,3 +1,5 @@
+from itertools import chain
+from operator import attrgetter
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models, Error
 
@@ -6,7 +8,7 @@ from django.db.models import ForeignKey, IntegerField, CharField, BigIntegerFiel
 from django.utils import timezone
 from members.models import Member, Group
 
-# kraibas commit
+
 class ShareType(models.Model):
     share_class = CharField(max_length=50)
     share_price = BigIntegerField()
@@ -86,6 +88,11 @@ class Shares(models.Model):
         shares = cls.objects.filter(member=member).aggregate(Sum('number_of_shares'))
         return shares['number_of_shares__sum']
 
+    @classmethod
+    def get_share_transactions(cls, member):
+        return sorted(
+            chain(SharePurchase.get_share_purchases(member), ShareTransfer.get_share_transfers(member)),
+            key=attrgetter('date'))
 
 class SharePurchase(models.Model):
     member = ForeignKey(Member)
