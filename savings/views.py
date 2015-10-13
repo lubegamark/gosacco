@@ -6,7 +6,8 @@ from rest_framework.views import APIView
 from members.models import Member
 from savings.models import Savings, SavingsType, SavingsWithdrawal, SavingsDeposit
 from savings.serializers import SavingsSerializer, SavingsTypeSerializer, SavingsWithdrawSerializer, SavingsDepositSerializer, CreateSavingsSerializer, \
-    SavingsMinimalSerializer, SavingsDepositMinimalSerializer, SavingsWithdrawalMinimalSerializer
+    SavingsMinimalSerializer, SavingsDepositMinimalSerializer, SavingsWithdrawalMinimalSerializer, \
+    SavingsTransactionsMinimalSerializer
 from rest_framework import generics
 
 # class SavingsList(APIView):
@@ -153,3 +154,26 @@ class SavingsWithdrawalView(APIView):
         if savings_withdrawn:
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class SavingsTransactionsView(APIView):
+    def get_member(self, pk):
+        """
+        Get a member.
+        """
+        try:
+            return Member.objects.get(pk=pk)
+        except Member.DoesNotExist:
+            raise Http404
+
+    def get(self,  request, pk, format=None):
+        """
+        List Member's savings Deposits
+        """
+        if pk is not None:
+            member = self.get_member(int(pk))
+        else:
+            member = None
+        transactions = Savings.get_savings_transactions(member)
+        serializer = SavingsTransactionsMinimalSerializer(transactions, many=True)
+        return Response(serializer.data)

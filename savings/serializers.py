@@ -64,5 +64,39 @@ class SavingsWithdrawalMinimalSerializer(serializers.ModelSerializer):
     #savings_type = SavingsTypeSerializer()
 
     class Meta:
-        model = SavingsDeposit
+        model = SavingsWithdrawal
         fields = ('id','member','amount','date','savings_type')
+
+
+class SavingsWithdrawalTransactionSerializer(serializers.ModelSerializer):
+    member = MemberUserSerializer()
+    transaction_type = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SavingsWithdrawal
+
+    def get_transaction_type(self,obj):
+        return obj.__class__.__name__
+
+
+class SavingsDepositTransactionSerializer(serializers.ModelSerializer):
+    member = MemberUserSerializer()
+    transaction_type = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SavingsDeposit
+
+    def get_transaction_type(self,obj):
+        return obj.__class__.__name__
+
+class SavingsTransactionsMinimalSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, obj):
+        """
+        Transactions can be deposits or withdrawals
+        """
+        if isinstance(obj, SavingsDeposit):
+            return SavingsDepositTransactionSerializer(obj, context=self.context). to_representation(obj)
+        elif isinstance(obj, SavingsWithdrawal):
+            return SavingsWithdrawalTransactionSerializer(obj, context=self.context). to_representation(obj)
+        return super(SavingsDepositTransactionSerializer, self). to_representation(obj)

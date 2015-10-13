@@ -1,3 +1,5 @@
+from itertools import chain
+from operator import attrgetter
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
@@ -75,13 +77,14 @@ class Savings(models.Model):
 
     @classmethod
     def get_savings(cls,  members=None, current_savings_type=None):
+        savings = []
         if current_savings_type is None:
             if members is None:
                 savings = cls.objects.all()
             elif isinstance(members, Member):
                 savings = cls.objects.filter(member=members)
             elif isinstance(members, Group):
-                #TODO Refactor these two statements inot one query
+                #TODO Refactor these two statements into one query
                 group_members = Member.objects.filter(group__pk=members.pk)
                 savings = cls.objects.filter(member__in=group_members)
             elif isinstance(members, list):
@@ -92,15 +95,19 @@ class Savings(models.Model):
             elif isinstance(members, Member):
                 savings = cls.objects.filter(member=members, savings_type=current_savings_type)
             elif isinstance(members, Group):
-                #TODO Refactor these two statements inot one query
+                #TODO Refactor these two statements into one query
                 group_members = Member.objects.filter(group__pk=members.pk)
                 savings = cls.objects.filter(member__in=group_members, savings_type=current_savings_type)
             elif isinstance(members, list):
                 savings = cls.objects.filter(member__in=members, savings_type=current_savings_type)
-        else:
-            savings = []
 
         return savings
+
+    @classmethod
+    def get_savings_transactions(self, member):
+        return sorted(
+            chain(SavingsDeposit.get_savings_deposits(member), SavingsWithdrawal.get_withdrawals(member)),
+            key=attrgetter('date'))
 
 
 class SavingsWithdrawal(models.Model):
