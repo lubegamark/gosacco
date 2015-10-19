@@ -23,6 +23,7 @@ urlpatterns = patterns('',
                        url(r'^docs/', include('rest_framework_swagger.urls')),
                        url(r'^api', include(apipatterns)),
                        url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+                       url(r'^api-token-auth/', 'rest_framework_jwt.views.obtain_jwt_token'),
 
                        )
 admin.site.site_header = 'GoSacco'
