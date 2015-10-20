@@ -263,7 +263,12 @@ class SecurityShares(Security):
         return self.number_of_shares * self.share_type.share_price
 
     def clean(self):
-        available_shares = Shares.objects.get(share_type=self.share_type, member=self.loan_application.member)
+        try:
+            available_shares = Shares.objects.get(share_type=self.share_type, member=self.loan_application.member)
+        except Shares.DoesNotExist:
+            raise ValidationError(
+                {"number_of_shares": "You don't have any shares of class " + self.share_type.__str__()})
+
         if available_shares.number_of_shares < self.number_of_shares:
             raise ValidationError(
                 {"number_of_shares": "You don't have enough shares of class " + self.share_type.__str__()})
@@ -285,7 +290,12 @@ class SecuritySavings(Security):
         return self.savings_amount
 
     def clean(self):
-        available_savings = Savings.objects.get(savings_type=self.savings_type, member=self.loan_application.member)
+        try:
+            available_savings = Savings.objects.get(savings_type=self.savings_type, member=self.loan_application.member)
+        except Savings.DoesNotExist:
+            raise ValidationError(
+                {"savings_amount": "You don't have any savings of type " + self.savings_type.__str__()})
+
         if available_savings.amount < self.savings_amount:
             raise ValidationError(
                 {"savings_amount": "You don't have enough savings of type " + self.savings_type.__str__()})
