@@ -6,17 +6,13 @@ from django.http import Http404
 from django.contrib.auth.models import User
 
 from members.models import Member, Group
+from members.permissions import IsOwnerOrAdmin
 from members.serializers import MemberSerializer, GroupSerializer, GroupMemberSerializer, UserSerializer, \
     MemberUserSerializer
 
 
-class UserList(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
 class MemberList(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser)
 
     def get(self, request, format=None):
         """
@@ -38,7 +34,7 @@ class MemberList(APIView):
 
 
 class GroupList(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser)
 
     def get(self, request, format=None):
         """
@@ -60,7 +56,7 @@ class GroupList(APIView):
 
 
 class MemberDetail(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrAdmin)
 
     def get_member(self, pk):
         try:
@@ -73,6 +69,7 @@ class MemberDetail(APIView):
         Retrieve a Member.
         """
         member = self.get_member(pk)
+        self.check_object_permissions(request, member)
         serializer = MemberSerializer(member)
         return Response(serializer.data)
 
@@ -81,6 +78,7 @@ class MemberDetail(APIView):
         Edit a Member.
         """
         member = self.get_member(pk)
+        self.check_object_permissions(request, member)
         serializer = MemberSerializer(member, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -92,12 +90,13 @@ class MemberDetail(APIView):
         Delete a Member.
         """
         member = self.get_member(pk)
+        self.check_object_permissions(request, member)
         member.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class GroupDetail(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser)
 
     def get_group(self, pk):
         try:
@@ -134,7 +133,7 @@ class GroupDetail(APIView):
 
 
 class GroupMember(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser)
 
     def get_groupmember(self, pk):
         try:
