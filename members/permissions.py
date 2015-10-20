@@ -15,8 +15,6 @@ class IsOwnerOrAdmin(permissions.BasePermission):
         if request.method in ("GET", "POST", "HEAD",):
             if isinstance(obj, Member):
                 return (obj == request.user.member) or request.user.is_staff
-            elif isinstance(obj, ShareTransfer):
-                return (obj.buyer == request.user.member or obj.seller == request.user.member) or request.user.is_staff
             else:
                 return (obj.member == request.user.member) or request.user.is_staff
         elif request.method in ("DELETE", "PUT",):
