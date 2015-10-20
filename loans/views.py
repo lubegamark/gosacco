@@ -7,10 +7,11 @@ from rest_framework.views import APIView
 from loans.models import Loan, LoanApplication, Security
 from loans.serializers import SecuritySerializer, LoanApplicationSerializer, LoanSerializer
 from members.models import Member
+from members.permissions import IsOwnerOrAdmin
 
 
 class LoansView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrAdmin)
 
     def get_member(self, pk):
         """
@@ -29,13 +30,14 @@ class LoansView(APIView):
             member = self.get_member(int(pk))
         else:
             member = None
+        self.check_object_permissions(request, member)
         loans = Loan.get_members_loans(member)
         serializer = LoanSerializer(loans, many=True)
         return Response(serializer.data)
 
 
 class LoanApplicationView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrAdmin)
 
     def get_member(self, pk):
         """
@@ -54,6 +56,7 @@ class LoanApplicationView(APIView):
             member = self.get_member(int(pk))
         else:
             member = None
+        self.check_object_permissions(request, member)
         applications = LoanApplication.get_members_loan_applications(member)
         serializer = LoanApplicationSerializer(applications, many=True)
         return Response(serializer.data)
@@ -67,7 +70,7 @@ class LoanApplicationView(APIView):
 
 
 class SecurityView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrAdmin)
 
     def get_member(self, pk):
         """
@@ -86,6 +89,7 @@ class SecurityView(APIView):
             member = self.get_member(int(pk))
         else:
             member = None
+        self.check_object_permissions(request, member)
         securities = Security.get_members_securities(member)
         serializer = SecuritySerializer(securities, many=True)
         return Response(serializer.data)
