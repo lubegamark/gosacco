@@ -3,15 +3,17 @@ from django.http.response import Http404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import authentication, permissions
+from rest_framework import permissions
+
 from members.models import Member
+from members.permissions import IsOwnerOrAdmin
 from savings.models import Savings, SavingsType, SavingsWithdrawal, SavingsDeposit
 from savings.serializers import SavingsMinimalSerializer, SavingsDepositMinimalSerializer, SavingsWithdrawalMinimalSerializer, \
     SavingsTransactionsMinimalSerializer
 
 
 class SavingsView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrAdmin)
 
     def get_member(self, pk):
         """
@@ -30,13 +32,14 @@ class SavingsView(APIView):
             member = self.get_member(int(pk))
         else:
             member = None
+        self.check_object_permissions(request, member)
         savings = Savings.get_members_savings(member)
         serializer = SavingsMinimalSerializer(savings, many=True)
         return Response(serializer.data)
 
 
 class SavingsDepositView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrAdmin)
 
     def get_member(self, pk):
         """
@@ -55,6 +58,7 @@ class SavingsDepositView(APIView):
             member = self.get_member(int(pk))
         else:
             member = None
+        self.check_object_permissions(request, member)
         deposits = SavingsDeposit.get_savings_deposits(member)
         serializer = SavingsDepositMinimalSerializer(deposits, many=True)
         return Response(serializer.data)
@@ -64,8 +68,9 @@ class SavingsDepositView(APIView):
         Deposit Memeber's Savings
         """
         member = self.get_member(pk)
+        self.check_object_permissions(request, member)
         new_savings_details = request.data
-        savings_type = SavingsType.objects.get(pk=new_savings_details['share_type'])
+        savings_type = SavingsType.objects.get(pk=new_savings_details['savings_type'])
         amount = new_savings_details['amount']
         savings_added = SavingsDeposit.make_savings(member=member, savings_type=savings_type, amount=amount)
 
@@ -75,7 +80,7 @@ class SavingsDepositView(APIView):
 
 
 class SavingsWithdrawalView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrAdmin)
 
     def get_member(self, pk):
         """
@@ -94,6 +99,7 @@ class SavingsWithdrawalView(APIView):
             member = self.get_member(int(pk))
         else:
             member = None
+        self.check_object_permissions(request, member)
         deposits = SavingsWithdrawal.get_withdrawals(member)
         serializer = SavingsWithdrawalMinimalSerializer(deposits, many=True)
         return Response(serializer.data)
@@ -103,6 +109,7 @@ class SavingsWithdrawalView(APIView):
         Deposit Memeber's Savings
         """
         member = self.get_member(pk)
+        self.check_object_permissions(request, member)
         new_savings_details = request.data
         savings_type = SavingsType.objects.get(pk=new_savings_details['savings_type'])
         amount = new_savings_details['amount']
@@ -114,7 +121,7 @@ class SavingsWithdrawalView(APIView):
 
 
 class SavingsTransactionsView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrAdmin)
 
     def get_member(self, pk):
         """
@@ -133,6 +140,7 @@ class SavingsTransactionsView(APIView):
             member = self.get_member(int(pk))
         else:
             member = None
+        self.check_object_permissions(request, member)
         transactions = Savings.get_savings_transactions(member)
         serializer = SavingsTransactionsMinimalSerializer(transactions, many=True)
         return Response(serializer.data)
