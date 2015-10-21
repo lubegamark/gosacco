@@ -4,13 +4,12 @@ from rest_framework import status
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.views.decorators.csrf import csrf_exempt
 
 from members.models import Member
 from members.permissions import IsOwnerOrAdmin
 from shares.models import Shares, ShareType, SharePurchase, ShareTransfer
 from shares.serializers import SharesSerializer,ShareTypeSerializer, SharePurchaseSerializer, ShareTransferSerializer, \
-    SharesMinimalSerializer, ShareTransactionsSerializer
+    SharesMinimalSerializer, ShareTransactionsSerializer, SharePurchasePostSerializer
 
 
 class ShareList(APIView):
@@ -24,7 +23,7 @@ class ShareList(APIView):
         serializer = SharesSerializer(shares,many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):
+    def post(self, request, pk, format=None):
         """
         Add new share
         """
@@ -35,7 +34,7 @@ class ShareList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ShareDetail(APIView):
+class SharesView(APIView):
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrAdmin)
 
     def get_member(self, pk):
@@ -58,7 +57,7 @@ class ShareDetail(APIView):
         return Response(serializer.data)
 
 
-class ShareTypeList(APIView):
+class ShareTypesView(APIView):
     permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser)
 
     def get(self, request, format=None):
@@ -79,7 +78,7 @@ class ShareTypeList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class SharePurchaseList(APIView):
+class SharePurchasesView(APIView):
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrAdmin)
 
     def get_member(self, pk):
@@ -93,7 +92,9 @@ class SharePurchaseList(APIView):
 
     def get(self, request, pk, format=None):
         """
-        List the Share Purchase Transactions
+        List Share Purchase Transactions
+        ---
+        serializer: shares.serializers.SharePurchaseSerializer
         """
         if pk is not None:
             member = self.get_member(int(pk))
@@ -104,17 +105,22 @@ class SharePurchaseList(APIView):
         serializer = SharePurchaseSerializer(sharepurchase, many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):
+    def post(self, request, pk, format=None):
         """
         Purchase a share
+        ---
+        serializer: shares.serializers.SharePurchasePostSerializer
         """
-        serializer = SharePurchaseSerializer(data=request.DATA)
-        if serializer.is_valid:
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        member = self.get_member(int(pk))
+        self.check_object_permissions(request, member)
+        serializer = SharePurchasePostSerializer(data=request.data)
+        if serializer.is_valid():
+            SharePurchase.issue_shares(member=member, shares=serializer.validated_data['number_of_shares'], share_type=serializer.validated_data['share_type'])
+            return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ShareTransferList(APIView):
+class ShareTransfersView(APIView):
     permission_classes = (permissions.IsAuthenticated,IsOwnerOrAdmin)
 
     def get_member(self, pk):

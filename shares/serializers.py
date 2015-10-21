@@ -19,7 +19,6 @@ class SharesSerializer(serializers.ModelSerializer):
 
 class SharesMinimalSerializer(serializers.ModelSerializer):
     share_type = ShareTypeSerializer()
-    #member = MemberUserSerializer()
 
     class Meta:
         model = Shares
@@ -29,6 +28,12 @@ class SharesMinimalSerializer(serializers.ModelSerializer):
 class SharePurchaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = SharePurchase
+
+
+class SharePurchasePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SharePurchase
+        fields = ('share_type', 'number_of_shares')
 
 
 class ShareTransferSerializer(serializers.ModelSerializer):
