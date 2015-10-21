@@ -1,4 +1,6 @@
 # Create your views here.
+from django.core.exceptions import ValidationError
+
 from django.http.response import Http404
 from rest_framework import status
 from rest_framework import permissions
@@ -8,8 +10,8 @@ from rest_framework.views import APIView
 from members.models import Member
 from members.permissions import IsOwnerOrAdmin
 from shares.models import Shares, ShareType, SharePurchase, ShareTransfer
-from shares.serializers import SharesSerializer,ShareTypeSerializer, SharePurchaseSerializer, ShareTransferSerializer, \
-    SharesMinimalSerializer, ShareTransactionsSerializer, SharePurchasePostSerializer
+from shares.serializers import SharesSerializer, ShareTypeSerializer, SharePurchaseSerializer, ShareTransferSerializer, \
+    SharesMinimalSerializer, ShareTransactionsSerializer, SharePurchasePostSerializer, ShareTransferPostSerializer
 
 
 class ShareList(APIView):
@@ -20,7 +22,7 @@ class ShareList(APIView):
         Show a list of shares
         """
         shares = Shares.objects.all()
-        serializer = SharesSerializer(shares,many=True)
+        serializer = SharesSerializer(shares, many=True)
         return Response(serializer.data)
 
     def post(self, request, pk, format=None):
@@ -46,7 +48,7 @@ class SharesView(APIView):
         except Member.DoesNotExist:
             raise Http404
 
-    def get(self,  request, pk, format=None):
+    def get(self, request, pk, format=None):
         """
         Show Member's shares
         """
@@ -77,6 +79,7 @@ class ShareTypesView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class SharePurchasesView(APIView):
     permission_classes = (permissions.IsAuthenticated, IsOwnerOrAdmin)
@@ -115,13 +118,14 @@ class SharePurchasesView(APIView):
         self.check_object_permissions(request, member)
         serializer = SharePurchasePostSerializer(data=request.data)
         if serializer.is_valid():
-            SharePurchase.issue_shares(member=member, shares=serializer.validated_data['number_of_shares'], share_type=serializer.validated_data['share_type'])
+            SharePurchase.issue_shares(member=member, shares=serializer.validated_data['number_of_shares'],
+                                       share_type=serializer.validated_data['share_type'])
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ShareTransfersView(APIView):
-    permission_classes = (permissions.IsAuthenticated,IsOwnerOrAdmin)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrAdmin)
 
     def get_member(self, pk):
         """
@@ -145,9 +149,33 @@ class ShareTransfersView(APIView):
         serializer = ShareTransferSerializer(sharetransfer, many=True)
         return Response(serializer.data)
 
+    def post(self, request, pk, format=None):
+        """
+        Transfer Shares
+        ---
+        serializer: shares.serializers.ShareTransferPostSerializer
+        """
+        if pk is not None:
+            member = self.get_member(int(pk))
+        else:
+            member = None
+        self.check_object_permissions(request, member)
+        serializer = ShareTransferPostSerializer(data=request.data)
+        if serializer.is_valid():
+            transfer = ShareTransfer.transfer_shares(seller=member,
+                                          buyer=serializer.validated_data['buyer'],
+                                          share_type=serializer.validated_data['share_type'],
+                                          number_of_shares=serializer.validated_data['number_of_shares'])
+            if isinstance(transfer, ValidationError):
+                serializer.errors.update(transfer)
+                return Response(transfer, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ShareTransactionsView(APIView):
-    permission_classes = (permissions.IsAuthenticated,IsOwnerOrAdmin)
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOrAdmin)
 
     def get_member(self, pk):
         """
@@ -158,7 +186,7 @@ class ShareTransactionsView(APIView):
         except Member.DoesNotExist:
             raise Http404
 
-    def get(self,  request, pk, format=None):
+    def get(self, request, pk, format=None):
         """
         List Member's savings Deposits
         """

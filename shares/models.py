@@ -1,7 +1,9 @@
 from itertools import chain
 from operator import attrgetter
-from django.core.exceptions import ObjectDoesNotExist
+
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models, Error
+
 
 # Create your models here.
 from django.db.models import ForeignKey, IntegerField, CharField, BigIntegerField, Q, DateTimeField, Sum
@@ -32,7 +34,7 @@ class Shares(models.Model):
 
     class Meta:
         unique_together = ("member", "share_type")
-        verbose_name_plural='Shares'
+        verbose_name_plural = 'Shares'
 
     def __unicode__(self):
         return ' '.join([self.member.user.first_name, self.member.user.last_name])
@@ -51,7 +53,7 @@ class Shares(models.Model):
             elif isinstance(members, Member):
                 shares = cls.objects.filter(member=members)
             elif isinstance(members, Group):
-                #TODO Refactor these two statements inot one query
+                # TODO Refactor these two statements inot one query
                 group_members = Member.objects.filter(group__pk=members.pk)
                 shares = cls.objects.filter(member__in=group_members)
             elif isinstance(members, list):
@@ -62,7 +64,7 @@ class Shares(models.Model):
             elif isinstance(members, Member):
                 shares = cls.objects.filter(member=members, share_type=current_share_type)
             elif isinstance(members, Group):
-                #TODO Refactor these two statements inot one query
+                # TODO Refactor these two statements inot one query
                 group_members = Member.objects.filter(group__pk=members.pk)
                 shares = cls.objects.filter(member__in=group_members, share_type=current_share_type)
             elif isinstance(members, list):
@@ -94,15 +96,17 @@ class Shares(models.Model):
             chain(SharePurchase.get_share_purchases(member), ShareTransfer.get_share_transfers(member)),
             key=attrgetter('date'))
 
+
 class SharePurchase(models.Model):
     member = ForeignKey(Member)
-    current_share_price = IntegerField(blank=True,)
+    current_share_price = IntegerField(blank=True, )
     number_of_shares = IntegerField()
     date = DateTimeField(blank=True, auto_now_add=True)
     share_type = ForeignKey(ShareType)
 
     def __unicode__(self):
-        return str(self.number_of_shares)+" "+"class "+self.share_type.share_class+" shares bought by "+self.member.user.username#+" at "+self.date
+        return str(
+            self.number_of_shares) + " " + "class " + self.share_type.share_class + " shares bought by " + self.member.user.username  # +" at "+self.date
 
     @classmethod
     def issue_shares(cls, member, shares, share_type):
@@ -112,7 +116,7 @@ class SharePurchase(models.Model):
         try:
             share_price = share_type.share_price
             transfer = cls(member=member, number_of_shares=shares, current_share_price=share_price,
-                                     share_type=share_type, date=timezone.now())
+                           share_type=share_type, date=timezone.now())
             transfer.save()
             try:
                 member_shares = Shares.objects.get(member=member, share_type=share_type)
@@ -120,10 +124,10 @@ class SharePurchase(models.Model):
                 member_shares.save()
             except ObjectDoesNotExist:
                 member_shares = Shares(member=member, number_of_shares=shares, share_type=share_type,
-                                                   date=timezone.now())
+                                       date=timezone.now())
                 member_shares.save()
         except Error as e:
-            #print e
+            # print e
             return False
 
         return True
@@ -139,7 +143,7 @@ class SharePurchase(models.Model):
             elif isinstance(members, Member):
                 shares_purchases = cls.objects.filter(member=members)
             elif isinstance(members, Group):
-                #TODO Refactor these two statements inot one query
+                # TODO Refactor these two statements inot one query
                 group_members = Member.objects.filter(group__pk=members.pk)
                 shares_purchases = cls.objects.filter(member__in=group_members)
             elif isinstance(members, list):
@@ -150,7 +154,7 @@ class SharePurchase(models.Model):
             elif isinstance(members, Member):
                 shares_purchases = cls.objects.filter(member=members, share_type=current_share_type)
             elif isinstance(members, Group):
-                #TODO Refactor these two statements inot one query
+                # TODO Refactor these two statements inot one query
                 group_members = Member.objects.filter(group__pk=members.pk)
                 shares_purchases = cls.objects.filter(member__in=group_members, share_type=current_share_type)
             elif isinstance(members, list):
@@ -170,7 +174,8 @@ class ShareTransfer(models.Model):
     date = DateTimeField()
 
     def __unicode__(self):
-        return str(self.number_of_shares)+" "+"class "+self.share_type.share_class+" shares from "+self.seller.user.username+" to "+self.buyer.user.username
+        return str(
+            self.number_of_shares) + " " + "class " + self.share_type.share_class + " shares from " + self.seller.user.username + " to " + self.buyer.user.username
 
     @classmethod
     def transfer_shares(cls, seller, buyer, number_of_shares, share_type):
@@ -180,9 +185,9 @@ class ShareTransfer(models.Model):
         """
         try:
             seller_shares = Shares.objects.get(member=seller, share_type=share_type)
-        except ObjectDoesNotExist as e:
-            print "The seller does not posses shares of that type"
-            return
+        except Shares.DoesNotExist:
+            return ValidationError(
+                {"share_type": "You do not posses any shares of type" + share_type.__str__()})
 
         try:
             buyer_shares = Shares.objects.get(member=buyer, share_type=share_type)
@@ -191,11 +196,13 @@ class ShareTransfer(models.Model):
             buyer_shares.save()
 
         if seller_shares.number_of_shares < number_of_shares:
-            print "You do not have enough shares"
-            return
+            return ValidationError(
+                {"number_of_shares": "You do not have enough shares of type " + share_type.__str__()})
+
         else:
             transfer = ShareTransfer(seller=seller, buyer=buyer, number_of_shares=number_of_shares,
-                                     share_type=share_type, date=timezone.now(), current_share_price=share_type.share_price)
+                                     share_type=share_type, date=timezone.now(),
+                                     current_share_price=share_type.share_price)
 
             buyer_shares.number_of_shares += number_of_shares
             seller_shares.number_of_shares -= number_of_shares
@@ -203,6 +210,7 @@ class ShareTransfer(models.Model):
             transfer.save()
             buyer_shares.save()
             seller_shares.save()
+        return transfer
 
     @classmethod
     def get_share_transfers(cls, members=None, seller=None, buyer=None, current_share_type=None):
@@ -228,7 +236,7 @@ class ShareTransfer(models.Model):
                 shares_transfer = cls.objects.filter(buyer=buyer, seller=seller)
 
             elif isinstance(members, Group):
-                #TODO Refactor these two statements inot one query
+                # TODO Refactor these two statements inot one query
                 group_members = Member.objects.filter(group__pk=members.pk)
                 shares_transfer = cls.objects.filter(Q(seller__in=group_members) | Q(buyer__in=group_members))
 
@@ -242,7 +250,8 @@ class ShareTransfer(models.Model):
                 """
                 Get all transfers where a Member is involved as buyer or seller
                 """
-                shares_transfer = cls.objects.filter(Q(buyer=members) | Q(seller=members), share_type=current_share_type)
+                shares_transfer = cls.objects.filter(Q(buyer=members) | Q(seller=members),
+                                                     share_type=current_share_type)
 
             elif isinstance(seller, Member) and buyer is not None:
                 shares_transfer = cls.objects.filter(seller=seller, share_type=current_share_type, )
@@ -254,13 +263,14 @@ class ShareTransfer(models.Model):
                 shares_transfer = cls.objects.filter(buyer=buyer, seller=seller, share_type=current_share_type, )
 
             elif isinstance(members, Group):
-                #TODO Refactor these two statements inot one query
+                # TODO Refactor these two statements inot one query
                 group_members = Member.objects.filter(group__pk=members.pk)
                 shares_transfer = cls.objects.filter(Q(seller__in=group_members) | Q(buyer__in=group_members),
                                                      share_type=current_share_type, )
 
             elif isinstance(members, list):
-                shares_transfer = cls.objects.filter(Q(seller__in=members) | Q(buyer__in=members), share_type=current_share_type )
+                shares_transfer = cls.objects.filter(Q(seller__in=members) | Q(buyer__in=members),
+                                                     share_type=current_share_type)
         else:
             shares_transfer = []
 
