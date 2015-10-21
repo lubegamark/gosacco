@@ -80,7 +80,7 @@ class SavingsDepositView(APIView):
         self.check_object_permissions(request, member)
         serializer = SavingsDepositPostSerializer(data=request.data)
         if serializer.is_valid():
-            savings_added = SavingsDeposit.make_savings(member=member,
+            savings_added = SavingsDeposit.deposit_savings(member=member,
                                                            savings_type=serializer.validated_data['savings_type'],
                                                            amount=serializer.validated_data['amount'])
             if savings_added:

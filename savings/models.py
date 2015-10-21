@@ -175,7 +175,7 @@ class SavingsDeposit(models.Model):
         verbose_name_plural = 'Savings Purchase'
 
     @classmethod
-    def make_savings(cls, member, savings_type, amount, date=timezone.now()):
+    def deposit_savings(cls, member, savings_type, amount, date=timezone.now()):
         try:
             savings = Savings.objects.get(member=member, savings_type=savings_type)
             savings.amount += amount

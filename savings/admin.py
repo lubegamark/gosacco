@@ -27,7 +27,7 @@ class SavingsDepositAdmin(admin.ModelAdmin):
     list_display = ('member', 'savings_type', 'amount', 'date')
 
     def save_model(self, request, obj, form, change):
-        SavingsDeposit.make_savings(obj.member, obj.savings_type, obj.amount)
+        SavingsDeposit.deposit_savings(obj.member, obj.savings_type, obj.amount)
 
 # # admin.site.register(SavingsDeposit, SavingsDepositAdmin)
 
