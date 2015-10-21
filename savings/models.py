@@ -1,10 +1,12 @@
 from itertools import chain
 from operator import attrgetter
-from django.core.exceptions import ObjectDoesNotExist
+
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
 
+
 # Create your models here.
-from django.db.models import ForeignKey, IntegerField, DateField, CharField, BooleanField, DateTimeField, Sum
+from django.db.models import ForeignKey, IntegerField, CharField, BooleanField, DateTimeField, Sum
 from django.utils import timezone
 from members.models import Member, Group
 
@@ -44,12 +46,12 @@ class SavingsType(models.Model):
         return self.name
 
     def interest_rate(self):
-        return str(self.interest)+"%"
+        return str(self.interest) + "%"
 
 
 class Savings(models.Model):
     class Meta:
-        verbose_name_plural ='Savings'
+        verbose_name_plural = 'Savings'
 
     member = ForeignKey(Member)
     amount = IntegerField()
@@ -76,7 +78,7 @@ class Savings(models.Model):
         return savings['amount__sum']
 
     @classmethod
-    def get_savings(cls,  members=None, current_savings_type=None):
+    def get_savings(cls, members=None, current_savings_type=None):
         savings = []
         if current_savings_type is None:
             if members is None:
@@ -84,7 +86,7 @@ class Savings(models.Model):
             elif isinstance(members, Member):
                 savings = cls.objects.filter(member=members)
             elif isinstance(members, Group):
-                #TODO Refactor these two statements into one query
+                # TODO Refactor these two statements into one query
                 group_members = Member.objects.filter(group__pk=members.pk)
                 savings = cls.objects.filter(member__in=group_members)
             elif isinstance(members, list):
@@ -95,7 +97,7 @@ class Savings(models.Model):
             elif isinstance(members, Member):
                 savings = cls.objects.filter(member=members, savings_type=current_savings_type)
             elif isinstance(members, Group):
-                #TODO Refactor these two statements into one query
+                # TODO Refactor these two statements into one query
                 group_members = Member.objects.filter(group__pk=members.pk)
                 savings = cls.objects.filter(member__in=group_members, savings_type=current_savings_type)
             elif isinstance(members, list):
@@ -122,12 +124,17 @@ class SavingsWithdrawal(models.Model):
         try:
             savings = Savings.objects.get(member=member, savings_type=savings_type)
         except ObjectDoesNotExist:
-            print member.user.username + " does not have any " + savings_type.name+" savings"
-            return
+            return ValidationError(
+                {"savings_type": "You do not posses any savings of type" + savings_type.__str__()})
+        if savings < amount:
+            return ValidationError(
+                {"amount": "You do not have enough savings of type" + savings_type.__str__()})
+
         savings_withdrawal = cls(amount=amount, member=member, savings_type=savings_type, date=timezone.now())
-        savings.amount -=amount
+        savings.amount -= amount
         savings_withdrawal.save()
         savings.save()
+        return savings_withdrawal
 
     @classmethod
     def get_withdrawals(cls, members=None, current_savings_type=None):
@@ -137,7 +144,7 @@ class SavingsWithdrawal(models.Model):
             elif isinstance(members, Member):
                 withdrawals = cls.objects.filter(member=members)
             elif isinstance(members, Group):
-                #TODO Refactor these two statements inot one query
+                # TODO Refactor these two statements inot one query
                 group_members = Member.objects.filter(group__pk=members.pk)
                 withdrawals = cls.objects.filter(member__in=group_members)
             elif isinstance(members, list):
@@ -148,7 +155,7 @@ class SavingsWithdrawal(models.Model):
             elif isinstance(members, Member):
                 withdrawals = cls.objects.filter(member=members, savings_type=current_savings_type)
             elif isinstance(members, Group):
-                #TODO Refactor these two statements inot one query
+                # TODO Refactor these two statements inot one query
                 group_members = Member.objects.filter(group__pk=members.pk)
                 withdrawals = cls.objects.filter(member__in=group_members, savings_type=current_savings_type)
             elif isinstance(members, list):
@@ -157,25 +164,15 @@ class SavingsWithdrawal(models.Model):
             withdrawals = []
         return withdrawals
 
-# class SavingsWithdrawal(models.Model):
-#     class Meta:
-#         verbose_name_plural = "Savings Withdraw"
-#     amount = IntegerField()
-#     date = DateField()
-#     member = ForeignKey(Member)
-#     savings_type = ForeignKey(SavingsType)
-
-
-
-
 
 class SavingsDeposit(models.Model):
-    class Meta:
-        verbose_name_plural='Savings Purchase'
     amount = IntegerField()
-    date = DateTimeField()
+    date = DateTimeField(blank=True, auto_now_add=True)
     member = ForeignKey(Member)
     savings_type = ForeignKey(SavingsType)
+
+    class Meta:
+        verbose_name_plural = 'Savings Purchase'
 
     @classmethod
     def make_savings(cls, member, savings_type, amount, date=timezone.now()):
@@ -190,6 +187,7 @@ class SavingsDeposit(models.Model):
             deposit = cls(member=member, savings_type=savings_type, amount=amount, date=date)
             deposit.save()
             savings.save()
+            return deposit
 
     @classmethod
     def get_savings_deposits(cls, members=None, current_savings_type=None):
@@ -199,7 +197,7 @@ class SavingsDeposit(models.Model):
             elif isinstance(members, Member):
                 savings_deposits = cls.objects.filter(member=members)
             elif isinstance(members, Group):
-                #TODO Refactor these two statements inot one query
+                # TODO Refactor these two statements inot one query
                 group_members = Member.objects.filter(group__pk=members.pk)
                 savings_deposits = cls.objects.filter(member__in=group_members)
             elif isinstance(members, list):
@@ -210,7 +208,7 @@ class SavingsDeposit(models.Model):
             elif isinstance(members, Member):
                 savings_deposits = cls.objects.filter(member=members, savings_type=current_savings_type)
             elif isinstance(members, Group):
-                #TODO Refactor these two statements inot one query
+                # TODO Refactor these two statements inot one query
                 group_members = Member.objects.filter(group__pk=members.pk)
                 savings_deposits = cls.objects.filter(member__in=group_members, savings_type=current_savings_type)
             elif isinstance(members, list):
@@ -219,4 +217,3 @@ class SavingsDeposit(models.Model):
             savings_deposits = []
 
         return savings_deposits
-

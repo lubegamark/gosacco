@@ -1,4 +1,6 @@
 # Create your views here.
+from django.core.exceptions import ValidationError
+
 from django.http.response import Http404
 from rest_framework import status
 from rest_framework.response import Response
@@ -8,8 +10,9 @@ from rest_framework import permissions
 from members.models import Member
 from members.permissions import IsOwnerOrAdmin
 from savings.models import Savings, SavingsType, SavingsWithdrawal, SavingsDeposit
-from savings.serializers import SavingsMinimalSerializer, SavingsDepositMinimalSerializer, SavingsWithdrawalMinimalSerializer, \
-    SavingsTransactionsMinimalSerializer
+from savings.serializers import SavingsMinimalSerializer, SavingsDepositMinimalSerializer, \
+    SavingsWithdrawalMinimalSerializer, \
+    SavingsTransactionsMinimalSerializer, SavingsDepositPostSerializer, SavingsWithdrawalPostSerializer
 
 
 class SavingsView(APIView):
@@ -24,9 +27,11 @@ class SavingsView(APIView):
         except Member.DoesNotExist:
             raise Http404
 
-    def get(self,  request, pk, format=None):
+    def get(self, request, pk, format=None):
         """
         List Member's savings
+        ---
+        serializer: savings.serializers.SavingsMinimalSerializer
         """
         if pk is not None:
             member = self.get_member(int(pk))
@@ -50,9 +55,11 @@ class SavingsDepositView(APIView):
         except Member.DoesNotExist:
             raise Http404
 
-    def get(self,  request, pk, format=None):
+    def get(self, request, pk, format=None):
         """
         List Member's savings Deposits
+        ---
+        serializer: savings.serializers.SavingsDepositMinimalSerializer
         """
         if pk is not None:
             member = self.get_member(int(pk))
@@ -66,17 +73,19 @@ class SavingsDepositView(APIView):
     def post(self, request, pk, format=None):
         """
         Deposit Memeber's Savings
+        ---
+        serializer: savings.serializers.SavingsDepositPostSerializer
         """
         member = self.get_member(pk)
         self.check_object_permissions(request, member)
-        new_savings_details = request.data
-        savings_type = SavingsType.objects.get(pk=new_savings_details['savings_type'])
-        amount = new_savings_details['amount']
-        savings_added = SavingsDeposit.make_savings(member=member, savings_type=savings_type, amount=amount)
-
-        if savings_added:
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        serializer = SavingsDepositPostSerializer(data=request.data)
+        if serializer.is_valid():
+            savings_added = SavingsDeposit.make_savings(member=member,
+                                                           savings_type=serializer.validated_data['savings_type'],
+                                                           amount=serializer.validated_data['amount'])
+            if savings_added:
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SavingsWithdrawalView(APIView):
@@ -91,9 +100,11 @@ class SavingsWithdrawalView(APIView):
         except Member.DoesNotExist:
             raise Http404
 
-    def get(self,  request, pk, format=None):
+    def get(self, request, pk, format=None):
         """
         List Member's savings Deposits
+        ---
+        serializer: savings.serializers.SavingsWithdrawalMinimalSerializer
         """
         if pk is not None:
             member = self.get_member(int(pk))
@@ -107,16 +118,19 @@ class SavingsWithdrawalView(APIView):
     def post(self, request, pk, format=None):
         """
         Deposit Memeber's Savings
+        ---
+        serializer: savings.serializers.SavingsWithdrawalPostSerializer
         """
         member = self.get_member(pk)
         self.check_object_permissions(request, member)
-        new_savings_details = request.data
-        savings_type = SavingsType.objects.get(pk=new_savings_details['savings_type'])
-        amount = new_savings_details['amount']
-        savings_withdrawn = SavingsWithdrawal.withdraw_savings(member=member, savings_type=savings_type, amount=amount)
-
-        if savings_withdrawn:
-            return Response(status=status.HTTP_201_CREATED)
+        serializer = SavingsWithdrawalPostSerializer(data=request.data)
+        if serializer.is_valid():
+            savings_withdrawn = SavingsWithdrawal.withdraw_savings(member=member,
+                                                                   savings_type=serializer.validated_data['savings_type'],
+                                                                   amount=serializer.validated_data['amount'])
+            if isinstance(savings_withdrawn, ValidationError):
+                return Response(savings_withdrawn, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -132,7 +146,7 @@ class SavingsTransactionsView(APIView):
         except Member.DoesNotExist:
             raise Http404
 
-    def get(self,  request, pk, format=None):
+    def get(self, request, pk, format=None):
         """
         List Member's savings Deposits
         """

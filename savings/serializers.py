@@ -28,11 +28,6 @@ class CreateSavingsSerializer(serializers.ModelSerializer):
         fields = ('id','member','amount','date','savings_type')
 
 
-class SavingsDepositSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SavingsDeposit
-        fields = ('id','amount','date','member','savings_type')
-
 class SavingsWithdrawSerializer(serializers.ModelSerializer):
     class Meta:
         model = SavingsWithdrawal
@@ -52,20 +47,30 @@ class SavingsMinimalSerializer(serializers.ModelSerializer):
 
 class SavingsDepositMinimalSerializer(serializers.ModelSerializer):
     member = MemberUserSerializer()
-    #savings_type = SavingsTypeSerializer()
 
     class Meta:
         model = SavingsDeposit
         fields = ('id','member','amount','date','savings_type')
 
 
+class SavingsDepositPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SavingsDeposit
+        fields = ('amount', 'savings_type')
+
+
 class SavingsWithdrawalMinimalSerializer(serializers.ModelSerializer):
-    member = MemberUserSerializer()
-    #savings_type = SavingsTypeSerializer()
 
     class Meta:
         model = SavingsWithdrawal
         fields = ('id','member','amount','date','savings_type')
+
+
+class SavingsWithdrawalPostSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SavingsWithdrawal
+        fields = ('amount', 'savings_type')
 
 
 class SavingsWithdrawalTransactionSerializer(serializers.ModelSerializer):
