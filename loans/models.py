@@ -73,6 +73,18 @@ class LoanApplication(Model):
         self.comment = comment
 
     @classmethod
+    def make_loan_application(cls, application_number, amount, purpose, payment_period, security_details, member,
+                              loan_type):
+        application = cls(application_number=application_number, amount=amount, purpose=purpose,
+                          payment_period=payment_period, security_details=security_details, member=member,
+                          loan_type=loan_type)
+        errors = application.meets_requirements()
+        if application.valid is False:
+            return ValidationError(errors)
+        application.save()
+        return application
+
+    @classmethod
     def get_members_loan_applications(cls, member, loan_type=None):
         if loan_type is None:
             loans = cls.objects.filter(member=member)

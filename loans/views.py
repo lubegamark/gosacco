@@ -11,10 +11,9 @@ from loans.models import Loan, LoanApplication, Security, SecurityShares, Securi
 from loans.serializers import SecuritySerializer, LoanApplicationSerializer, LoanSerializer, \
     SecuritySharesPostSerializer, SecuritySharesSerializer, SecuritySavingsPostSerializer, SecuritySavingsSerializer, \
     SecurityArticleSerializer, SecurityArticlePostSerializer, SecurityGuarantorSerializer, \
-    SecurityGuarantorPostSerializer
+    SecurityGuarantorPostSerializer, LoanApplicationPostSerializer
 from members.models import Member
 from members.permissions import IsOwnerOrAdmin
-from shares.models import SharePurchase
 
 
 class LoansView(APIView):
@@ -68,12 +67,31 @@ class LoanApplicationView(APIView):
         serializer = LoanApplicationSerializer(applications, many=True)
         return Response(serializer.data)
 
-        # TODO Implement Method to handle Posting Loan Application
-        # def post(self, request, pk, format=None):
-        #     """
-        #     Make A Loan Application
-        #     """
-        #     pass
+    def post(self, request, pk, format=None):
+        """
+        Add a new Loan Application
+        ---
+        serializer: loans.serializers.LoanApplicationPostSerializer
+        """
+        member = self.get_member(int(pk))
+        self.check_object_permissions(request, member)
+        serializer = LoanApplicationPostSerializer(data=request.data)
+        if serializer.is_valid():
+            application = LoanApplication.make_loan_application(loan_type=serializer.validated_data['loan_type'],
+                                                                member=member,
+                                                                amount=serializer.validated_data['amount'],
+                                                                payment_period=serializer.validated_data[
+                                                                    'payment_period'],
+                                                                application_number=serializer.validated_data[
+                                                                    'application_number'],
+                                                                security_details=serializer.validated_data[
+                                                                    'security_details'],
+                                                                purpose=serializer.validated_data['purpose'])
+            if isinstance(application, LoanApplication):
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            elif isinstance(application, ValidationError):
+                return Response(application, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SecurityView(APIView):
@@ -245,7 +263,7 @@ class LoanSecurityArticlesView(APIView):
                                                         identification_type=serializer.validated_data[
                                                             'identification_type'],
                                                         description=serializer.validated_data['description'],
-                                                        value=serializer.validated_data['value'],)
+                                                        value=serializer.validated_data['value'], )
             if isinstance(new_security, Security):
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             elif isinstance(new_security, ValidationError):
@@ -269,7 +287,7 @@ class LoanSecurityGuarantorsView(APIView):
         """
         List Securities in form Guarantors savings
         ---
-        serializer: loans.serializers.SecurityGuarantorsSerializer
+        serializer: loans.serializers.SecurityGuarantorSerializer
         """
         if pk is not None:
             member = self.get_member(int(pk))
@@ -284,7 +302,7 @@ class LoanSecurityGuarantorsView(APIView):
         """
         Add a new security in form of savings
         ---
-        serializer: loans.serializers.SecurityGuarantorsPostSerializer
+        serializer: loans.serializers.SecurityGuarantorPostSerializer
         """
         member = self.get_member(int(pk))
         self.check_object_permissions(request, member)
