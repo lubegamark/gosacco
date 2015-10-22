@@ -20,4 +20,8 @@ urlpatterns = patterns('',
                        url(r'^(?P<pk>[0-9]+)/loans$', loan_views.LoansView.as_view()),
                        url(r'^(?P<pk>[0-9]+)/loans/applications$', loan_views.LoanApplicationView.as_view()),
                        url(r'^(?P<pk>[0-9]+)/loans/securities$', loan_views.SecurityView.as_view()),
+                       url(r'^(?P<pk>[0-9]+)/loans/securities/shares$', loan_views.LoanSecuritySharesView.as_view()),
+                       url(r'^(?P<pk>[0-9]+)/loans/securities/savings$', loan_views.LoanSecuritySavingsView.as_view()),
+                       url(r'^(?P<pk>[0-9]+)/loans/securities/articles$', loan_views.LoanSecurityArticlesView.as_view()),
+                       url(r'^(?P<pk>[0-9]+)/loans/securities/guarantors$', loan_views.LoanSecurityGuarantorsView.as_view()),
                        )

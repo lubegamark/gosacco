@@ -24,7 +24,7 @@ class SecuritySerializer(serializers.ModelSerializer):
 
     def to_representation(self, obj):
         """
-        Because Security is Polymorphic
+        The Serializer is selected depending on the type of security
         """
         if isinstance(obj, SecuritySavings):
             return SecuritySavingsSerializer(obj, context=self.context). to_representation(obj)
@@ -37,6 +37,20 @@ class SecuritySerializer(serializers.ModelSerializer):
 
         return super(SecuritySerializer, self). to_representation(obj)
 
+    def to_internal_value(self, data):
+        """
+        The Serializer is selected depending on the type of security
+        """
+        if data.get('security_type')=='security savings':
+            return SecuritySavingsSerializer(data)
+        elif data.get('security_type')=='security shares':
+            return SecuritySharesSerializer(data)
+        elif data.get('security_type')=='security article':
+            return SecurityArticleSerializer(data)
+        elif data.get('security_type')=='security guarantor':
+            return SecurityGuarantorSerializer(data)
+
+        return #super(SecuritySerializer, self). to_representation(obj)
 
 class SecuritySharesSerializer(serializers.ModelSerializer):
     security_type = serializers.SerializerMethodField()
@@ -48,6 +62,11 @@ class SecuritySharesSerializer(serializers.ModelSerializer):
     def get_security_type(self, obj):
         return obj.polymorphic_ctype.name
 
+class SecuritySharesPostSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SecurityShares
+        fields = ('number_of_shares', 'share_type','loan_application')
 
 class SecuritySavingsSerializer(serializers.ModelSerializer):
     security_type = serializers.SerializerMethodField()
@@ -59,6 +78,14 @@ class SecuritySavingsSerializer(serializers.ModelSerializer):
     def get_security_type(self, obj):
         return obj.polymorphic_ctype.name
 
+
+class SecuritySavingsPostSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SecuritySavings
+        fields = ('savings_amount','loan_application', 'savings_type',)
+
+
 class SecurityArticleSerializer(serializers.ModelSerializer):
     security_type = serializers.SerializerMethodField()
 
@@ -69,6 +96,13 @@ class SecurityArticleSerializer(serializers.ModelSerializer):
     def get_security_type(self, obj):
         return obj.polymorphic_ctype.name
 
+
+class SecurityArticlePostSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SecurityArticle
+        fields = ('name','type', 'identification_type','identification','description', 'loan_application', 'value',)
+
 class SecurityGuarantorSerializer(serializers.ModelSerializer):
     security_type = serializers.SerializerMethodField()
 
@@ -78,3 +112,11 @@ class SecurityGuarantorSerializer(serializers.ModelSerializer):
 
     def get_security_type(self, obj):
         return obj.polymorphic_ctype.name
+
+
+class SecurityGuarantorPostSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SecurityGuarantor
+        fields = ('guarantor', 'number_of_shares', 'share_type', 'description', 'loan_application',)
+

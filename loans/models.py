@@ -163,12 +163,12 @@ class LoanApplication(Model):
                 error = 'You need to have at least %s %s savings to qualify for this loan' % (
                     rule.minimum, rule.savings_type)
                 errors.append(error)
-        if not self.is_security_sufficient():
-            self.valid = False
-            #TODO Check that the value of of shares is not None and print 0 if it is.
-            error = 'Your total securities value(%s) is less that what you are requesting for(%s)' % (
-                self.total_security_value(), self.amount)
-            errors.append(error)
+        # if not self.is_security_sufficient():
+        #     self.valid = False
+        #     #TODO Check that the value of of shares is not None and print 0 if it is.
+        #     error = 'Your total securities value(%s) is less that what you are requesting for(%s)' % (
+        #         self.total_security_value(), self.amount)
+        #     errors.append(error)
 
         return errors
 
@@ -246,6 +246,10 @@ class Security(PolymorphicModel):
         securities = cls.objects.filter(loan_application__member=member)
         return securities
 
+    @classmethod
+    def add_security(cls, loan_application, member):
+        pass
+
 
 class SecurityShares(Security):
     number_of_shares = IntegerField()
@@ -254,6 +258,25 @@ class SecurityShares(Security):
 
     class Meta:
         verbose_name_plural = "Security shares"
+
+    @classmethod
+    def add_security(cls, loan_application, member, number_of_shares, share_type):
+
+        security = cls(loan_application=loan_application, number_of_shares=number_of_shares, share_type=share_type)
+        if member != loan_application.member:
+            return ValidationError(
+                {"loan_aplication": "Invalid Loan Application"})
+        try:
+            available_shares = Shares.objects.get(share_type=share_type, member=loan_application.member)
+        except Shares.DoesNotExist:
+            return ValidationError(
+                {"number_of_shares": "You don't have any shares of class " + share_type.__str__()})
+
+        if available_shares.number_of_shares < number_of_shares:
+            return ValidationError(
+                {"number_of_shares": "You don't have enough shares of class " + share_type.__str__()})
+        security.save()
+        return security
 
     def save(self, *args, **kwargs):
         self.value = self.share_value()
@@ -272,7 +295,6 @@ class SecurityShares(Security):
         if available_shares.number_of_shares < self.number_of_shares:
             raise ValidationError(
                 {"number_of_shares": "You don't have enough shares of class " + self.share_type.__str__()})
-            # self.value_of_shares = self.share_value()
 
     def __unicode__(self):
         return str(self.number_of_shares) + " " + str(self.share_type) + " shares"
@@ -282,8 +304,27 @@ class SecuritySavings(Security):
     savings_type = ForeignKey(SavingsType)
     savings_amount = BigIntegerField()
 
+    @classmethod
+    def add_security(cls, loan_application, member, savings_amount, savings_type):
+        if member != loan_application.member:
+            return ValidationError(
+                {"loan_aplication": "Invalid Loan Application"})
+        security = cls(loan_application=loan_application, savings_amount=savings_amount, savings_type=savings_type)
+        try:
+            available_savings = Savings.objects.get(savings_type=savings_type, member=loan_application.member)
+        except Savings.DoesNotExist:
+            return ValidationError(
+                {"savings_amount": "You don't have any savings of type " + savings_type.__str__()})
+
+        if available_savings.amount < savings_amount:
+            return ValidationError(
+                {"savings_amount": "You don't have enough savings of type " + savings_type.__str__()})
+        security.save()
+        return security
+
     def save(self, *args, **kwargs):
         self.value = self.saving_value()
+        self.clean()
         super(SecuritySavings, self).save(*args, **kwargs)
 
     def saving_value(self):
@@ -311,6 +352,17 @@ class SecurityArticle(Security):
     identification = CharField(max_length=100, help_text="eg ID Number, Title number")
     description = TextField()
 
+    @classmethod
+    def add_security(cls, loan_application, member, name, type, identification_type, identification, description,
+                     value):
+        if member != loan_application.member:
+            return ValidationError(
+                {"loan_aplication": "Invalid Loan Application"})
+        security = cls(loan_application=loan_application, name=name, type=type, identification=identification,
+                       identification_type=identification_type, description=description, value=value)
+        security.save()
+        return security
+
     def __unicode__(self):
         return self.name
 
@@ -321,6 +373,17 @@ class SecurityGuarantor(Security):
     share_type = ForeignKey(ShareType)
     description = TextField()
 
+    @classmethod
+    def add_security(cls, loan_application, member, guarantor, share_type, number_of_shares, description):
+        if member != loan_application.member:
+            return ValidationError(
+                {"loan_aplication": "Invalid Loan Application"})
+        security = cls(loan_application=loan_application, guarantor=guarantor, share_type=share_type,
+                       number_of_shares=number_of_shares,
+                       description=description)
+        security.save()
+        return security
+
     def save(self, *args, **kwargs):
         self.value = self.share_value()
         super(SecurityGuarantor, self).save(*args, **kwargs)
@@ -329,5 +392,4 @@ class SecurityGuarantor(Security):
         return self.number_of_shares * self.share_type.share_price
 
     def __unicode__(self):
-        return self.name
-
+        return self.guarantor.user.username
