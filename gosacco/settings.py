@@ -171,6 +171,11 @@ LOGGING = {
         },
     },
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = BASE_DIR + '/emails/'
+
+
 # All secrets should be added from the local_settings.py that's not added to source control
 try:
     from local_settings import *

@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-
+from gosacco import views
 
 apipatterns = patterns('',
                        # Examples:
@@ -10,6 +10,7 @@ apipatterns = patterns('',
                        url(r'^/groups/', include('members.group_urls')),
                        url(r'^/shares/', include('shares.urls')),
                        url(r'^/savings/', include('savings.urls')),
+                       #url(r'^/accounts/', include('savings.urls')),
                        #url(r'^/loans/', include('loans.urls')),
 
                        )
@@ -24,6 +25,7 @@ urlpatterns = patterns('',
                        url(r'^api', include(apipatterns)),
                        url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
                        url(r'^api-token-auth/', 'rest_framework_jwt.views.obtain_jwt_token'),
+                       url(r'^api-auth-registration/', views.AccountView.as_view()),
 
                        )
 admin.site.site_header = 'GoSacco'
