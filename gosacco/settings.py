@@ -125,7 +125,7 @@ REST_FRAMEWORK = {
 JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'gosacco.account_utils.jwt_response_payload_handler',
     'JWT_EXPIRATION_DELTA': datetime.timedelta(minutes=60),
-    'JWT_ALLOW_REFRESH': True,
+    'JWT_ALLOW_REFRESH': False,
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
 
 

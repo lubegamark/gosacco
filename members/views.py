@@ -1,14 +1,13 @@
-from rest_framework import status, generics
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import permissions
 from django.http import Http404
-from django.contrib.auth.models import User
 
+from gosacco.account_utils import decode_data
 from members.models import Member, Group
 from members.permissions import IsOwnerOrAdmin
-from members.serializers import MemberSerializer, GroupSerializer, GroupMemberSerializer, UserSerializer, \
-    MemberUserSerializer
+from members.serializers import MemberSerializer, GroupSerializer, GroupMemberSerializer, MemberPostSerializer
 
 
 class MemberList(APIView):
@@ -19,17 +18,29 @@ class MemberList(APIView):
         List all members
         """
         members = Member.objects.all()
-        serializer = MemberUserSerializer(members, many=True)
+        serializer = MemberSerializer(members, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
         """
         Add a new member
         """
-        serializer = MemberSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        hash = request.query_params.get('h', None)
+        info = request.query_params.get('d', None)
+        check = decode_data(hash, info)
+        if isinstance(check, Exception):
+            print(check.message.__str__())
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        request.data['user'] = check['user']
+        if check['exists'] == Member.objects.filter(user = check['user']).exists():
+            serializer = MemberPostSerializer(data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response({"detail":"Member already exists"}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

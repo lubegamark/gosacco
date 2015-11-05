@@ -4,15 +4,12 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from gosacco.account_utils import decode_data, register_user
+from gosacco.account_utils import decode_data, register_user, create_registration_link
 from gosacco.serializers import UserRegistrationSerializer
 
 
 class AccountView(APIView):
     permission_classes = ()
-
-    def get(self, request, format=None):
-        return Response()
 
     def post(self, request, format=None):
         """
@@ -28,12 +25,16 @@ class AccountView(APIView):
         if datetime.utcnow() < datetime.utcfromtimestamp(check['expire']):
             serializer = UserRegistrationSerializer(data=request.data)
             if serializer.is_valid():
-                print register_user(username=serializer.validated_data['username'],
+                user = register_user(username=serializer.validated_data['username'],
                                     password=serializer.validated_data['password'],
                                     email=serializer.validated_data['email'],
                                     first_name=serializer.validated_data['first_name'],
                                     last_name=serializer.validated_data['last_name'],)
-                return Response(status=status.HTTP_201_CREATED)
+                link = create_registration_link(user)
+                if link:
+                    return Response({"link": link}, status=status.HTTP_201_CREATED)
+
+                return Response({"detail": "User already Exists"}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:

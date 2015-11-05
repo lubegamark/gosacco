@@ -3,12 +3,14 @@ import urllib
 import zlib
 import pickle
 from datetime import datetime, timedelta
-from django.contrib.auth.models import User
 
+from django.contrib.auth.models import User
 from django.core.mail import send_mail
 
-my_secret = "iojp}e;pp.P{dapoO{kjYY3RGT&*()urdt243522cvjbhknj0*&^65rdexrsfxg"
+from members.models import Member
 
+my_secret = "iojp}e;pp.P{dapoO{kjYY3RGT&*()urdt243522cvjbhknj0*&^65rdexrsfxg"
+site="http://127.0.0.1:8000"
 def encode_data(data):
     """
     Turn `data` into a hash and an encoded string, suitable for use with `decode_data`.
@@ -30,7 +32,7 @@ def decode_data(hash, enc):
     data = pickle.loads(zlib.decompress(text.decode('base64')))
     return data
 
-def send_invitation(email, site="http://127.0.0.1:8000" ):
+def send_invitation(email):
     expire = datetime.utcnow() + timedelta(minutes=60)
     timestamp = (expire - datetime(1970, 1, 1)).total_seconds()
     hash, info = encode_data({"email": email,
@@ -41,8 +43,16 @@ def send_invitation(email, site="http://127.0.0.1:8000" ):
     Your registration link
     %s
 
-    """ % (site + "/api-auth-registration/?h=" + hash + "&d=" + info)
+    """ % (site + "/api/auth/registration/?h=" + hash + "&d=" + info)
     print send_mail('Subject', message, 'no-reply@gosacco.com', (email,))
+
+def create_registration_link(id):
+    exists = Member.objects.filter(user = id).exists()
+    if not exists:
+        hash, info = encode_data({"user": int(id),
+                              "exists": exists})
+        return (site + "/api/members/?h=" + hash + "&d=" + info)
+    return None
 
 def register_user(username, password, email, first_name, last_name):
     user = User.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
