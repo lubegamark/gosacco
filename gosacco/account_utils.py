@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 
 from django.core.mail import send_mail
 
-
 my_secret = "iojp}e;pp.P{dapoO{kjYY3RGT&*()urdt243522cvjbhknj0*&^65rdexrsfxg"
 
 def encode_data(data):
@@ -43,8 +42,17 @@ def send_invitation(email, site="http://127.0.0.1:8000" ):
     %s
 
     """ % (site + "/api-auth-registration/?h=" + hash + "&d=" + info)
-    print send_mail('Subject', message, 'no-reply@gosacco.com', ['mark@lubegamark.com', 'lubegamark@gmail.com'])
+    print send_mail('Subject', message, 'no-reply@gosacco.com', (email,))
 
 def register_user(username, password, email, first_name, last_name):
     user = User.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
     return user.id
+
+def jwt_response_payload_handler(token, user=None, request=None):
+    """
+    Response data after login or refresh
+    """
+    return {
+        'token': token,
+        'member': user.member.id
+    }
