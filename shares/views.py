@@ -2,6 +2,7 @@
 from django.core.exceptions import ValidationError
 
 from django.http.response import Http404
+from notifications import notify
 from rest_framework import status
 from rest_framework import permissions
 from rest_framework.response import Response
@@ -118,9 +119,12 @@ class SharePurchasesView(APIView):
         self.check_object_permissions(request, member)
         serializer = SharePurchasePostSerializer(data=request.data)
         if serializer.is_valid():
-            SharePurchase.issue_shares(member=member, shares=serializer.validated_data['number_of_shares'],
-                                       share_type=serializer.validated_data['share_type'])
-            return Response(status=status.HTTP_201_CREATED)
+            shares_bought = serializer.validated_data['number_of_shares']
+            share_type_bought = serializer.validated_data['share_type']
+            if SharePurchase.issue_shares(member=member, shares=shares_bought, share_type=share_type_bought):
+                notify.send(member.user, recipient=member.user, verb='bought '+str(shares_bought), action_object=share_type_bought,
+            description='blah', target=share_type_bought)
+                return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
