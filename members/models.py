@@ -19,10 +19,7 @@ class Member(Model):
     comments = TextField(blank=True, null=True,)
 
     def __unicode__(self):
-        return self.user.username
-
-    def member_name(self):
-        return " ".join([self.user.first_name, self.user.last_name])
+        return self.user.get_full_name()
 
 
 class Group(Model):

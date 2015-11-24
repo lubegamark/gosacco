@@ -32,8 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
-    # 'django_admin_bootstrapped',
-    'grappelli',
+    'flat',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -132,7 +131,6 @@ JWT_AUTH = {
 
 }
 
-GRAPPELLI_ADMIN_TITLE = "Gosacco"
 STATIC_ROOT = os.path.join(BASE_DIR, 'static').replace('\\', '/')
 
 STATIC_URL = '/static/'
