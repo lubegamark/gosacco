@@ -201,7 +201,7 @@ class LoanSecuritySavingsView(APIView):
         """
         Add a new security in form of savings
         ---
-        serializer: loans.serializers.SecuritySharesPostSerializer
+        serializer: loans.serializers.SecuritySavingsPostSerializer
         """
         member = self.get_member(int(pk))
         self.check_object_permissions(request, member)
@@ -249,7 +249,7 @@ class LoanSecurityArticlesView(APIView):
         """
         Add a new security in form of savings
         ---
-        serializer: loans.serializers.SecuritySharesPostSerializer
+        serializer: loans.serializers.SecurityArticlePostSerializer
         """
         member = self.get_member(int(pk))
         self.check_object_permissions(request, member)
