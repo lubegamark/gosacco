@@ -7,7 +7,8 @@ from django.http import Http404
 from gosacco.account_utils import decode_data
 from members.models import Member, Group
 from members.permissions import IsOwnerOrAdmin
-from members.serializers import MemberSerializer, GroupSerializer, GroupMemberSerializer, MemberPostSerializer
+from members.serializers import MemberSerializer, GroupSerializer, GroupMemberSerializer, MemberPostSerializer, \
+    NotificationSerializer
 
 
 class MemberList(APIView):
@@ -178,3 +179,35 @@ class GroupMember(APIView):
         groupmember = self.get_groupmember(pk)
         groupmember.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class NotificationView(APIView):
+    permission_classes = ()
+
+    def get_member(self, pk):
+        """
+        Get a member.
+        """
+        try:
+            return Member.objects.get(pk=pk)
+        except Member.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        """
+        List Share Transfer Transactions
+        """
+        if pk is not None:
+            member = self.get_member(int(pk))
+        else:
+            member = None
+        self.check_object_permissions(request, member)
+        r = request.query_params.get('r', None)
+        if r == 'read':
+            notifications = request.user.notifications.read()
+        else:
+            notifications = request.user.notifications.unread()
+
+        serializer = NotificationSerializer(notifications, many=True)
+        notifications.mark_all_as_read()
+        return Response(serializer.data)

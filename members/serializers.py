@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from notifications.models import Notification
 from rest_framework import serializers, viewsets
 
 from members.models import Member, Group, NextOfKin
@@ -96,3 +97,13 @@ class MemberViewSet(viewsets.ModelViewSet):
 
         """
         return super(MemberViewSet, self).list(request, *args, **kwargs)
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    actor = serializers.StringRelatedField()
+    verb = serializers.StringRelatedField()
+    target = serializers.StringRelatedField()
+
+    class Meta:
+        model = Notification
+        fields = ('actor', 'verb', 'target', 'timesince', 'description', 'unread')

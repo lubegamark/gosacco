@@ -24,4 +24,5 @@ urlpatterns = patterns('',
                        url(r'^(?P<pk>[0-9]+)/loans/securities/savings$', loan_views.LoanSecuritySavingsView.as_view()),
                        url(r'^(?P<pk>[0-9]+)/loans/securities/articles$', loan_views.LoanSecurityArticlesView.as_view()),
                        url(r'^(?P<pk>[0-9]+)/loans/securities/guarantors$', loan_views.LoanSecurityGuarantorsView.as_view()),
+                       url(r'^(?P<pk>[0-9]+)/notifications', views.NotificationView.as_view()),
                        )

@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'savings',
     'shares',
     'fees',
+    'notifications',
 )
 
 MIDDLEWARE_CLASSES = (
