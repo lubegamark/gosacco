@@ -1,5 +1,7 @@
 # Register your models here.
 from django.contrib import admin
+from django.template.defaultfilters import title
+from django.utils.safestring import mark_safe
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
 
 from loans.models import SecuritySavings, LoanRuleShares, LoanRuleSavings, LoanRuleOther, SecurityGuarantor
@@ -28,7 +30,7 @@ class LoanRuleOtherAdmin(admin.TabularInline):
 
 
 class LoanTypeAdmin(admin.ModelAdmin):
-    inlines = [LoanRuleSharesAdmin, LoanRuleSavingsAdmin, LoanRuleOtherAdmin]
+    inlines = (LoanRuleSharesAdmin, LoanRuleSavingsAdmin, LoanRuleOtherAdmin)
 
 
 class SecurityChildAdmin(PolymorphicChildModelAdmin):
@@ -65,37 +67,53 @@ class SecurityAdmin(PolymorphicParentModelAdmin):
     list_display = ('__unicode__',)
 
 
-class SecuritySavingsInline(admin.StackedInline):
+class SecuritySavingsInline(admin.TabularInline):
     model = SecuritySavings
     extra = 0
     exclude = ('loan',)
+    readonly_fields = ('value',)
 
 
-class SecuritySharesInline(admin.StackedInline):
+class SecuritySharesInline(admin.TabularInline):
     model = SecurityShares
     extra = 0
     exclude = ('loan',)
+    readonly_fields = ('value',)
 
 
-class SecurityArticleInline(admin.StackedInline):
+class SecurityArticleInline(admin.TabularInline):
     model = SecurityArticle
     extra = 0
     exclude = ('loan',)
+    readonly_fields = ('value',)
 
 
-class SecurityGuarantorInline(admin.StackedInline):
+class SecurityGuarantorInline(admin.TabularInline):
     model = SecurityGuarantor
     extra = 0
     exclude = ('loan',)
+    readonly_fields = ('value',)
 
 
 class LoanApplicationAdmin(admin.ModelAdmin):
-    fields = ['application_number', 'member', 'amount', 'purpose', 'payment_period', 'loan_type', 'status',
-              'security_details', ]
-    list_display = ('member', 'application_date', 'amount', 'payment_period', 'status')
-    list_filter = ['application_date', 'payment_period']
-    search_fields = ['member']
-    inlines = [SecuritySharesInline, SecuritySavingsInline, SecurityArticleInline, SecurityGuarantorInline]
+    fields = ('status', 'application_number', 'member', 'amount', 'purpose', 'payment_period', 'loan_type',
+              'security_details', 'security_valid', 'comment',)
+    list_display = (
+    'member', 'application_number', 'application_date', 'amount', 'loan_type', 'status', 'comment',)
+    ordering = ('-application_date',)
+    readonly_fields = ('application_number', 'member', 'amount', 'purpose', 'payment_period', 'loan_type',
+                       'security_details', 'security_valid',)
+    list_filter = ('application_date', 'payment_period',)
+    search_fields = ('member',)
+    inlines = (SecuritySharesInline, SecuritySavingsInline, SecurityArticleInline, SecurityGuarantorInline)
+
+    def save_model(self, request, obj, form, change):
+        old = LoanApplication.objects.get(pk=obj.pk)
+        if form.changed_data and obj.status != old.status:
+            if obj.status == 'approved':
+                obj.approve_loan_application(request.user)
+            elif obj.status == 'rejected':
+                obj.reject_loan_application(request.user)
 
 
 admin.site.register(Loan, LoanAdmin)

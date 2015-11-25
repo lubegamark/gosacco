@@ -28,5 +28,5 @@ urlpatterns = patterns('',
 
                        )
 admin.site.site_header = 'GoSacco'
-admin.site.site_title = 'Adminsitration'
+admin.site.site_title = 'GoSacco'
 admin.site.index_title = 'Administration'

@@ -2,8 +2,9 @@
 from datetime import timedelta
 from django.core.exceptions import ValidationError
 from django.db.models import Model, FloatField, ForeignKey, DateField, BigIntegerField, IntegerField, ManyToManyField, \
-    CharField, TextField, DateTimeField, OneToOneField, Sum
+    CharField, TextField, DateTimeField, OneToOneField, Sum, BooleanField
 from django.utils.timezone import now
+from notifications import notify
 
 from polymorphic import PolymorphicModel
 
@@ -61,13 +62,22 @@ class LoanApplication(Model):
     status = CharField(max_length=25, choices=STATUS_CHOICES, default=PENDING,
                        help_text="Current status of the application")
     security_details = TextField(help_text="Basic info provided about the security")
+    security_valid = BooleanField(default=False)
     comment = TextField(blank=True, null=True, help_text="Feedback from management")
 
-    def approve_loan_application(self):
+    def approve_loan_application(self, approver):
         self.status = self.APPROVED
+        self.save()
+        notify.send(approver.member, recipient=self.member.user, verb='approved',
+            description='Your loan application was approved', target=self, level='success')
 
-    def reject_loan_application(self):
+    def reject_loan_application(self, rejecter, comment=None):
         self.status = self.REJECTED
+        self.save()
+        notify.send(rejecter.member, recipient=self.member.user, verb='rejected',
+            description='Your loan application was rejected', target=self, level='fail')
+        if comment:
+            self.give_feedback_on_loan_application(comment=comment)
 
     def give_feedback_on_loan_application(self, comment):
         self.comment = comment
@@ -197,14 +207,11 @@ class LoanApplication(Model):
             raise ValidationError(errors)
 
     def __unicode__(self):
-        return self.member.user.username
+        return self.loan_type.__unicode__()+" loan: "+self.application_number
 
     @classmethod
     def view_loan_applications(cls, member=None, ):
         pass
-
-    def member_name(self):
-        return ' '.join([self.member.user.first_name, self.member.user.last_name])
 
 
 class Loan(Model):
@@ -277,7 +284,7 @@ class SecurityShares(Security):
         security = cls(loan_application=loan_application, number_of_shares=number_of_shares, share_type=share_type)
         if member != loan_application.member:
             return ValidationError(
-                {"loan_aplication": "Invalid Loan Application"})
+                {"loan_application": "Invalid Loan Application"})
         try:
             available_shares = Shares.objects.get(share_type=share_type, member=loan_application.member)
         except Shares.DoesNotExist:
