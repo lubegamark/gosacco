@@ -6,7 +6,7 @@ from django.db import models, Error
 
 
 # Create your models here.
-from django.db.models import ForeignKey, IntegerField, CharField, BigIntegerField, Q, DateTimeField, Sum
+from django.db.models import ForeignKey, IntegerField, CharField, BigIntegerField, Q, DateTimeField, Sum, TextField
 from django.utils import timezone
 from members.models import Member, Group
 
@@ -168,6 +168,7 @@ class SharePurchase(models.Model):
 class ShareTransfer(models.Model):
     seller = ForeignKey(Member, related_name="Sender")
     buyer = ForeignKey(Member, related_name="Recepient")
+    reason = TextField()
     share_type = ForeignKey(ShareType)
     number_of_shares = IntegerField()
     current_share_price = IntegerField()
@@ -178,7 +179,7 @@ class ShareTransfer(models.Model):
             self.number_of_shares) + " " + "class " + self.share_type.share_class + " shares from " + self.seller.user.username + " to " + self.buyer.user.username
 
     @classmethod
-    def transfer_shares(cls, seller, buyer, number_of_shares, share_type):
+    def transfer_shares(cls, seller, buyer, number_of_shares, share_type, reason):
         """
         Transfer shares from one member to another
 
@@ -202,7 +203,7 @@ class ShareTransfer(models.Model):
         else:
             transfer = ShareTransfer(seller=seller, buyer=buyer, number_of_shares=number_of_shares,
                                      share_type=share_type, date=timezone.now(),
-                                     current_share_price=share_type.share_price)
+                                     current_share_price=share_type.share_price, reason=reason)
 
             buyer_shares.number_of_shares += number_of_shares
             seller_shares.number_of_shares -= number_of_shares

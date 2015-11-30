@@ -169,7 +169,8 @@ class ShareTransfersView(APIView):
             transfer = ShareTransfer.transfer_shares(seller=member,
                                           buyer=serializer.validated_data['buyer'],
                                           share_type=serializer.validated_data['share_type'],
-                                          number_of_shares=serializer.validated_data['number_of_shares'])
+                                          number_of_shares=serializer.validated_data['number_of_shares'],
+                                          reason=serializer.validated_data['reason'],)
             if isinstance(transfer, ValidationError):
                 serializer.errors.update(transfer)
                 return Response(transfer, status=status.HTTP_400_BAD_REQUEST)
