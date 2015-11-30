@@ -185,10 +185,12 @@ class LoanApplication(Model):
                 error = 'You need to have at least %s %s savings to qualify for this loan' % (
                     rule.minimum, rule.savings_type)
                 errors.append(error)
-        if self.is_security_sufficient():
-            print("security is sufficient")
-            print(self.is_security_sufficient())
-            self.security_satisfied = True
+        self.security_satisfied = self.is_security_sufficient()
+        #print self.security_satisfied
+        # if self.is_security_sufficient():
+        #     print("security is sufficient")
+        #     print(self.is_security_sufficient())
+        #     self.security_satisfied = True
         #     #TODO Check that the value of of shares is not None and print 0 if it is.
         #     error = 'Your total securities value(%s) is less that what you are requesting for(%s)' % (
         #         self.total_security_value(), self.amount)
@@ -276,7 +278,14 @@ class Security(PolymorphicModel):
         pass
 
     def save(self, *args, **kwargs):
-        self.loan_application.is_security_sufficient()
+        self.loan_application.security_satisfied = self.loan_application.is_security_sufficient()
+        super(Security, self).save(*args, **kwargs)
+        self.loan_application.save()
+
+    def delete(self, *args, **kwargs):
+        self.loan_application.security_satisfied = self.loan_application.is_security_sufficient()
+        super(Security, self).delete(*args, **kwargs)
+        self.loan_application.save()
 
 
 class SecurityShares(Security):
