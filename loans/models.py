@@ -62,7 +62,7 @@ class LoanApplication(Model):
     status = CharField(max_length=25, choices=STATUS_CHOICES, default=PENDING,
                        help_text="Current status of the application")
     security_details = TextField(help_text="Basic info provided about the security")
-    security_valid = BooleanField(default=False)
+    security_satisfied = BooleanField(default=False)
     comment = TextField(blank=True, null=True, help_text="Feedback from management")
 
     def approve_loan_application(self, approver):

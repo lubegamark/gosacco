@@ -97,12 +97,12 @@ class SecurityGuarantorInline(admin.TabularInline):
 
 class LoanApplicationAdmin(admin.ModelAdmin):
     fields = ('status', 'application_number', 'member', 'amount', 'purpose', 'payment_period', 'loan_type',
-              'security_details', 'security_valid', 'comment',)
+              'security_details', 'security_satisfied', 'comment',)
     list_display = (
     'member', 'application_number', 'application_date', 'amount', 'loan_type', 'status', 'comment',)
     ordering = ('-application_date',)
     readonly_fields = ('application_number', 'member', 'amount', 'purpose', 'payment_period', 'loan_type',
-                       'security_details', 'security_valid',)
+                       'security_details', 'security_satisfied',)
     list_filter = ('application_date', 'payment_period',)
     search_fields = ('member',)
     inlines = (SecuritySharesInline, SecuritySavingsInline, SecurityArticleInline, SecurityGuarantorInline)
