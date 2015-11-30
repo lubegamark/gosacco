@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'shares',
     'fees',
     'notifications',
+    'debug_toolbar',
 )
 
 MIDDLEWARE_CLASSES = (

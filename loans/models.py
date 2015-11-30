@@ -66,10 +66,14 @@ class LoanApplication(Model):
     comment = TextField(blank=True, null=True, help_text="Feedback from management")
 
     def approve_loan_application(self, approver):
-        self.status = self.APPROVED
-        self.save()
-        notify.send(approver.member, recipient=self.member.user, verb='approved',
+        if self.security_satisfied:
+            self.status = self.APPROVED
+            self.save()
+            notify.send(approver.member, recipient=self.member.user, verb='approved',
             description='Your loan application was approved', target=self, level='success')
+            return True
+        else:
+            return False
 
     def reject_loan_application(self, rejecter, comment=None):
         self.status = self.REJECTED

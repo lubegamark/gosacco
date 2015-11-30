@@ -99,7 +99,7 @@ class LoanApplicationAdmin(admin.ModelAdmin):
     fields = ('status', 'application_number', 'member', 'amount', 'purpose', 'payment_period', 'loan_type',
               'security_details', 'security_satisfied', 'comment',)
     list_display = (
-    'member', 'application_number', 'application_date', 'amount', 'loan_type', 'status', 'comment',)
+    'member','application_number', 'security_satisfied',  'application_date', 'amount', 'loan_type', 'status', 'comment',)
     ordering = ('-application_date',)
     readonly_fields = ('application_number', 'member', 'amount', 'purpose', 'payment_period', 'loan_type',
                        'security_details', 'security_satisfied',)
@@ -111,7 +111,10 @@ class LoanApplicationAdmin(admin.ModelAdmin):
         old = LoanApplication.objects.get(pk=obj.pk)
         if form.changed_data and obj.status != old.status:
             if obj.status == 'approved':
-                obj.approve_loan_application(request.user)
+                if obj.approve_loan_application(request.user):
+                    self.message_user(request, "Loan successfully approved.")
+                else:
+                    self.message_user(request, "Loan failed to be approved.")
             elif obj.status == 'rejected':
                 obj.reject_loan_application(request.user)
 
