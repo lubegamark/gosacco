@@ -185,8 +185,10 @@ class LoanApplication(Model):
                 error = 'You need to have at least %s %s savings to qualify for this loan' % (
                     rule.minimum, rule.savings_type)
                 errors.append(error)
-        # if not self.is_security_sufficient():
-        #     self.valid = False
+        if self.is_security_sufficient():
+            print("security is sufficient")
+            print(self.is_security_sufficient())
+            self.security_satisfied = True
         #     #TODO Check that the value of of shares is not None and print 0 if it is.
         #     error = 'Your total securities value(%s) is less that what you are requesting for(%s)' % (
         #         self.total_security_value(), self.amount)
@@ -205,6 +207,10 @@ class LoanApplication(Model):
         errors = self.meets_requirements()
         if self.valid is False:
             raise ValidationError(errors)
+
+    def save(self, *args, **kwargs):
+        self.security_satisfied = self.is_security_sufficient()
+        super(LoanApplication, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.loan_type.__unicode__()+" loan: "+self.application_number
@@ -269,11 +275,13 @@ class Security(PolymorphicModel):
     def add_security(cls, loan_application, member):
         pass
 
+    def save(self, *args, **kwargs):
+        self.loan_application.is_security_sufficient()
+
 
 class SecurityShares(Security):
     number_of_shares = IntegerField()
     share_type = ForeignKey(ShareType)
-    # value_of_shares = BigIntegerField(blank=True)
 
     class Meta:
         verbose_name_plural = "Security shares"
