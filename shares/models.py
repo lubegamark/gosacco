@@ -168,7 +168,7 @@ class SharePurchase(models.Model):
 class ShareTransfer(models.Model):
     seller = ForeignKey(Member, related_name="Sender")
     buyer = ForeignKey(Member, related_name="Recepient")
-    reason = TextField()
+    reason = TextField(null=True, blank=True)
     share_type = ForeignKey(ShareType)
     number_of_shares = IntegerField()
     current_share_price = IntegerField()
@@ -179,7 +179,7 @@ class ShareTransfer(models.Model):
             self.number_of_shares) + " " + "class " + self.share_type.share_class + " shares from " + self.seller.user.username + " to " + self.buyer.user.username
 
     @classmethod
-    def transfer_shares(cls, seller, buyer, number_of_shares, share_type, reason):
+    def transfer_shares(cls, seller, buyer, number_of_shares, share_type, reason=None):
         """
         Transfer shares from one member to another
 
